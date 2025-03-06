@@ -85,11 +85,11 @@ export default function TodoList() {
     <div className="max-w-4xl mx-auto p-4">
       <h2 className="text-2xl font-bold mb-6 text-gray-900">Feature Roadmap</h2>
       
-      <div className="flex gap-4 mb-6">
+      <div className="flex flex-col sm:flex-row gap-4 mb-6">
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value as TodoItem['status'] | 'all')}
-          className="px-3 py-2 rounded-md border border-gray-300 text-sm text-black"
+          className="w-full sm:w-auto px-3 py-2 rounded-md border border-gray-300 text-sm text-black"
         >
           <option value="all">All Status</option>
           <option value="pending">Pending</option>
@@ -100,7 +100,7 @@ export default function TodoList() {
         <select
           value={priorityFilter}
           onChange={(e) => setPriorityFilter(e.target.value as TodoItem['priority'] | 'all')}
-          className="px-3 py-2 rounded-md border border-gray-300 text-sm text-black"
+          className="w-full sm:w-auto px-3 py-2 rounded-md border border-gray-300 text-sm text-black"
         >
           <option value="all">All Priorities</option>
           <option value="high">High Priority</option>
@@ -115,12 +115,12 @@ export default function TodoList() {
             key={todo.id}
             className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:border-blue-500 transition-colors"
           >
-            <div className="flex items-start justify-between">
-              <div>
+            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+              <div className="flex-1">
                 <h3 className="text-lg font-semibold text-gray-900">{todo.title}</h3>
                 <p className="text-gray-600 mt-1">{todo.description}</p>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap gap-2">
                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(todo.status)}`}>
                   {todo.status.charAt(0).toUpperCase() + todo.status.slice(1)}
                 </span>

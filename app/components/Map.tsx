@@ -398,7 +398,17 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
         }`}
       >
         <div className="p-4 h-full overflow-auto">
-          <h2 className="text-xl font-bold mb-4 text-gray-900">Rated Burritos</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold text-gray-900">Rated Burritos</h2>
+            <button
+              onClick={() => setIsSidebarOpen(false)}
+              className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
           
           <div className="flex justify-between items-center mb-4">
             <div className="flex gap-2">
@@ -503,7 +513,7 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
         </div>
       </div>
 
-      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10 w-96 max-w-[90%]">
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[5] w-96 max-w-[90%]">
         <StandaloneSearchBox
           onLoad={onSearchBoxLoad}
           onPlacesChanged={onPlacesChanged}
@@ -561,19 +571,20 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
               position={{ lat: rating.latitude, lng: rating.longitude }}
               onClick={() => setSelectedRating(rating)}
               title={`${rating.restaurantName}: ${rating.burritoTitle}`}
-              label={{
-                text: '🌯',
-                fontSize: '24px',
-                className: 'marker-label'
-              }}
               icon={{
                 path: google.maps.SymbolPath.CIRCLE,
                 scale: 16,
                 fillColor: getRatingColor(rating.rating),
-                fillOpacity: 0.7,
+                fillOpacity: 0.8,
                 strokeWeight: 2,
                 strokeColor: getRatingColor(rating.rating, true)
               } as google.maps.Symbol}
+              label={{
+                text: '🌯',
+                color: '#FFFFFF',
+                fontSize: '32px',
+                fontWeight: 'bold'
+              }}
             />
           ))}
 

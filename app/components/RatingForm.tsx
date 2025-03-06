@@ -83,11 +83,19 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[20]">
       <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="p-4">
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-xl font-bold text-black">Rate this Burrito</h2>
+            <button
+              onClick={onClose}
+              className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-100"
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-2">
@@ -153,11 +161,6 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
                   onChange={(e) => setBurritoTitle(e.target.value)}
                   className="block w-full px-2 py-1 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 />
-                {validatePassword(password) && (
-                  <span className="text-2xl" role="img" aria-label="reviewer identity">
-                    {generateUserEmoji(password)}
-                  </span>
-                )}
               </div>
             </div>
 
