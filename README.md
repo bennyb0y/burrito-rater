@@ -1,110 +1,86 @@
-# Benny's Burrito Rating
+# 🌯 Burrito Rater
 
-A web application for rating and reviewing burritos across Los Angeles, with a focus on breakfast burritos.
+A web application for discovering and rating the best breakfast burritos in Los Angeles. Built with Next.js, TypeScript, and Google Maps API.
 
-## Features
+## 🚀 Quick Start
 
-### Map Interface
-- Interactive Google Maps integration
-- Search for locations with autocomplete
-- Click on the map to find nearby restaurants
-- View all burrito ratings as markers on the map
-- Color-coded markers based on rating (1-5 stars)
-- Click markers to view detailed ratings
-
-### Rating System
-- Rate burritos on multiple criteria:
-  - Overall rating (1-5)
-  - Taste rating (1-5)
-  - Value rating (1-5)
-  - Price
-- Track ingredients:
-  - Potatoes
-  - Cheese
-  - Bacon
-  - Chorizo
-  - Onion
-  - Vegetables
-- Add detailed reviews
-- Optional reviewer identity with unique emoji generation
-
-### List View
-- Toggle between map and list views
-- Sort ratings by:
-  - Overall rating (high to low)
-  - Price (high to low)
-- View key information at a glance:
-  - Restaurant name
-  - Burrito title
-  - Overall rating
-  - Price
-  - Taste and value ratings
-  - Reviewer information
-  - Review preview
-
-### User Identity
-- Optional reviewer name
-- Unique emoji generation based on username/password
-- Consistent identity across reviews
-- Visual representation in both map and list views
-
-## Technical Stack
-
-- Next.js 14 with App Router
-- TypeScript
-- Google Maps API
-- Prisma with SQLite
-- Tailwind CSS
-- React Google Maps API
-
-## Getting Started
-
-1. Clone the repository
-2. Install dependencies:
+1. **Clone and Install**
    ```bash
+   git clone https://github.com/bennyb0y/burrito-rater.git
+   cd burrito-rater
    npm install
    ```
-3. Set up environment variables:
-   - Copy `.env.example` to `.env.local`
-   - The Google Maps API key is already configured in the repository
-4. Run the development server:
+
+2. **Set up Environment**
+   ```bash
+   cp .env.example .env.local
+   ```
+   The Google Maps API key is pre-configured in the repository.
+
+3. **Run Development Server**
    ```bash
    npm run dev
    ```
-5. Open [http://localhost:3000](http://localhost:3000) in your browser
+   Open [http://localhost:3000](http://localhost:3000)
 
-## Key Components
+## 🎯 Features
 
-### Map Component (`app/components/Map.tsx`)
-- Main interface for viewing and interacting with burrito ratings
-- Handles map interactions, markers, and info windows
-- Manages state for selected locations and ratings
-- Provides search functionality for locations
+### 🗺️ Interactive Map
+- Real-time location search with Google Maps
+- Color-coded burrito ratings
+- Click-to-rate any restaurant
+- Visual rating distribution
 
-### Rating Form (`app/components/RatingForm.tsx`)
-- Form for submitting new burrito ratings
-- Sliders for rating different aspects (overall, taste, value)
-- Ingredient checkboxes
-- Price input
-- Optional reviewer identity fields
+### ⭐ Rating System
+- Overall rating (1-5)
+- Taste rating (1-5)
+- Value rating (1-5)
+- Price tracking
+- Ingredient tracking:
+  - 🥔 Potatoes
+  - 🧀 Cheese
+  - 🥓 Bacon
+  - 🌶️ Chorizo
+  - 🧅 Onion
+  - 🥬 Vegetables
 
-### API Routes
-- `/api/ratings`: Handles CRUD operations for burrito ratings
-- `/api/ratings/[id]`: Manages individual rating operations
+### 👤 User Features
+- Anonymous or named reviews
+- Unique emoji identifiers
+- Personal rating history
+- Sort by rating or price
 
-### Database Schema
-- Stores ratings with:
-  - Location data (latitude, longitude)
-  - Rating scores
-  - Price
-  - Ingredients
-  - Reviews
-  - Reviewer information
+## 🛠️ Tech Stack
 
-## Contributing
+- **Frontend**: Next.js 14, React 18, TypeScript
+- **Styling**: Tailwind CSS
+- **Maps**: Google Maps API, @react-google-maps/api
+- **Database**: Prisma with SQLite
+- **API**: Next.js API Routes
 
-Feel free to submit issues and enhancement requests!
+## 📱 Screenshots
 
-## Development Status
-- Currently active and maintained
-- Regular updates and improvements
+[Coming Soon]
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## 📝 License
+
+MIT License - feel free to use this code for your own projects!
+
+## 🙏 Credits
+
+Created by [@bennyb0y](https://github.com/bennyb0y)
+
+## 🔄 Latest Updates
+
+- Added emoji-based user identification
+- Improved map interaction
+- Enhanced rating form UI
+- Added sorting and filtering options
