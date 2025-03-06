@@ -1,6 +1,5 @@
 name = "burrito-rater"
 compatibility_date = "2023-09-01"
-main = "worker.js"
 compatibility_flags = ["nodejs_compat"]
 pages_build_output_dir = ".vercel/output/static"
 

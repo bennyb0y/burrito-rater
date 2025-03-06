@@ -116,6 +116,8 @@ CREATE TABLE Rating (
 
 ## Cloudflare Configuration
 
+### Worker Configuration
+
 The Cloudflare Worker configuration is defined in `wrangler.toml`:
 
 ```toml
@@ -128,6 +130,24 @@ binding = "DB"
 database_name = "your-database-name"
 database_id = "0e87da0b-9043-44f4-8782-3ee0c9fd6553"
 ```
+
+### Pages Configuration
+
+For Cloudflare Pages deployment, a separate configuration is used:
+
+```toml
+name = "burrito-rater"
+compatibility_date = "2023-09-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".vercel/output/static"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "your-database-name"
+database_id = "0e87da0b-9043-44f4-8782-3ee0c9fd6553"
+```
+
+> **Note**: The `nodejs_compat` compatibility flag is required for Next.js applications built with @cloudflare/next-on-pages. See [Cloudflare Pages Deployment Guide](./CLOUDFLARE_PAGES.md) for more details.
 
 ## Troubleshooting
 

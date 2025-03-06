@@ -77,6 +77,24 @@ const nextConfig: NextConfig = {
 };
 ```
 
+### wrangler.toml
+
+The `wrangler.toml` file configures Cloudflare Pages deployment:
+
+```toml
+name = "burrito-rater"
+compatibility_date = "2023-09-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".vercel/output/static"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "your-database-name"
+database_id = "0e87da0b-9043-44f4-8782-3ee0c9fd6553"
+```
+
+> **Important**: The `nodejs_compat` compatibility flag is required for Next.js applications built with @cloudflare/next-on-pages. This flag must be set in both the `wrangler.toml` file and in the Cloudflare Pages dashboard.
+
 ### _routes.json
 
 The `public/_routes.json` file configures Cloudflare Pages routing:
@@ -126,6 +144,26 @@ For the GitHub Actions workflow to work, you need to set up the following secret
 - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Your Google Maps API key
 - `NEXT_PUBLIC_API_BASE_URL`: The URL of your Cloudflare Worker API
 
+## Cloudflare Pages Dashboard Configuration
+
+### Environment Variables
+
+Set the following environment variables in the Cloudflare Pages dashboard:
+
+- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Your Google Maps API key
+- `NEXT_PUBLIC_API_BASE_URL`: The URL of your Cloudflare Worker API
+
+### Compatibility Flags
+
+In the Cloudflare Pages dashboard:
+
+1. Go to your project settings
+2. Navigate to the "Functions" or "Build & Deploy" section
+3. Find "Compatibility flags"
+4. Add `nodejs_compat` as a compatibility flag for both Production and Preview environments
+
+> **Important**: Without the `nodejs_compat` flag, your Next.js application will fail with a "Node.JS Compatibility Error" message.
+
 ## Troubleshooting
 
 ### Build Failures
@@ -147,4 +185,12 @@ If deployment fails, check:
 If the deployed site has runtime errors, check:
 - The browser console for errors
 - The Cloudflare Pages logs
-- The compatibility of your code with Cloudflare Pages 
+- The compatibility of your code with Cloudflare Pages
+
+### Node.JS Compatibility Error
+
+If you see a "Node.JS Compatibility Error" message:
+
+1. Check that the `nodejs_compat` compatibility flag is set in the Cloudflare Pages dashboard
+2. Verify that `compatibility_flags = ["nodejs_compat"]` is in your `wrangler.toml` file
+3. Redeploy the application 

@@ -137,6 +137,7 @@ All project documentation is available in the [docs](./docs) directory:
 
 - [Cloudflare Migration Guide](./docs/CLOUDFLARE_MIGRATION.md) - Details about the migration from SQLite to Cloudflare D1
 - [Cloudflare Pages Deployment Guide](./docs/CLOUDFLARE_PAGES.md) - Guide for deploying the frontend to Cloudflare Pages
+- [Development Workflow Guide](./docs/WORKFLOW.md) - Complete CI/CD workflow from development to deployment
 - [Development Guidelines](./docs/CURSOR_RULES.md) - Coding standards and development guidelines
 
 ## Cloud Architecture
@@ -184,3 +185,23 @@ npm run build
 npm run pages:build
 npm run pages:dev
 ```
+
+#### Important Configuration
+
+For Cloudflare Pages deployment, ensure:
+
+1. The `wrangler.toml` file includes:
+   ```toml
+   compatibility_flags = ["nodejs_compat"]
+   pages_build_output_dir = ".vercel/output/static"
+   ```
+
+2. The `nodejs_compat` compatibility flag is also set in the Cloudflare Pages dashboard:
+   - Go to your project settings
+   - Navigate to the "Functions" or "Build & Deploy" section
+   - Find "Compatibility flags"
+   - Add `nodejs_compat` as a compatibility flag for both Production and Preview environments
+
+Without this flag, the application will fail with a "Node.JS Compatibility Error" message.
+
+For more details, see the [Cloudflare Pages Deployment Guide](./docs/CLOUDFLARE_PAGES.md).
