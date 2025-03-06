@@ -11,13 +11,40 @@ A web application for discovering and rating the best breakfast burritos in Los 
    npm install
    ```
 
-2. **Set up Environment**
+2. **Set up Google Maps API**
+   - Go to [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project or select an existing one
+   - Enable these APIs in "APIs & Services" > "Library":
+     - Maps JavaScript API
+     - Places API
+   - Create credentials:
+     - Go to "APIs & Services" > "Credentials"
+     - Click "Create Credentials" > "API Key"
+     - Copy your API key
+   - Configure API key restrictions:
+     - Click on your API key to edit
+     - Under "Application restrictions", select "HTTP referrers (websites)"
+     - Add these domains:
+       ```
+       localhost
+       localhost:3000
+       127.0.0.1
+       127.0.0.1:3000
+       ```
+     - Under "API restrictions", select "Restrict key"
+     - Select the APIs you enabled (Maps JavaScript API and Places API)
+     - Click "Save"
+
+3. **Set up Environment**
    ```bash
    cp .env.example .env.local
    ```
-   The Google Maps API key is pre-configured in the repository.
+   Add your Google Maps API key to `.env.local`:
+   ```
+   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
+   ```
 
-3. **Run Development Server**
+4. **Run Development Server**
    ```bash
    npm run dev
    ```

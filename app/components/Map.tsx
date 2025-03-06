@@ -106,9 +106,13 @@ interface MapProps {
 const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
+    googleMapsApiKey: 'AIzaSyD-ner96UaZTvp6Aaj1wLttaT0SV-CWOEs',
     libraries: libraries as any
   });
+
+  // Debug logging
+  console.log('Load Error:', loadError);
+  console.log('Is Loaded:', isLoaded);
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [searchBox, setSearchBox] = useState<google.maps.places.SearchBox | null>(null);
@@ -152,12 +156,6 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
 
     fetchRatings();
   }, [refreshTrigger]); // Add refreshTrigger to dependencies
-
-  // Debug logging
-  React.useEffect(() => {
-    console.log('API Key:', process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY);
-    console.log('Load Error:', loadError);
-  }, [loadError]);
 
   // Function to fetch nearby restaurants
   const fetchNearbyRestaurants = useCallback((center: google.maps.LatLng) => {
