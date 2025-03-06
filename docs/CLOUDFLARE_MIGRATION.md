@@ -149,6 +149,44 @@ database_id = "0e87da0b-9043-44f4-8782-3ee0c9fd6553"
 
 > **Note**: The `nodejs_compat` compatibility flag is required for Next.js applications built with @cloudflare/next-on-pages. See [Cloudflare Pages Deployment Guide](./CLOUDFLARE_PAGES.md) for more details.
 
+## Environment Variables
+
+### Cloudflare Worker Environment Variables
+
+For the Cloudflare Worker API, environment variables are set in the Cloudflare Dashboard:
+
+1. Log in to the Cloudflare Dashboard: https://dash.cloudflare.com/
+2. Navigate to Workers & Pages
+3. Select your Worker (burrito-rater)
+4. Click on the "Settings" tab
+5. Scroll down to find the "Variables" section
+6. Click on "Add variable"
+7. Enter the variable name and value
+8. Choose the environment (Production and/or Preview)
+9. Click "Save"
+
+Note that Worker environment variables are not exposed to the browser and are only available in the Worker runtime.
+
+### Cloudflare Pages Environment Variables
+
+For the frontend application, environment variables are set in the Cloudflare Pages dashboard:
+
+1. Log in to the Cloudflare Dashboard: https://dash.cloudflare.com/
+2. Navigate to Workers & Pages
+3. Select your Pages project (burrito-rater)
+4. Go to Settings > Environment variables
+5. Add each variable with its corresponding value
+6. Choose the environment (Production and/or Preview)
+7. Click "Save"
+8. Trigger a new deployment for the changes to take effect
+
+Required environment variables for the frontend:
+- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Your Google Maps API key
+- `NEXT_PUBLIC_API_BASE_URL`: The URL of your Cloudflare Worker API
+- `NEXT_PUBLIC_ADMIN_PASSWORD`: Password for accessing the admin section
+
+For more details on setting up the admin password, see the [Admin Setup Guide](./ADMIN_SETUP.md).
+
 ## Troubleshooting
 
 ### API Connection Issues

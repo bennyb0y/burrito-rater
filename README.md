@@ -89,6 +89,12 @@ A web application for discovering and rating the best breakfast burritos in Los 
 - Personal rating history
 - Sort by rating or price
 
+### 🔐 Admin Features
+- Password-protected admin area
+- Manage all burrito ratings
+- Bulk delete functionality
+- Simple authentication system
+
 ## 🛠️ Tech Stack
 
 - **Frontend**: Next.js 14, React 18, TypeScript
@@ -120,6 +126,7 @@ Created by [@bennyb0y](https://github.com/bennyb0y)
 
 ## 🔄 Latest Updates
 
+- Added password-protected admin area for managing ratings
 - Added emoji-based user identification
 - Improved map interaction
 - Enhanced rating form UI

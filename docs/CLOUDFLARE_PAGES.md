@@ -56,6 +56,41 @@ npm run pages:build
 npm run pages:dev
 ```
 
+## Environment Variables
+
+Cloudflare Pages requires environment variables to be set in the Cloudflare dashboard. These variables are used by the application at runtime.
+
+### Required Environment Variables
+
+1. **NEXT_PUBLIC_GOOGLE_MAPS_API_KEY**
+   - Your Google Maps API key
+   - Used for the map functionality
+
+2. **NEXT_PUBLIC_API_BASE_URL**
+   - The URL of your Cloudflare Worker API
+   - Example: `https://your-worker-name.your-account.workers.dev`
+
+3. **NEXT_PUBLIC_ADMIN_PASSWORD**
+   - Password for accessing the admin section
+   - Used to protect the admin page at `/admin`
+
+### Setting Environment Variables
+
+1. Go to the Cloudflare Dashboard: https://dash.cloudflare.com/
+2. Navigate to Workers & Pages
+3. Select your Pages project (burrito-rater)
+4. Go to Settings > Environment variables
+5. Add each variable with its corresponding value
+6. Choose the environment (Production and/or Preview)
+7. Click "Save"
+8. Trigger a new deployment for the changes to take effect
+
+### Environment Variable Security
+
+- Variables with the `NEXT_PUBLIC_` prefix are exposed to the browser
+- For sensitive information that should not be exposed to the browser, use Cloudflare Workers environment variables instead
+- The admin password uses `NEXT_PUBLIC_` because it's needed for client-side authentication, but this means it's not completely secure
+
 ## Configuration
 
 ### next.config.ts

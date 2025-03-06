@@ -47,4 +47,40 @@ Once configured, the admin panel can be accessed at:
 https://your-domain.com/admin
 ```
 
-You will be prompted to enter the password. Upon successful authentication, your session will remain active until you log out or close the browser. 
+You will be prompted to enter the password. Upon successful authentication, your session will remain active until you log out or close the browser.
+
+## Admin Functionality
+
+The admin panel provides the following functionality:
+
+### Rating Management
+
+- **View Ratings**: See all burrito ratings in a tabular format
+- **Select Ratings**: Use checkboxes to select individual ratings or select all
+- **Delete Ratings**: Delete selected ratings with confirmation
+- **View Details**: See detailed information about each rating, including:
+  - Restaurant name
+  - Burrito title
+  - Rating score
+  - Reviewer information
+
+### Authentication Features
+
+- **Session Persistence**: Your login session persists until you log out or close the browser
+- **Logout**: Securely end your session with the logout button
+- **Error Handling**: Clear error messages for authentication issues
+
+### Implementation Details
+
+The admin authentication is implemented in the `app/admin/layout.tsx` file, which:
+
+1. Checks for an existing authentication session in `sessionStorage`
+2. Validates the password against the environment variable
+3. Renders either the login form or the admin interface based on authentication status
+4. Provides a logout function to clear the session
+
+The admin page functionality is implemented in `app/admin/page.tsx`, which:
+
+1. Fetches ratings from the API
+2. Provides UI for selecting and managing ratings
+3. Handles deletion of ratings through API calls 

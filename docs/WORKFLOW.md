@@ -47,7 +47,26 @@ This starts the Next.js app on http://localhost:3000, which connects to the Clou
 - Changes to the frontend are immediately visible locally
 - No need to set up a local database
 
-### 2. API Development
+### 2. Admin Access
+
+The application includes a password-protected admin section for managing burrito ratings:
+
+#### Local Development
+1. Ensure the admin password is set in your `.env.local` file:
+   ```
+   NEXT_PUBLIC_ADMIN_PASSWORD=your_password
+   ```
+2. Access the admin panel at http://localhost:3000/admin
+3. Enter the password to log in
+
+#### Production
+1. Set the `NEXT_PUBLIC_ADMIN_PASSWORD` environment variable in the Cloudflare Pages dashboard
+2. Access the admin panel at your deployed URL (e.g., https://burrito-rater.pages.dev/admin)
+3. Enter the password to log in
+
+For more details on admin setup, see the [Admin Setup Guide](./ADMIN_SETUP.md).
+
+### 3. API Development
 
 When making changes to the API:
 
