@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Benny's Burrito Rating
+
+A web application for rating and reviewing burritos across Los Angeles, with a focus on breakfast burritos.
+
+## Features
+
+### Map Interface
+- Interactive Google Maps integration
+- Search for locations with autocomplete
+- Click on the map to find nearby restaurants
+- View all burrito ratings as markers on the map
+- Color-coded markers based on rating (1-5 stars)
+- Click markers to view detailed ratings
+
+### Rating System
+- Rate burritos on multiple criteria:
+  - Overall rating (1-5)
+  - Taste rating (1-5)
+  - Value rating (1-5)
+  - Price
+- Track ingredients:
+  - Potatoes
+  - Cheese
+  - Bacon
+  - Chorizo
+  - Onion
+  - Vegetables
+- Add detailed reviews
+- Optional reviewer identity with unique emoji generation
+
+### List View
+- Toggle between map and list views
+- Sort ratings by:
+  - Overall rating (high to low)
+  - Price (high to low)
+- View key information at a glance:
+  - Restaurant name
+  - Burrito title
+  - Overall rating
+  - Price
+  - Taste and value ratings
+  - Reviewer information
+  - Review preview
+
+### User Identity
+- Optional reviewer name
+- Unique emoji generation based on username/password
+- Consistent identity across reviews
+- Visual representation in both map and list views
+
+## Technical Stack
+
+- Next.js 14 with App Router
+- TypeScript
+- Google Maps API
+- Prisma with SQLite
+- Tailwind CSS
+- React Google Maps API
 
 ## Getting Started
 
-First, run the development server:
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Set up environment variables:
+   - Create a `.env` file with your Google Maps API key:
+     ```
+     NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
+     ```
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
+5. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Key Components
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Map Component (`app/components/Map.tsx`)
+- Main interface for viewing and interacting with burrito ratings
+- Handles map interactions, markers, and info windows
+- Manages state for selected locations and ratings
+- Provides search functionality for locations
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Rating Form (`app/components/RatingForm.tsx`)
+- Form for submitting new burrito ratings
+- Sliders for rating different aspects (overall, taste, value)
+- Ingredient checkboxes
+- Price input
+- Optional reviewer identity fields
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### API Routes
+- `/api/ratings`: Handles CRUD operations for burrito ratings
+- `/api/ratings/[id]`: Manages individual rating operations
 
-## Learn More
+### Database Schema
+- Stores ratings with:
+  - Location data (latitude, longitude)
+  - Rating scores
+  - Price
+  - Ingredients
+  - Reviews
+  - Reviewer information
 
-To learn more about Next.js, take a look at the following resources:
+## Contributing
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Feel free to submit issues and enhancement requests!
