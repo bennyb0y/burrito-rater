@@ -96,6 +96,7 @@ A web application for discovering and rating the best breakfast burritos in Los 
 - **Maps**: Google Maps API, @react-google-maps/api
 - **Database**: Cloudflare D1
 - **API**: Cloudflare Workers
+- **Hosting**: Cloudflare Pages
 
 ## 📱 Screenshots
 
@@ -127,25 +128,28 @@ Created by [@bennyb0y](https://github.com/bennyb0y)
 - Migrated to Cloudflare D1 and Workers
 - Reorganized documentation into `/docs` directory
 - Removed migration scripts and unused API routes
+- Deployed frontend to Cloudflare Pages
+- Removed local D1 development setup (using cloud as single source of truth)
 
 ## 📚 Documentation
 
 All project documentation is available in the [docs](./docs) directory:
 
 - [Cloudflare Migration Guide](./docs/CLOUDFLARE_MIGRATION.md) - Details about the migration from SQLite to Cloudflare D1
+- [Cloudflare Pages Deployment Guide](./docs/CLOUDFLARE_PAGES.md) - Guide for deploying the frontend to Cloudflare Pages
 - [Development Guidelines](./docs/CURSOR_RULES.md) - Coding standards and development guidelines
 
 ## Cloud Architecture
 
 This project uses a cloud-first architecture:
 
-- **Cloudflare D1** as the database
+- **Cloudflare D1** as the database (single source of truth)
 - **Cloudflare Workers** for the API (hosted at https://your-worker-name.your-account.workers.dev)
-- **Next.js** for the frontend (running locally or deployed to your preferred hosting platform)
+- **Cloudflare Pages** for the frontend (automatically deployed from GitHub)
 
 ### Development Setup
 
-To run the application locally, you only need to start the Next.js development server:
+To run the application locally, start the Next.js development server:
 
 ```bash
 npm run dev
@@ -153,32 +157,30 @@ npm run dev
 
 This starts the Next.js app on http://localhost:3000, which connects to the Cloudflare Worker API hosted in the cloud.
 
-### Local Development with Local API
-
-If you need to make changes to the API or database schema, you can still run the worker locally:
-
-1. Start the Cloudflare Worker locally:
-   ```bash
-   npm run dev:d1
-   ```
-   This starts the Cloudflare Worker on http://localhost:8787
-
-2. Update your `.env.local` file to use the local worker:
-   ```
-   NEXT_PUBLIC_API_BASE_URL=http://localhost:8787
-   ```
-
-3. Start the Next.js development server:
-   ```bash
-   npm run dev
-   ```
-
 ### Deployment
 
-To deploy changes to the Cloudflare Worker:
+#### API Deployment
+
+To deploy changes to the Cloudflare Worker API:
 
 ```bash
 npm run deploy:worker
 ```
 
-This will publish your worker to Cloudflare.
+#### Frontend Deployment
+
+The frontend is automatically deployed to Cloudflare Pages when you push to the main branch of your GitHub repository. You can also manually deploy it with:
+
+```bash
+npm run build
+npm run pages:build
+npm run pages:deploy
+```
+
+For local testing of the Cloudflare Pages build:
+
+```bash
+npm run build
+npm run pages:build
+npm run pages:dev
+```

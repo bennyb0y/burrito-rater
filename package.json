@@ -4,12 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "dev:d1": "wrangler dev worker.js",
-    "dev:all": "concurrently \"npm run dev:d1\" \"npm run dev\"",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "deploy:worker": "wrangler deploy worker.js"
+    "deploy:worker": "wrangler deploy worker.js",
+    "pages:build": "npx @cloudflare/next-on-pages",
+    "pages:deploy": "npx wrangler pages deploy .vercel/output/static",
+    "pages:watch": "npx @cloudflare/next-on-pages --watch",
+    "pages:dev": "npx wrangler pages dev .vercel/output/static --compatibility-flag=nodejs_compat"
   },
   "dependencies": {
     "@react-google-maps/api": "^2.20.6",
@@ -20,6 +22,7 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.10.0",
     "@cloudflare/workers-types": "^4.20250303.0",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
@@ -31,6 +34,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.2.1",
     "tailwindcss": "^4.0.10",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vercel": "^33.5.3"
   }
 }

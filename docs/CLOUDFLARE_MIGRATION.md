@@ -1,6 +1,6 @@
 # Cloudflare Migration Guide
 
-> **Note**: This document is for historical reference. The migration has been completed, and all migration scripts and Next.js API routes have been removed from the codebase. The application now uses Cloudflare Workers exclusively for its API.
+> **Note**: This document is for historical reference. The migration has been completed, and all migration scripts and Next.js API routes have been removed from the codebase. The application now uses Cloudflare Workers exclusively for its API and Cloudflare D1 as the single source of truth for data.
 
 This document outlines the migration of the Burrito Rater application from SQLite with Prisma to Cloudflare D1 and Workers.
 
@@ -12,9 +12,9 @@ This document outlines the migration of the Burrito Rater application from SQLit
 - **Frontend**: Next.js
 
 ### After Migration
-- **Database**: Cloudflare D1
+- **Database**: Cloudflare D1 (single source of truth)
 - **API**: Cloudflare Workers
-- **Frontend**: Next.js
+- **Frontend**: Next.js (deployed to Cloudflare Pages)
 
 ## Benefits of Migration
 
@@ -33,6 +33,11 @@ This document outlines the migration of the Burrito Rater application from SQLit
    - Free tier for low-traffic applications
    - No need to pay for idle resources
 
+4. **Single Source of Truth**
+   - All environments use the same cloud database
+   - No need for local database development
+   - Consistent data across all environments
+
 ## API Endpoints
 
 The Cloudflare Worker API is hosted at: `https://your-worker-name.your-account.workers.dev`
@@ -47,9 +52,9 @@ The Cloudflare Worker API is hosted at: `https://your-worker-name.your-account.w
 
 ## Development Workflow
 
-### Frontend-Only Development
+### Frontend Development
 
-For most development tasks, you only need to run the Next.js development server:
+For frontend development, you only need to run the Next.js development server:
 
 ```bash
 npm run dev
@@ -57,30 +62,17 @@ npm run dev
 
 This will start the Next.js app on http://localhost:3000, which connects to the Cloudflare Worker API hosted in the cloud.
 
-### Full-Stack Development
+### API Development
 
-If you need to make changes to the API or database schema, you can run the worker locally:
+When making changes to the API, you should:
 
-1. Start the Cloudflare Worker locally:
+1. Edit the `worker.js` file
+2. Deploy the changes to Cloudflare:
    ```bash
-   npm run dev:d1
-   ```
-   This starts the Cloudflare Worker on http://localhost:8787
-
-2. Update your `.env.local` file to use the local worker:
-   ```
-   NEXT_PUBLIC_API_BASE_URL=http://localhost:8787
+   npm run deploy:worker
    ```
 
-3. Start the Next.js development server:
-   ```bash
-   npm run dev
-   ```
-
-4. When you're done, update your `.env.local` file to use the cloud worker:
-   ```
-   NEXT_PUBLIC_API_BASE_URL=https://your-worker-name.your-account.workers.dev
-   ```
+> **Note**: Local development with a local D1 database is no longer supported. All development should use the cloud D1 database as the single source of truth.
 
 ### Deploying Changes
 
