@@ -130,6 +130,9 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
     west: number;
   } | null>(null);
   const [mapCenter, setMapCenter] = useState(defaultCenter);
+  const [viewMode, setViewMode] = useState<'map' | 'list'>('map');
+  const [sortBy, setSortBy] = useState<'rating' | 'price'>('rating');
+  const [sortOrder, setSortOrder] = useState<'high' | 'low'>('high');
 
   // Sort ratings by overall rating
   const sortedRatings = [...ratings].sort((a, b) => b.rating - a.rating);
@@ -348,6 +351,16 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
     return ingredients.join(', ') || 'No ingredients listed';
   };
 
+  const getSortedRatings = () => {
+    return [...ratings].sort((a, b) => {
+      if (sortBy === 'rating') {
+        return sortOrder === 'high' ? b.rating - a.rating : a.rating - b.rating;
+      } else {
+        return sortOrder === 'high' ? b.price - a.price : a.price - b.price;
+      }
+    });
+  };
+
   if (loadError) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -387,8 +400,53 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
         <div className="p-4 h-full overflow-auto">
           <h2 className="text-xl font-bold mb-4 text-gray-900">Rated Burritos</h2>
           
+          <div className="flex justify-between items-center mb-4">
+            <div className="flex gap-2">
+              <button
+                onClick={() => setViewMode('map')}
+                className={`px-3 py-1 rounded-md ${
+                  viewMode === 'map'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-200 text-black'
+                }`}
+              >
+                Map View
+              </button>
+              <button
+                onClick={() => setViewMode('list')}
+                className={`px-3 py-1 rounded-md ${
+                  viewMode === 'list'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-200 text-black'
+                }`}
+              >
+                List View
+              </button>
+            </div>
+            {viewMode === 'list' && (
+              <div className="flex gap-2 items-center">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as 'rating' | 'price')}
+                  className="px-2 py-1 rounded-md border border-gray-300 text-sm text-black"
+                >
+                  <option value="rating">Rating</option>
+                  <option value="price">Price</option>
+                </select>
+                <select
+                  value={sortOrder}
+                  onChange={(e) => setSortOrder(e.target.value as 'high' | 'low')}
+                  className="px-2 py-1 rounded-md border border-gray-300 text-sm text-black"
+                >
+                  <option value="high">High to Low</option>
+                  <option value="low">Low to High</option>
+                </select>
+              </div>
+            )}
+          </div>
+          
           <div className="space-y-4">
-            {sortedRatings.map((rating) => (
+            {getSortedRatings().map((rating) => (
               <div
                 key={rating.id}
                 className="p-4 bg-white border border-gray-200 rounded-lg hover:border-blue-500 cursor-pointer transition-colors"
@@ -414,9 +472,14 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
                     </div>
                   </div>
                   <div className="flex flex-col items-end">
-                    <div className="flex items-center space-x-1 bg-blue-100 px-2 py-1 rounded">
-                      <span className="text-blue-800 font-medium">{rating.rating}</span>
-                      <span className="text-blue-600">/5</span>
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center space-x-1 bg-blue-100 px-2 py-1 rounded">
+                        <span className="text-blue-800 font-medium">{rating.rating}</span>
+                        <span className="text-blue-600">/5</span>
+                      </div>
+                      <div className="text-gray-800 font-medium">
+                        ${rating.price.toFixed(2)}
+                      </div>
                     </div>
                     <div className="flex items-center gap-2 mt-1 text-sm">
                       <span className="text-gray-600">
@@ -429,12 +492,6 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
                   </div>
                 </div>
                 
-                <div className="mt-2 text-sm">
-                  <div className="text-gray-600">
-                    <span className="font-medium">Price:</span> ${rating.price.toFixed(2)}
-                  </div>
-                </div>
-
                 {rating.review && (
                   <p className="mt-2 text-sm text-gray-500 line-clamp-2 italic">
                     "{rating.review}"
