@@ -79,7 +79,8 @@ export async function POST(request: Request) {
         hasVegetables: Boolean(data.hasVegetables),
         review: data.review || null,
         reviewerName: data.reviewerName || null,
-        reviewerEmoji: data.reviewerEmoji || null
+        reviewerEmoji: data.reviewerEmoji || null,
+        zipcode: data.zipcode || null
       }
     });
 

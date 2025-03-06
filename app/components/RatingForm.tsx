@@ -41,6 +41,12 @@ function getPriceEmoji(price: number): string {
   return '🤯'; // Mind blown - extremely expensive
 }
 
+// Helper function to extract zipcode from address
+function extractZipcode(address: string): string | undefined {
+  const zipcodeMatch = address.match(/\b\d{5}\b/);
+  return zipcodeMatch ? zipcodeMatch[0] : undefined;
+}
+
 export default function RatingForm({ position, placeName, onSubmit, onClose }: Props) {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -65,6 +71,9 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
     // Generate emoji if password is provided
     const reviewerEmoji = password.length >= 4 ? generateUserEmoji(password) : undefined;
     
+    // Extract zipcode from address
+    const zipcode = extractZipcode(position.address);
+    
     onSubmit({
       latitude: position.lat,
       longitude: position.lng,
@@ -78,6 +87,7 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
       reviewerName: name.trim() || 'Anonymous',
       identityPassword: password.length >= 4 ? password : undefined,
       reviewerEmoji,
+      zipcode,
       ...ingredients,
     });
   };

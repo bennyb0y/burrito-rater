@@ -16,6 +16,7 @@ model Rating {
   burritoTitle     String
   latitude         Float
   longitude        Float
+  zipcode          String?
   rating           Float
   taste            Float
   value            Float

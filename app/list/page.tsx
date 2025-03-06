@@ -2,6 +2,16 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
+
+const MiniMap = dynamic(() => import('../components/MiniMap'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center h-full">
+      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+  ),
+});
 
 interface Rating {
   id: string;
@@ -22,12 +32,14 @@ interface Rating {
   hasChorizo: boolean;
   hasOnion: boolean;
   hasVegetables: boolean;
+  zipcode?: string;
 }
 
 export default function ListPage() {
   const [ratings, setRatings] = useState<Rating[]>([]);
   const [sortBy, setSortBy] = useState<'rating' | 'price'>('rating');
   const [sortOrder, setSortOrder] = useState<'high' | 'low'>('high');
+  const [zipcode, setZipcode] = useState<string>('');
 
   useEffect(() => {
     const fetchRatings = async () => {
@@ -45,7 +57,17 @@ export default function ListPage() {
   }, []);
 
   const getSortedRatings = () => {
-    return [...ratings].sort((a, b) => {
+    let filteredRatings = [...ratings];
+    
+    // Apply zipcode filter if one is entered
+    if (zipcode) {
+      filteredRatings = filteredRatings.filter(rating => 
+        rating.zipcode?.toLowerCase() === zipcode.toLowerCase()
+      );
+    }
+
+    // Apply sorting
+    return filteredRatings.sort((a, b) => {
       if (sortBy === 'rating') {
         return sortOrder === 'high' ? b.rating - a.rating : a.rating - b.rating;
       } else {
@@ -70,6 +92,26 @@ export default function ListPage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-gray-900">Burrito Ratings</h1>
         <div className="flex gap-4">
+          {/* Zipcode Filter */}
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="Filter by zipcode"
+              value={zipcode}
+              onChange={(e) => setZipcode(e.target.value)}
+              className="px-3 py-1 rounded-md border border-gray-300 text-sm text-gray-700 bg-white w-32"
+            />
+            {zipcode && (
+              <button
+                onClick={() => setZipcode('')}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                ✕
+              </button>
+            )}
+          </div>
+
+          {/* Sort Controls */}
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as 'rating' | 'price')}
@@ -89,68 +131,89 @@ export default function ListPage() {
         </div>
       </div>
 
+      {/* Results Count */}
+      <div className="mb-4 text-sm text-gray-600">
+        {getSortedRatings().length} {getSortedRatings().length === 1 ? 'result' : 'results'} found
+      </div>
+
       <div className="grid gap-6">
         {getSortedRatings().map((rating) => (
           <div
             key={rating.id}
             className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:border-blue-500 transition-colors"
           >
-            <div className="flex justify-between items-start">
-              <div>
-                <h2 className="text-xl font-bold text-gray-900">{rating.restaurantName}</h2>
-                <p className="text-gray-600">{rating.burritoTitle}</p>
-                <div className="mt-2 flex items-center gap-2">
-                  <span className="text-sm text-gray-500">
-                    {rating.reviewerName || 'Anonymous'}
-                  </span>
-                  {rating.reviewerEmoji && (
-                    <span className="text-2xl">{rating.reviewerEmoji}</span>
-                  )}
-                </div>
+            <div className="flex gap-6">
+              {/* Mini Map */}
+              <div className="w-48 h-48 flex-shrink-0">
+                <MiniMap
+                  latitude={rating.latitude}
+                  longitude={rating.longitude}
+                  rating={rating.rating}
+                  restaurantName={rating.restaurantName}
+                  burritoTitle={rating.burritoTitle}
+                />
               </div>
-              <div className="flex flex-col items-end">
-                <div className="flex items-center gap-2">
-                  <div className="bg-blue-100 px-3 py-1 rounded-full flex items-center gap-1">
-                    <span className="text-lg font-bold text-blue-800">{rating.rating}</span>
-                    <span className="text-blue-600">/5</span>
+
+              {/* Rating Content */}
+              <div className="flex-1">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">{rating.restaurantName}</h2>
+                    <p className="text-gray-600">{rating.burritoTitle}</p>
+                    <div className="mt-2 flex items-center gap-2">
+                      <span className="text-sm text-gray-500">
+                        {rating.reviewerName || 'Anonymous'}
+                      </span>
+                      {rating.reviewerEmoji && (
+                        <span className="text-2xl">{rating.reviewerEmoji}</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <div className="flex items-center gap-2">
+                      <div className="bg-blue-100 px-3 py-1 rounded-full flex items-center gap-1">
+                        <span className="text-lg font-bold text-blue-800">{rating.rating}</span>
+                        <span className="text-blue-600">/5</span>
+                      </div>
+                    </div>
+                    <div className="mt-2 text-sm text-gray-600">
+                      ${rating.price.toFixed(2)}
+                    </div>
                   </div>
                 </div>
-                <div className="mt-2 text-sm text-gray-600">
-                  ${rating.price.toFixed(2)}
+
+                <div className="mt-4">
+                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                    <div className="flex items-center gap-1">
+                      <span>😋</span>
+                      <span>{rating.taste.toFixed(1)}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span>💰</span>
+                      <span>{rating.value.toFixed(1)}</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-4 text-sm text-gray-600">
+                  {renderIngredients(rating)}
+                </div>
+
+                {rating.review && (
+                  <div className="mt-4 text-gray-700">
+                    "{rating.review}"
+                  </div>
+                )}
+
+                <div className="mt-4">
+                  <Link
+                    href={`/?lat=${rating.latitude}&lng=${rating.longitude}`}
+                    className="text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    View on Map →
+                  </Link>
                 </div>
               </div>
-            </div>
-
-            <div className="mt-4">
-              <div className="flex items-center gap-4 text-sm text-gray-600">
-                <div className="flex items-center gap-1">
-                  <span>😋</span>
-                  <span>{rating.taste.toFixed(1)}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span>💰</span>
-                  <span>{rating.value.toFixed(1)}</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4 text-sm text-gray-600">
-              {renderIngredients(rating)}
-            </div>
-
-            {rating.review && (
-              <div className="mt-4 text-gray-700">
-                "{rating.review}"
-              </div>
-            )}
-
-            <div className="mt-4">
-              <Link
-                href={`/?lat=${rating.latitude}&lng=${rating.longitude}`}
-                className="text-sm text-blue-600 hover:text-blue-800"
-              >
-                View on Map →
-              </Link>
             </div>
           </div>
         ))}
