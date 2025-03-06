@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import { getApiUrl } from '../config';
 
 const MiniMap = dynamic(() => import('../components/MiniMap'), {
   ssr: false,
@@ -44,7 +45,7 @@ export default function ListPage() {
   useEffect(() => {
     const fetchRatings = async () => {
       try {
-        const response = await fetch('/api/ratings');
+        const response = await fetch(getApiUrl('/api/ratings'));
         if (!response.ok) throw new Error('Failed to fetch ratings');
         const data = await response.json();
         setRatings(data);

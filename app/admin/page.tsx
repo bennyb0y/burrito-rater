@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getApiUrl } from '../config';
 
 interface Rating {
   id: number;
@@ -23,7 +24,7 @@ export default function AdminPage() {
 
   const fetchRatings = async () => {
     try {
-      const response = await fetch('/api/ratings');
+      const response = await fetch(getApiUrl('/api/ratings'));
       if (response.ok) {
         const data = await response.json();
         console.log('Fetched ratings:', data);
@@ -74,7 +75,7 @@ export default function AdminPage() {
       console.log('Attempting to delete IDs:', Array.from(selectedIds));
       
       const deletePromises = Array.from(selectedIds).map(async id => {
-        const response = await fetch(`/api/ratings/${id}`, {
+        const response = await fetch(getApiUrl(`/api/ratings/${id}`), {
           method: 'DELETE',
         });
         

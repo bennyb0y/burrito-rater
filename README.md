@@ -41,9 +41,10 @@ A web application for discovering and rating the best breakfast burritos in Los 
    touch .env.local
    ```
    
-   Add your Google Maps API key to `.env.local`:
+   Add your Google Maps API key and API base URL to `.env.local`:
    ```
    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
+   NEXT_PUBLIC_API_BASE_URL=https://your-worker-name.your-account.workers.dev
    ```
    
    > **Important**: 
@@ -57,6 +58,8 @@ A web application for discovering and rating the best breakfast burritos in Los 
    npm run dev
    ```
    Open [http://localhost:3000](http://localhost:3000)
+
+   > **Note**: This project uses Cloudflare D1 as its database and Cloudflare Workers for the API. The API is hosted at https://your-worker-name.your-account.workers.dev and connects to the Cloudflare D1 database. See [docs/CLOUDFLARE_MIGRATION.md](docs/CLOUDFLARE_MIGRATION.md) for more details.
 
 ## 🎯 Features
 
@@ -91,8 +94,8 @@ A web application for discovering and rating the best breakfast burritos in Los 
 - **Frontend**: Next.js 14, React 18, TypeScript
 - **Styling**: Tailwind CSS
 - **Maps**: Google Maps API, @react-google-maps/api
-- **Database**: Prisma with SQLite
-- **API**: Next.js API Routes
+- **Database**: Cloudflare D1
+- **API**: Cloudflare Workers
 
 ## 📱 Screenshots
 
@@ -121,3 +124,60 @@ Created by [@bennyb0y](https://github.com/bennyb0y)
 - Enhanced rating form UI
 - Added sorting and filtering options
 - Fixed Git integration in Cursor
+- Migrated to Cloudflare D1 and Workers
+- Reorganized documentation into `/docs` directory
+
+## 📚 Documentation
+
+All project documentation is available in the [docs](./docs) directory:
+
+- [Cloudflare Migration Guide](./docs/CLOUDFLARE_MIGRATION.md) - Details about the migration from SQLite to Cloudflare D1
+- [Development Guidelines](./docs/CURSOR_RULES.md) - Coding standards and development guidelines
+
+## Cloud Architecture
+
+This project has been migrated from SQLite with Prisma to Cloudflare D1. The application now uses:
+
+- **Cloudflare D1** as the database
+- **Cloudflare Workers** for the API (hosted at https://your-worker-name.your-account.workers.dev)
+- **Next.js** for the frontend (running locally or deployed to your preferred hosting platform)
+
+### Development Setup
+
+To run the application locally, you only need to start the Next.js development server:
+
+```bash
+npm run dev
+```
+
+This starts the Next.js app on http://localhost:3000, which connects to the Cloudflare Worker API hosted in the cloud.
+
+### Local Development with Local API
+
+If you need to make changes to the API or database schema, you can still run the worker locally:
+
+1. Start the Cloudflare Worker locally:
+   ```bash
+   npm run dev:d1
+   ```
+   This starts the Cloudflare Worker on http://localhost:8787
+
+2. Update your `.env.local` file to use the local worker:
+   ```
+   NEXT_PUBLIC_API_BASE_URL=http://localhost:8787
+   ```
+
+3. Start the Next.js development server:
+   ```bash
+   npm run dev
+   ```
+
+### Deployment
+
+To deploy changes to the Cloudflare Worker:
+
+```bash
+npm run deploy:worker
+```
+
+This will publish your worker to Cloudflare.

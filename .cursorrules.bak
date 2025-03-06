@@ -15,8 +15,7 @@ The application we are working on uses the following tech stack:
 - React
 - Tailwind CSS
 - Google Maps API
-- Cloudflare D1 Database
-- Cloudflare Workers
+- SQLite with Prisma
 - Zod for schema validation
 
 ## Shortcuts
@@ -44,12 +43,10 @@ The application we are working on uses the following tech stack:
 
 ### Example
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
-NEXT_PUBLIC_API_BASE_URL=https://your-worker-name.your-account.workers.dev
 
 ### Usage in Code
 Access environment variables in your code using:
 process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
-process.env.NEXT_PUBLIC_API_BASE_URL
 
 ### Development Workflow
 1. Create .env.local file if it doesn't exist
@@ -152,7 +149,6 @@ process.env.NEXT_PUBLIC_API_BASE_URL
 
 ## Documentation
 
-- All documentation files (except README.md) should be stored in the /docs directory
 - When writing documentation, README's, technical writing, technical documentation, JSDocs or comments, always follow Google's Technical Writing Style Guide.
 - Define terminology when needed
 - Use the active voice
@@ -166,7 +162,6 @@ process.env.NEXT_PUBLIC_API_BASE_URL
 - Document API endpoints and their usage
 - Document Google Maps API integration
 - Document rating system and data structures
-- Reference documentation files from README.md using relative paths (e.g., [Cloudflare Migration Guide](./docs/CLOUDFLARE_MIGRATION.md))
 
 ## Git Commit Rules
 - Make the head / title of the commit message brief
@@ -176,12 +171,3 @@ process.env.NEXT_PUBLIC_API_BASE_URL
 - Reference issues in commit messages when applicable
 - Keep commits focused and atomic
 - Write commit messages in the imperative mood
-
-## Cloudflare Integration
-
-- The application uses Cloudflare D1 as the database
-- The API is hosted on Cloudflare Workers at https://your-worker-name.your-account.workers.dev
-- The frontend connects to the API using the NEXT_PUBLIC_API_BASE_URL environment variable
-- To deploy changes to the worker, use npm run deploy:worker
-- For local development with the worker, use npm run dev:d1
-- For frontend-only development, use npm run dev 

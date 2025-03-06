@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
+import { Database } from '@/lib/db';
 import { generateIdentity } from '@/lib/identity';
+import { D1Database } from '@cloudflare/workers-types';
+
+export const runtime = 'edge';
 
 interface Rating {
   id: number;
@@ -23,20 +26,33 @@ interface Rating {
   hasVegetables: boolean;
 }
 
-export async function GET() {
+// Helper function to get D1 database instance
+async function getDatabase(env?: { DB?: D1Database }) {
+  // Check if we're running in a Cloudflare environment with D1 binding
+  if (env?.DB) {
+    return new Database(env.DB);
+  }
+  
+  // For local development without D1 binding, use Cloudflare's D1 API
+  // This requires setting up wrangler.toml and running with wrangler dev
+  throw new Error('D1 database binding not available. Please run with wrangler dev');
+}
+
+export async function GET(request: Request, context: { env?: { DB?: D1Database } }) {
   try {
-    const ratings = await prisma.rating.findMany();
+    const db = await getDatabase(context.env);
+    const ratings = await db.getAllRatings();
     return NextResponse.json(ratings);
   } catch (error) {
     console.error('Error fetching ratings:', error);
     return NextResponse.json(
-      { error: 'Failed to fetch ratings' },
+      { error: 'Failed to fetch ratings', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: Request, context: { env?: { DB?: D1Database } }) {
   try {
     const data = await request.json();
     console.log('Received data:', data);
@@ -61,30 +77,38 @@ export async function POST(request: Request) {
     
     console.log('Final data being sent to database:', data);
     
-    // Create the rating with the data directly
-    const rating = await prisma.rating.create({
-      data: {
-        ...data,
-        latitude: parseFloat(data.latitude),
-        longitude: parseFloat(data.longitude),
-        rating: parseFloat(data.rating),
-        taste: parseFloat(data.taste),
-        value: parseFloat(data.value),
-        price: parseFloat(data.price),
-        hasPotatoes: Boolean(data.hasPotatoes),
-        hasCheese: Boolean(data.hasCheese),
-        hasBacon: Boolean(data.hasBacon),
-        hasChorizo: Boolean(data.hasChorizo),
-        hasOnion: Boolean(data.hasOnion),
-        hasVegetables: Boolean(data.hasVegetables),
-        review: data.review || null,
-        reviewerName: data.reviewerName || null,
-        reviewerEmoji: data.reviewerEmoji || null,
-        zipcode: data.zipcode || null
-      }
-    });
+    const db = await getDatabase(context.env);
+    
+    // Create the rating with the data
+    const ratingData = {
+      restaurantName: data.restaurantName,
+      burritoTitle: data.burritoTitle,
+      latitude: parseFloat(data.latitude),
+      longitude: parseFloat(data.longitude),
+      rating: parseFloat(data.rating),
+      taste: parseFloat(data.taste),
+      value: parseFloat(data.value),
+      price: parseFloat(data.price),
+      hasPotatoes: Boolean(data.hasPotatoes),
+      hasCheese: Boolean(data.hasCheese),
+      hasBacon: Boolean(data.hasBacon),
+      hasChorizo: Boolean(data.hasChorizo),
+      hasOnion: Boolean(data.hasOnion),
+      hasVegetables: Boolean(data.hasVegetables),
+      review: data.review || null,
+      reviewerName: data.reviewerName || null,
+      reviewerEmoji: data.reviewerEmoji || null,
+      identityPassword: data.identityPassword || null,
+      generatedEmoji: data.generatedEmoji || null,
+      zipcode: data.zipcode || null
+    };
 
-    return NextResponse.json(rating);
+    const result = await db.createRating(ratingData);
+    
+    // Fetch the newly created rating to return it
+    const newRating = await db.getRatingById(result.id);
+
+    return NextResponse.json(newRating);
   } catch (error) {
     console.error('Error creating rating:', error);
     return NextResponse.json(

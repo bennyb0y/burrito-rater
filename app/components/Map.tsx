@@ -3,6 +3,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, Marker, StandaloneSearchBox, InfoWindow } from '@react-google-maps/api';
 import RatingForm from './RatingForm';
+import { getApiUrl } from '../config';
 
 const containerStyle = {
   width: '100%',
@@ -109,7 +110,7 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
   useEffect(() => {
     const fetchRatings = async () => {
       try {
-        const response = await fetch('/api/ratings');
+        const response = await fetch(getApiUrl('/api/ratings'));
         if (!response.ok) throw new Error('Failed to fetch ratings');
         const data = await response.json();
         setRatings(data);
@@ -179,7 +180,7 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
 
   const handleRatingSubmit = async (ratingData: any) => {
     try {
-      const response = await fetch('/api/ratings', {
+      const response = await fetch(getApiUrl('/api/ratings'), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -190,7 +191,7 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
       if (!response.ok) throw new Error('Failed to submit rating');
 
       // After successful submission, fetch the updated ratings list
-      const ratingsResponse = await fetch('/api/ratings');
+      const ratingsResponse = await fetch(getApiUrl('/api/ratings'));
       if (!ratingsResponse.ok) throw new Error('Failed to fetch updated ratings');
       
       const updatedRatings = await ratingsResponse.json();
