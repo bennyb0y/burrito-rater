@@ -81,7 +81,7 @@ interface MapProps {
 const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: 'AIzaSyD-ner96UaZTvp6Aaj1wLttaT0SV-CWOEs',
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
     libraries: libraries as any
   });
 

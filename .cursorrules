@@ -26,9 +26,44 @@ The application we are working on uses the following tech stack:
   - Break it down into smaller steps. Provide a clear breakdown of the issue or question at hand at the start.
   - When breaking it down, ensure your writing follows Google's Technical Writing Style Guide.
 
+## Environment Variables Rules
+
+### File Location
+- All environment variables must be stored in .env.local
+- .env.local is automatically ignored by Git
+
+### Naming Convention
+- Prefix with NEXT_PUBLIC_ for browser access
+- Use UPPERCASE with underscores
+
+### Security Rules
+- Never commit API keys
+- Never share .env.local
+- Set production vars in hosting platform
+
+### Example
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
+
+### Usage in Code
+Access environment variables in your code using:
+process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+
+### Development Workflow
+1. Create .env.local file if it doesn't exist
+2. Add required environment variables
+3. Restart the development server after making changes
+4. Verify variables are accessible in your code
+
+### Troubleshooting
+- If environment variables aren't working:
+  1. Check that .env.local exists in the root directory
+  2. Verify the NEXT_PUBLIC_ prefix is present
+  3. Restart the development server
+  4. Check browser console for any errors
+
 ## TypeScript General Guidelines
 
-## Core Principles
+### Core Principles
 
 - Write straightforward, readable, and maintainable code
 - Follow SOLID principles and design patterns

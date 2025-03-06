@@ -36,13 +36,21 @@ A web application for discovering and rating the best breakfast burritos in Los 
      - Click "Save"
 
 3. **Set up Environment**
+   Create a `.env.local` file in the root directory:
    ```bash
-   cp .env.example .env.local
+   touch .env.local
    ```
+   
    Add your Google Maps API key to `.env.local`:
    ```
    NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
    ```
+   
+   > **Important**: 
+   > - The `.env.local` file is automatically ignored by Git (see `.gitignore`)
+   > - All environment variables must be prefixed with `NEXT_PUBLIC_` to be accessible in the browser
+   > - Never commit API keys or sensitive information to version control
+   > - For production, set environment variables in your hosting platform (e.g., Vercel)
 
 4. **Run Development Server**
    ```bash
