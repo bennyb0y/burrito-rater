@@ -31,7 +31,7 @@ A web application for discovering and rating the best breakfast burritos in Los 
 - Click-to-rate any restaurant
 - Visual rating distribution
 
-### ⭐ Rating Systems
+### ⭐ Rating System
 - Overall rating (1-5)
 - Taste rating (1-5)
 - Value rating (1-5)
@@ -85,3 +85,4 @@ Created by [@bennyb0y](https://github.com/bennyb0y)
 - Improved map interaction
 - Enhanced rating form UI
 - Added sorting and filtering options
+- Fixed Git integration in Cursor
