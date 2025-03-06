@@ -122,11 +122,12 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="block w-full px-2 py-1 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="For your unique emoji identity"
+                  placeholder="4-10 characters for your unique emoji identity"
+                  maxLength={10}
                 />
                 {password && !validatePassword(password) && (
                   <p className="text-sm text-black leading-tight">
-                    Enter at least 4 characters for your reviewer emoji
+                    Password must be between 4 and 10 characters
                   </p>
                 )}
                 {validatePassword(password) && (

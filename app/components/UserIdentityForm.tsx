@@ -73,7 +73,8 @@ export default function UserIdentityForm({ onIdentitySubmit }: Props) {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            placeholder="Enter password (min 4 characters)"
+            placeholder="4-10 characters for your unique emoji identity"
+            maxLength={10}
           />
         </div>
 

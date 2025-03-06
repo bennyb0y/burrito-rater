@@ -9,20 +9,49 @@ function simpleHash(str: string): number {
   return Math.abs(hash);
 }
 
-// List of emojis to use for user identification
-const userEmojis = [
-  '🦊', '🐼', '🐨', '🦁', '🐯', '🐮', '🐷', '🐸',
-  '🐙', '🦄', '🦋', '🐢', '🐬', '🦈', '🦭', '🦩',
-  '🦜', '🐝', '🦖', '🐳', '🦚', '🦡', '🦨', '🦦'
-];
-
-export function generateUserEmoji(password: string): string {
-  const hash = simpleHash(password);
-  return userEmojis[hash % userEmojis.length];
-}
+// List of emojis organized by categories
+const userEmojis = {
+  animals: [
+    '🦊', '🐼', '🐨', '🦁', '🐯', '🐮', '🐷', '🐸',
+    '🐙', '🦄', '🦋', '🐢', '🐬', '🦈', '🦭', '🦩',
+    '🦜', '🐝', '🦖', '🐳', '🦚', '🦡', '🦨', '🦦'
+  ],
+  food: [
+    '🌮', '🌯', '🍕', '🍔', '🍟', '🌭', '🍿', '🍪',
+    '🍩', '🍰', '🍦', '🍨', '🍧', '🍫', '🍬', '🍭'
+  ],
+  faces: [
+    '😊', '😎', '🤓', '😇', '🤠', '🤡', '🤖', '👻',
+    '👽', '🤖', '🤪', '🤨', '🧐', '🤓', '😋', '🤤'
+  ],
+  nature: [
+    '🌲', '🌳', '🌴', '🌵', '🌷', '🌸', '🌹', '🌺',
+    '🌻', '🌼', '🌽', '🌾', '🌿', '🍀', '🍁', '🍂'
+  ],
+  objects: [
+    '🎮', '🎲', '🎯', '🎨', '🎭', '🎪', '🎟️', '🎠',
+    '🎡', '🎢', '🎣', '🎤', '🎧', '🎨', '🎩', '🎪'
+  ]
+};
 
 export function validatePassword(password: string): boolean {
-  return password.length >= 4;
+  return password.length >= 4 && password.length <= 10;
+}
+
+export function generateUserEmoji(password: string): string {
+  if (!validatePassword(password)) {
+    throw new Error('Password must be between 4 and 10 characters');
+  }
+
+  const hash = simpleHash(password);
+  
+  // Use different parts of the hash to select category and emoji
+  const categoryIndex = hash % Object.keys(userEmojis).length;
+  const category = Object.keys(userEmojis)[categoryIndex];
+  const emojiList = userEmojis[category as keyof typeof userEmojis];
+  const emojiIndex = (hash >> 8) % emojiList.length;
+  
+  return emojiList[emojiIndex];
 }
 
 // Type for the user identity
