@@ -31,7 +31,7 @@ A web application for discovering and rating the best breakfast burritos in Los 
 - Click-to-rate any restaurant
 - Visual rating distribution
 
-### ⭐ Rating System
+### ⭐ Rating Systems
 - Overall rating (1-5)
 - Taste rating (1-5)
 - Value rating (1-5)
@@ -43,6 +43,7 @@ A web application for discovering and rating the best breakfast burritos in Los 
   - 🌶️ Chorizo
   - 🧅 Onion
   - 🥬 Vegetables
+- Authenticated user reviews
 
 ### 👤 User Features
 - Anonymous or named reviews
