@@ -104,3 +104,7 @@ A web application for rating and reviewing burritos across Los Angeles, with a f
 ## Contributing
 
 Feel free to submit issues and enhancement requests!
+
+## Development Status
+- Currently active and maintained
+- Regular updates and improvements
