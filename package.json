@@ -9,7 +9,6 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "migrate-to-d1": "node scripts/migrate-to-d1.js",
     "deploy:worker": "wrangler deploy worker.js"
   },
   "dependencies": {

@@ -126,6 +126,7 @@ Created by [@bennyb0y](https://github.com/bennyb0y)
 - Fixed Git integration in Cursor
 - Migrated to Cloudflare D1 and Workers
 - Reorganized documentation into `/docs` directory
+- Removed migration scripts and unused API routes
 
 ## 📚 Documentation
 
@@ -136,7 +137,7 @@ All project documentation is available in the [docs](./docs) directory:
 
 ## Cloud Architecture
 
-This project has been migrated from SQLite with Prisma to Cloudflare D1. The application now uses:
+This project uses a cloud-first architecture:
 
 - **Cloudflare D1** as the database
 - **Cloudflare Workers** for the API (hosted at https://your-worker-name.your-account.workers.dev)

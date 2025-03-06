@@ -1,5 +1,7 @@
 # Cloudflare Migration Guide
 
+> **Note**: This document is for historical reference. The migration has been completed, and all migration scripts and Next.js API routes have been removed from the codebase. The application now uses Cloudflare Workers exclusively for its API.
+
 This document outlines the migration of the Burrito Rater application from SQLite with Prisma to Cloudflare D1 and Workers.
 
 ## Architecture Overview
