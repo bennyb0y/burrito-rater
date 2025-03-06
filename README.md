@@ -144,8 +144,10 @@ All project documentation is available in the [docs](./docs) directory:
 
 - [Cloudflare Migration Guide](./docs/CLOUDFLARE_MIGRATION.md) - Details about the migration from SQLite to Cloudflare D1
 - [Cloudflare Pages Deployment Guide](./docs/CLOUDFLARE_PAGES.md) - Guide for deploying the frontend to Cloudflare Pages
+- [Admin Setup Guide](./docs/ADMIN_SETUP.md) - Instructions for setting up and securing the admin section
 - [Development Workflow Guide](./docs/WORKFLOW.md) - Complete CI/CD workflow from development to deployment
 - [Development Guidelines](./docs/CURSOR_RULES.md) - Coding standards and development guidelines
+- [Project Checklist](./docs/TODO_CHECKLIST.md) - Completed milestones and upcoming tasks
 
 ## Cloud Architecture
 
