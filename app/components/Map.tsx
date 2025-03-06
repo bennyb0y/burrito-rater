@@ -38,7 +38,8 @@ const mapOptions = {
 
 const searchBoxStyle = {
   input: {
-    width: '300px',
+    width: '100%',
+    maxWidth: '300px',
     height: '40px',
     padding: '0 12px',
     borderRadius: '8px',
@@ -241,40 +242,31 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
         mapContainerStyle={containerStyle}
         center={mapCenter}
         zoom={14}
+        onLoad={onMapLoad}
         options={{
           ...mapOptions,
           zoomControl: true,
+          zoomControlOptions: {
+            position: google.maps.ControlPosition.TOP_RIGHT
+          },
           mapTypeControl: true,
+          mapTypeControlOptions: {
+            position: google.maps.ControlPosition.TOP_RIGHT
+          },
           scaleControl: true,
           streetViewControl: true,
-          rotateControl: true,
-          fullscreenControl: true,
-          gestureHandling: 'cooperative',
-          clickableIcons: false,
-          styles: [
-            {
-              featureType: 'poi',
-              elementType: 'labels',
-              stylers: [{ visibility: 'off' }]
-            }
-          ],
-          zoomControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_BOTTOM
-          },
-          mapTypeControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_TOP
-          },
           streetViewControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_BOTTOM
+            position: google.maps.ControlPosition.TOP_RIGHT
           },
+          rotateControl: true,
           rotateControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_BOTTOM
+            position: google.maps.ControlPosition.TOP_RIGHT
           },
+          fullscreenControl: true,
           fullscreenControlOptions: {
-            position: google.maps.ControlPosition.RIGHT_BOTTOM
+            position: google.maps.ControlPosition.TOP_RIGHT
           }
         }}
-        onLoad={onMapLoad}
       >
         <StandaloneSearchBox
           onLoad={onSearchBoxLoad}
@@ -282,8 +274,8 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
         >
           <input
             type="text"
-            placeholder="Search for restaurants..."
-            className="absolute top-4 left-4 px-4 py-2 rounded-md shadow-md"
+            placeholder="Search for a restaurant"
+            className="absolute top-4 left-4 z-10"
             style={searchBoxStyle.input}
           />
         </StandaloneSearchBox>
@@ -320,7 +312,7 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
             onCloseClick={() => setSelectedLocation(null)}
           >
             <div className="p-2 max-w-xs">
-              <h3 className="font-bold text-lg mb-2 text-gray-900">{selectedLocation.name}</h3>
+              <h3 className="font-bold text-base sm:text-lg mb-2 text-gray-900">{selectedLocation.name}</h3>
               <p className="text-sm text-gray-700 mb-4">{selectedLocation.address}</p>
               <div className="space-y-2">
                 <button
@@ -337,14 +329,25 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
         {/* Selected rating info window */}
         {selectedRating && (
           <InfoWindow
-            position={{ lat: selectedRating.latitude, lng: selectedRating.longitude }}
+            position={{
+              lat: selectedRating.latitude,
+              lng: selectedRating.longitude
+            }}
             onCloseClick={() => setSelectedRating(null)}
           >
-            <div className="p-4 max-w-sm">
-              <div className="flex items-center justify-between mb-3">
+            <div className="p-2 max-w-xs">
+              <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-bold text-lg text-gray-900">{selectedRating.restaurantName}</h3>
-                  <p className="text-sm text-gray-500">{selectedRating.burritoTitle}</p>
+                  <h3 className="font-bold text-base sm:text-lg text-gray-900">{selectedRating.restaurantName}</h3>
+                  <p className="text-sm text-gray-600">{selectedRating.burritoTitle}</p>
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-sm text-gray-500">
+                      {selectedRating.reviewerName || 'Anonymous'}
+                    </span>
+                    {selectedRating.reviewerEmoji && (
+                      <span className="text-2xl">{selectedRating.reviewerEmoji}</span>
+                    )}
+                  </div>
                 </div>
                 <div className="flex flex-col items-end">
                   <div className="flex items-center gap-2">
@@ -353,13 +356,8 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
                       <span className="text-blue-600">/5</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-sm font-medium text-gray-800">
-                      {selectedRating.reviewerName || 'Anonymous'}
-                    </span>
-                    {selectedRating.reviewerEmoji && (
-                      <span className="text-3xl">{selectedRating.reviewerEmoji}</span>
-                    )}
+                  <div className="mt-2 text-sm text-gray-600">
+                    ${selectedRating.price.toFixed(2)}
                   </div>
                 </div>
               </div>
@@ -382,7 +380,7 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
               </div>
 
               {selectedRating.review && (
-                <div className="mt-4 text-gray-700">
+                <div className="mt-4 text-sm text-gray-700">
                   "{selectedRating.review}"
                 </div>
               )}
