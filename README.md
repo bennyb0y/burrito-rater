@@ -65,10 +65,8 @@ A web application for rating and reviewing burritos across Los Angeles, with a f
    npm install
    ```
 3. Set up environment variables:
-   - Create a `.env` file with your Google Maps API key:
-     ```
-     NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
-     ```
+   - Copy `.env.example` to `.env.local`
+   - The Google Maps API key is already configured in the repository
 4. Run the development server:
    ```bash
    npm run dev
