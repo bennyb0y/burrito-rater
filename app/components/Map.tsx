@@ -38,7 +38,7 @@ const mapOptions = {
 
 const searchBoxStyle = {
   input: {
-    width: '100%',
+    width: '300px',
     height: '40px',
     padding: '0 12px',
     borderRadius: '8px',
@@ -47,7 +47,8 @@ const searchBoxStyle = {
     boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
     outline: 'none',
     fontSize: '16px',
-    color: '#1a202c'
+    color: '#1a202c',
+    zIndex: 1
   }
 };
 
@@ -145,6 +146,16 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
           bounds.extend(place.geometry.location);
         }
 
+        // Set the selected location for the first place
+        if (place.geometry.location && place.name) {
+          setSelectedLocation({
+            lat: place.geometry.location.lat(),
+            lng: place.geometry.location.lng(),
+            name: place.name,
+            address: place.formatted_address || ''
+          });
+        }
+
         newRestaurants.push(place);
       });
 
@@ -177,13 +188,17 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
 
       if (!response.ok) throw new Error('Failed to submit rating');
 
-      // Refresh ratings list
-      const updatedRatings = await response.json();
+      // After successful submission, fetch the updated ratings list
+      const ratingsResponse = await fetch('/api/ratings');
+      if (!ratingsResponse.ok) throw new Error('Failed to fetch updated ratings');
+      
+      const updatedRatings = await ratingsResponse.json();
       setRatings(updatedRatings);
       setShowRatingForm(false);
       setSelectedLocation(null);
     } catch (error) {
       console.error('Error submitting rating:', error);
+      // Keep existing ratings on error
     }
   };
 
@@ -226,7 +241,39 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
         mapContainerStyle={containerStyle}
         center={mapCenter}
         zoom={14}
-        options={mapOptions}
+        options={{
+          ...mapOptions,
+          zoomControl: true,
+          mapTypeControl: true,
+          scaleControl: true,
+          streetViewControl: true,
+          rotateControl: true,
+          fullscreenControl: true,
+          gestureHandling: 'cooperative',
+          clickableIcons: false,
+          styles: [
+            {
+              featureType: 'poi',
+              elementType: 'labels',
+              stylers: [{ visibility: 'off' }]
+            }
+          ],
+          zoomControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_BOTTOM
+          },
+          mapTypeControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_TOP
+          },
+          streetViewControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_BOTTOM
+          },
+          rotateControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_BOTTOM
+          },
+          fullscreenControlOptions: {
+            position: google.maps.ControlPosition.RIGHT_BOTTOM
+          }
+        }}
         onLoad={onMapLoad}
       >
         <StandaloneSearchBox
@@ -236,7 +283,7 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
           <input
             type="text"
             placeholder="Search for restaurants..."
-            className="absolute top-4 left-4 w-64 px-4 py-2 rounded-md shadow-md"
+            className="absolute top-4 left-4 px-4 py-2 rounded-md shadow-md"
             style={searchBoxStyle.input}
           />
         </StandaloneSearchBox>
