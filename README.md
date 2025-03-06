@@ -158,6 +158,20 @@ npm run dev
 
 This starts the Next.js app on http://localhost:3000, which connects to the Cloudflare Worker API hosted in the cloud.
 
+### Admin Access
+
+The application includes a password-protected admin section for managing burrito ratings:
+
+1. **Local Setup**
+   - Add `NEXT_PUBLIC_ADMIN_PASSWORD=your_password` to your `.env.local` file
+   - Access the admin panel at http://localhost:3000/admin
+
+2. **Production Setup**
+   - Add the `NEXT_PUBLIC_ADMIN_PASSWORD` environment variable in your Cloudflare Pages dashboard
+   - Access the admin panel at https://your-domain.com/admin
+
+For detailed instructions, see the [Admin Setup Guide](./docs/ADMIN_SETUP.md).
+
 ### Deployment
 
 #### API Deployment

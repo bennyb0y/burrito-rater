@@ -101,9 +101,9 @@ export default function AdminPage() {
   };
 
   return (
-    <div className="p-8">
+    <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Burrito Ratings Admin</h1>
+        <h2 className="text-xl font-semibold">Manage Ratings</h2>
         <div className="flex items-center gap-4">
           {error && (
             <p className="text-red-600">{error}</p>
