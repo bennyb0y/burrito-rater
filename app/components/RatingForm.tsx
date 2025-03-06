@@ -93,11 +93,11 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
-      <div className="bg-white rounded-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto my-4">
-        <div className="p-3 sm:p-4">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg sm:text-xl font-bold text-black">Rate this Burrito</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-1 sm:p-2 overflow-y-auto">
+      <div className="bg-white rounded-lg w-full max-w-xl max-h-[95vh] overflow-y-auto my-2">
+        <div className="p-2 sm:p-3">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-base sm:text-lg font-bold text-black">Rate this Burrito</h2>
             <button
               onClick={onClose}
               className="text-gray-500 hover:text-gray-700"
@@ -106,16 +106,16 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-2">
             <div>
-              <label className="block text-sm font-bold text-black">Restaurant</label>
-              <p className="text-black leading-tight">{position.name}</p>
-              <p className="text-sm text-black leading-tight">{position.address}</p>
+              <label className="block text-xs font-bold text-black">Restaurant</label>
+              <p className="text-sm text-black leading-tight">{position.name}</p>
+              <p className="text-xs text-black leading-tight">{position.address}</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div className="grid grid-cols-2 gap-2">
               <div>
-                <label htmlFor="name" className="block text-sm font-bold text-black">
+                <label htmlFor="name" className="block text-xs font-bold text-black">
                   Your Name (Optional)
                 </label>
                 <input
@@ -123,13 +123,13 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
                   id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="block w-full px-3 py-2 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full px-2 py-1 text-sm text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Anonymous"
                 />
               </div>
 
               <div>
-                <label htmlFor="password" className="block text-sm font-bold text-black">
+                <label htmlFor="password" className="block text-xs font-bold text-black">
                   Reviewer Identity Password
                 </label>
                 <input
@@ -137,21 +137,21 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full px-3 py-2 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="4-10 characters for your unique emoji identity"
+                  className="block w-full px-2 py-1 text-sm text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  placeholder="4-10 chars for emoji"
                   maxLength={10}
                 />
                 {password && !validatePassword(password) && (
-                  <p className="text-sm text-black leading-tight mt-1">
-                    Password must be between 4 and 10 characters
+                  <p className="text-xs text-black leading-tight mt-0.5">
+                    Password must be 4-10 characters
                   </p>
                 )}
                 {validatePassword(password) && (
-                  <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-md mt-1">
-                    <span className="text-3xl">{generateUserEmoji(password)}</span>
+                  <div className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-md mt-0.5">
+                    <span className="text-2xl">{generateUserEmoji(password)}</span>
                     <div className="flex flex-col">
-                      <span className="text-sm font-medium text-black">Your Reviewer Identity</span>
-                      <span className="text-xs text-gray-600">This emoji will appear on your review</span>
+                      <span className="text-xs font-medium text-black">Your Reviewer Identity</span>
+                      <span className="text-[10px] text-gray-600">This emoji will appear on your review</span>
                     </div>
                   </div>
                 )}
@@ -159,29 +159,29 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
             </div>
 
             <div>
-              <label htmlFor="burritoTitle" className="block text-sm font-bold text-black">
+              <label htmlFor="burritoTitle" className="block text-xs font-bold text-black">
                 Burrito Name
               </label>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <input
                   type="text"
                   id="burritoTitle"
                   value={burritoTitle}
                   onChange={(e) => setBurritoTitle(e.target.value)}
-                  className="block w-full px-3 py-2 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="block w-full px-2 py-1 text-sm text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                 />
                 {validatePassword(password) && (
-                  <span className="text-2xl" role="img" aria-label="reviewer identity">
+                  <span className="text-xl" role="img" aria-label="reviewer identity">
                     {generateUserEmoji(password)}
                   </span>
                 )}
               </div>
             </div>
 
-            <div className="space-y-3 sm:space-y-4">
+            <div className="space-y-2">
               <div>
-                <label className="block text-sm font-bold text-black">Overall Rating</label>
-                <div className="flex items-center gap-2">
+                <label className="block text-xs font-bold text-black">Overall Rating</label>
+                <div className="flex items-center gap-1">
                   <input
                     type="range"
                     min="1"
@@ -191,22 +191,22 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
                     onChange={(e) => setRating(Number(e.target.value))}
                     className="w-full"
                   />
-                  <span className="text-2xl sm:text-3xl" role="img" aria-label="rating emotion">
+                  <span className="text-xl" role="img" aria-label="rating emotion">
                     {getRatingEmoji(rating)}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm text-black leading-tight mt-1">
+                <div className="flex justify-between text-xs text-black leading-tight mt-0.5">
                   <span>Poor</span>
                   <span>Amazing</span>
                 </div>
-                <p className="text-center text-sm font-medium text-black mt-1">
+                <p className="text-center text-xs font-medium text-black mt-0.5">
                   Rating: {rating.toFixed(1)}
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-black">Taste</label>
-                <div className="flex items-center gap-2">
+                <label className="block text-xs font-bold text-black">Taste</label>
+                <div className="flex items-center gap-1">
                   <input
                     type="range"
                     min="1"
@@ -216,22 +216,22 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
                     onChange={(e) => setTaste(Number(e.target.value))}
                     className="w-full"
                   />
-                  <span className="text-2xl sm:text-3xl" role="img" aria-label="taste rating">
+                  <span className="text-xl" role="img" aria-label="taste rating">
                     {getRatingEmoji(taste)}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm text-black leading-tight mt-1">
+                <div className="flex justify-between text-xs text-black leading-tight mt-0.5">
                   <span>Poor</span>
                   <span>Delicious</span>
                 </div>
-                <p className="text-center text-sm font-medium text-black mt-1">
+                <p className="text-center text-xs font-medium text-black mt-0.5">
                   Taste: {taste.toFixed(1)}
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-black">Value for Money</label>
-                <div className="flex items-center gap-2">
+                <label className="block text-xs font-bold text-black">Value for Money</label>
+                <div className="flex items-center gap-1">
                   <input
                     type="range"
                     min="1"
@@ -241,22 +241,22 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
                     onChange={(e) => setValue(Number(e.target.value))}
                     className="w-full"
                   />
-                  <span className="text-2xl sm:text-3xl" role="img" aria-label="value rating">
+                  <span className="text-xl" role="img" aria-label="value rating">
                     {getRatingEmoji(value)}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm text-black leading-tight mt-1">
+                <div className="flex justify-between text-xs text-black leading-tight mt-0.5">
                   <span>Poor</span>
                   <span>Great Value</span>
                 </div>
-                <p className="text-center text-sm font-medium text-black mt-1">
+                <p className="text-center text-xs font-medium text-black mt-0.5">
                   Value: {value.toFixed(1)}
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-black">Price ($)</label>
-                <div className="flex items-center gap-2">
+                <label className="block text-xs font-bold text-black">Price ($)</label>
+                <div className="flex items-center gap-1">
                   <input
                     type="range"
                     min="3"
@@ -266,29 +266,29 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
                     onChange={(e) => setPrice(Number(e.target.value))}
                     className="w-full"
                   />
-                  <span className="text-2xl sm:text-3xl" role="img" aria-label="price reaction">
+                  <span className="text-xl" role="img" aria-label="price reaction">
                     {getPriceEmoji(price)}
                   </span>
                 </div>
-                <div className="flex justify-between text-sm text-black leading-tight mt-1">
+                <div className="flex justify-between text-xs text-black leading-tight mt-0.5">
                   <span>$3</span>
                   <span>$35</span>
                 </div>
-                <p className="text-center text-lg font-bold text-black leading-tight mt-1">
+                <p className="text-center text-sm font-bold text-black leading-tight mt-0.5">
                   ${price.toFixed(2)}
                 </p>
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-black">
+              <label className="block text-xs font-bold text-black">
                 <span className="flex items-center gap-1">
-                  Ingredients <span className="text-2xl">🧂</span>
+                  Ingredients <span className="text-xl">🧂</span>
                 </span>
               </label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3 mt-2">
+              <div className="grid grid-cols-2 gap-1 mt-1">
                 {Object.entries(ingredients).map(([key, value]) => (
-                  <label key={key} className="flex items-center gap-2">
+                  <label key={key} className="flex items-center gap-1">
                     <input
                       type="checkbox"
                       checked={value}
@@ -300,8 +300,8 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
                       }
                       className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                     />
-                    <span className="text-sm text-black flex items-center gap-1">
-                      <span className="text-xl">
+                    <span className="text-xs text-black flex items-center gap-0.5">
+                      <span className="text-lg">
                         {key === 'hasPotatoes' && '🥔'}
                         {key === 'hasCheese' && '🧀'}
                         {key === 'hasBacon' && '🥓'}
@@ -317,30 +317,30 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
             </div>
 
             <div>
-              <label htmlFor="review" className="block text-sm font-bold text-black">
+              <label htmlFor="review" className="block text-xs font-bold text-black">
                 Review (Optional)
               </label>
               <textarea
                 id="review"
-                rows={3}
+                rows={2}
                 value={review}
                 onChange={(e) => setReview(e.target.value)}
-                className="block w-full px-3 py-2 text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="block w-full px-2 py-1 text-sm text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                 placeholder="Share your thoughts about this burrito..."
               />
             </div>
 
-            <div className="flex justify-end gap-2 mt-4">
+            <div className="flex justify-end gap-1 mt-2">
               <button
                 type="button"
                 onClick={onClose}
-                className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-blue-500"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                className="px-3 py-1 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-blue-500"
               >
                 Submit Rating
               </button>
