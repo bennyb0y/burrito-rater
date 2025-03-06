@@ -23,8 +23,7 @@ export default function Home() {
 
   return (
     <main className="w-full h-screen flex flex-col">
-      <div className="flex items-center justify-between px-4 py-2 bg-white">
-        <h1 className="text-4xl font-bold text-black">🌯 Benny's Burrito Rating 🌯</h1>
+      <div className="flex justify-end px-4 py-2 bg-white">
         <button 
           onClick={refreshMap}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
