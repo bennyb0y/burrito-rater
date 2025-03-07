@@ -9,6 +9,13 @@ This guide explains how to deploy the Burrito Rater application to Cloudflare Pa
 - Cloudflare account with Pages enabled
 - Cloudflare API token with Pages deployment permissions
 
+## Project Structure
+
+The Burrito Rater application consists of two main components:
+
+1. **Frontend**: Next.js application in the `app/` directory
+2. **API**: Cloudflare Worker in the `api/worker.js` file
+
 ## Environment Setup
 
 1. Create a `.env.local` file in the project root with the following variables:
@@ -40,9 +47,18 @@ For local development:
 npm run dev
 ```
 
-### Production Deployment
+### API Deployment
 
-To deploy to Cloudflare Pages:
+To deploy the API worker:
+```bash
+npm run deploy:worker
+```
+
+This command deploys the `api/worker.js` file to Cloudflare Workers using the configuration in `wrangler.worker.toml`.
+
+### Frontend Deployment
+
+To deploy the frontend to Cloudflare Pages:
 ```bash
 npm run deploy
 ```
@@ -54,12 +70,27 @@ This command will:
 4. Skip account selection prompts
 5. Allow deployment with uncommitted changes
 
+### Full Stack Deployment
+
+When making changes to both the frontend and API, deploy in this order:
+
+1. Deploy the API worker first:
+   ```bash
+   npm run deploy:worker
+   ```
+
+2. Then deploy the frontend:
+   ```bash
+   npm run deploy
+   ```
+
+This ensures that any API changes are available when the new frontend is deployed.
+
 ### Other Available Commands
 
 - `npm run build` - Build the Next.js application
 - `npm run pages:build` - Build for Cloudflare Pages
 - `npm run pages:deploy` - Deploy to Cloudflare Pages (requires manual authentication)
-- `npm run deploy:worker` - Deploy the API worker
 - `npm run pages:watch` - Watch for changes during development
 - `npm run pages:dev` - Run the application locally with Cloudflare Pages compatibility
 
@@ -96,6 +127,11 @@ This command will:
    - Verify API endpoints
    - Check browser console for errors
 
+4. **Worker Deployment Issues**
+   - Ensure `api/worker.js` exists and is correctly formatted
+   - Check that `wrangler.worker.toml` has the correct path (`main = "api/worker.js"`)
+   - Verify D1 database bindings are correct
+
 ### Environment Variables
 
 Make sure all required environment variables are set in:
@@ -123,4 +159,5 @@ Make sure all required environment variables are set in:
 
 - [Cloudflare Pages Documentation](https://developers.cloudflare.com/pages/)
 - [Next.js Documentation](https://nextjs.org/docs)
-- [API Worker Documentation](./API_WORKER.md) 
+- [API Worker Documentation](./API_WORKER.md)
+- [Workflow Guide](./WORKFLOW.md) 

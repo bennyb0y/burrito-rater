@@ -10,7 +10,7 @@
     "pages:deploy": "npx wrangler pages deploy .vercel/output/static",
     "start": "next start",
     "lint": "next lint",
-    "deploy:worker": "wrangler deploy worker.js --config wrangler.worker.toml",
+    "deploy:worker": "wrangler deploy api/worker.js --config wrangler.worker.toml",
     "pages:watch": "npx @cloudflare/next-on-pages --watch",
     "pages:dev": "npx wrangler pages dev .vercel/output/static --compatibility-flag=nodejs_compat",
     "deploy": "npm run pages:build && CLOUDFLARE_ACCOUNT_ID=$CF_ACCOUNT_ID CLOUDFLARE_API_TOKEN=$CF_API_TOKEN npx wrangler pages deploy .vercel/output/static --project-name burrito-rater --commit-dirty=true"
