@@ -6,6 +6,12 @@ import { usePathname } from 'next/navigation';
 export default function Navigation() {
   const pathname = usePathname();
 
+  const getLinkClass = (path: string) => {
+    return pathname === path
+      ? "text-blue-600 border-b-2 border-blue-600 px-3 py-2 rounded-md text-sm sm:text-base font-semibold"
+      : "text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm sm:text-base font-semibold";
+  };
+
   return (
     <nav className="bg-white shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -18,15 +24,21 @@ export default function Navigation() {
           <div className="flex items-center space-x-4 mt-2 sm:mt-0">
             <Link
               href="/"
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm sm:text-base font-semibold"
+              className={getLinkClass("/")}
             >
               Map View
             </Link>
             <Link
               href="/list"
-              className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm sm:text-base font-semibold"
+              className={getLinkClass("/list")}
             >
               List View
+            </Link>
+            <Link
+              href="/guide"
+              className={getLinkClass("/guide")}
+            >
+              User Guide
             </Link>
           </div>
         </div>
