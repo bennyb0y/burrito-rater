@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getApiUrl } from '../config.js';
+import { getApiUrl } from '../config';
 
 interface Rating {
   id: number;
@@ -52,38 +52,40 @@ export default function AdminPage() {
         const data = await response.json();
         console.log('Fetched ratings:', data);
         
-        // Determine if we're in development or production
-        const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        // Create a map of confirmed ratings from the current state
+        const confirmedMap: Record<number, boolean> = {};
+        ratings.forEach(rating => {
+          if (rating.confirmed) {
+            confirmedMap[rating.id] = true;
+          }
+        });
+        
+        // Load confirmed ratings from localStorage
+        try {
+          const confirmedRatings = JSON.parse(localStorage.getItem('confirmedRatings') || '[]');
+          confirmedRatings.forEach((id: number) => {
+            confirmedMap[id] = true;
+          });
+        } catch (e) {
+          console.error('Error loading confirmed status from localStorage:', e);
+        }
         
         // Apply the confirmed status to the new data
         const updatedRatings = data.map((rating: Rating) => {
-          // Ensure the confirmed property exists
-          return { 
-            ...rating, 
-            confirmed: rating.confirmed !== undefined ? rating.confirmed : 0 
-          };
+          // If the rating was previously confirmed, keep it confirmed
+          if (confirmedMap[rating.id]) {
+            return { ...rating, confirmed: 1 };
+          }
+          // Otherwise, use the value from the API or default to 0
+          return { ...rating, confirmed: rating.confirmed || 0 };
         });
         
         // Filter the ratings based on the filterStatus
         let filteredRatings = updatedRatings;
         if (filterStatus === 'confirmed') {
-          filteredRatings = updatedRatings.filter((rating: Rating) => {
-            if (typeof rating.confirmed === 'number') {
-              return rating.confirmed === 1;
-            } else if (typeof rating.confirmed === 'boolean') {
-              return rating.confirmed === true;
-            }
-            return false;
-          });
+          filteredRatings = updatedRatings.filter((rating: Rating) => rating.confirmed);
         } else if (filterStatus === 'unconfirmed') {
-          filteredRatings = updatedRatings.filter((rating: Rating) => {
-            if (typeof rating.confirmed === 'number') {
-              return rating.confirmed !== 1;
-            } else if (typeof rating.confirmed === 'boolean') {
-              return rating.confirmed !== true;
-            }
-            return true;
-          });
+          filteredRatings = updatedRatings.filter((rating: Rating) => !rating.confirmed);
         }
         
         setRatings(filteredRatings);
@@ -232,23 +234,23 @@ export default function AdminPage() {
       setError(null);
       setSuccessMessage(null);
       
-      console.log('Using API for confirmation');
-      // Call the API to update the database
-      const response = await fetch(getApiUrl(`ratings/${id}/confirm`), {
-        method: 'PUT',
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to confirm rating');
-      }
-      
-      // Update the UI state
+      // Client-side only solution - just update the UI state
       setRatings(prevRatings => 
         prevRatings.map(rating => 
           rating.id === id ? { ...rating, confirmed: 1 } : rating
         )
       );
+      
+      // Store the confirmed status in localStorage to persist it
+      try {
+        const confirmedRatings = JSON.parse(localStorage.getItem('confirmedRatings') || '[]');
+        if (!confirmedRatings.includes(id)) {
+          confirmedRatings.push(id);
+          localStorage.setItem('confirmedRatings', JSON.stringify(confirmedRatings));
+        }
+      } catch (e) {
+        console.error('Error storing confirmed status in localStorage:', e);
+      }
       
       setSuccessMessage(`Rating #${id} marked as confirmed`);
     } catch (error) {
@@ -268,27 +270,30 @@ export default function AdminPage() {
     setSuccessMessage(null);
 
     try {
-      console.log('Using API for bulk confirmation');
-      // Call the API to update the database
-      const response = await fetch(getApiUrl('ratings/confirm-bulk'), {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ids: Array.from(selectedIds) }),
-      });
+      console.log('Marking selected ratings as confirmed:', Array.from(selectedIds));
       
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to confirm ratings');
-      }
-      
-      // Update the UI state
+      // Client-side only solution - just update the UI state
       setRatings(prevRatings => 
         prevRatings.map(rating => 
           selectedIds.has(rating.id) ? { ...rating, confirmed: 1 } : rating
         )
       );
+      
+      // Store the confirmed status in localStorage to persist it
+      try {
+        const confirmedRatings = JSON.parse(localStorage.getItem('confirmedRatings') || '[]');
+        const newConfirmedRatings = [...confirmedRatings];
+        
+        selectedIds.forEach(id => {
+          if (!newConfirmedRatings.includes(id)) {
+            newConfirmedRatings.push(id);
+          }
+        });
+        
+        localStorage.setItem('confirmedRatings', JSON.stringify(newConfirmedRatings));
+      } catch (e) {
+        console.error('Error storing confirmed status in localStorage:', e);
+      }
       
       setSuccessMessage(`Marked ${selectedIds.size} rating(s) as confirmed`);
       setSelectedIds(new Set());
@@ -505,7 +510,7 @@ export default function AdminPage() {
                     </div>
                     <div className="flex items-center mb-2">
                       <span className="font-semibold text-black mr-2">Taste:</span>
-                      <span>{selectedRating.taste.toFixed(1)}/5</span>
+                      <span className="text-black">{selectedRating.taste.toFixed(1)}/5</span>
                     </div>
                     <div className="flex items-center mb-2">
                       <span className="font-semibold text-black mr-2">Value:</span>

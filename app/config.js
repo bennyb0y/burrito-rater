@@ -1,7 +1,7 @@
 // Configuration for the application
 
 // API configuration
-export const getApiUrl = (endpoint: string): string => {
+export const getApiUrl = (endpoint) => {
   // Use the same API URL for both development and production
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://your-worker-name.your-account.workers.dev';
   

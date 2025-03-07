@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { getApiUrl } from '../config.js';
+import { getApiUrl } from '../config';
 
 const MiniMap = dynamic(() => import('../components/MiniMap'), {
   ssr: false,
@@ -50,7 +50,11 @@ export default function ListPage() {
         setIsLoading(true);
         console.log('Fetching ratings from API');
         
-        // Fetch all ratings from the API
+        // Determine if we're in development or production
+        const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        console.log('Environment:', isDevelopment ? 'Development' : 'Production');
+        
+        // Fetch all ratings from the API without the confirmed filter
         const response = await fetch(getApiUrl('ratings'));
         
         if (!response.ok) {
@@ -62,17 +66,45 @@ export default function ListPage() {
         const data = await response.json();
         console.log('Fetched ratings:', data);
         
-        // Filter ratings that have confirmed=1 or confirmed=true
-        const confirmedRatings = data.filter((rating: Rating) => {
-          if (typeof rating.confirmed === 'number') {
-            return rating.confirmed === 1;
-          } else if (typeof rating.confirmed === 'boolean') {
-            return rating.confirmed === true;
-          }
-          return false;
-        });
+        let ratingsWithConfirmed = data;
         
-        setRatings(confirmedRatings);
+        // For development environment, use localStorage
+        if (isDevelopment) {
+          console.log('Using localStorage for confirmations (Development)');
+          // Load confirmed ratings from localStorage
+          let confirmedRatings: number[] = [];
+          try {
+            confirmedRatings = JSON.parse(localStorage.getItem('confirmedRatings') || '[]');
+          } catch (e) {
+            console.error('Error loading confirmed status from localStorage:', e);
+          }
+          
+          // Create a map of confirmed ratings
+          const confirmedMap: Record<number, boolean> = {};
+          confirmedRatings.forEach((id: number) => {
+            confirmedMap[id] = true;
+          });
+          
+          // Apply the confirmed status to the data
+          ratingsWithConfirmed = data.map((rating: Rating) => ({
+            ...rating,
+            confirmed: confirmedMap[Number(rating.id)] ? 1 : (rating.confirmed || 0)
+          }));
+        } else {
+          console.log('Using API data for confirmations (Production)');
+          // In production, use the confirmed status from the API
+          ratingsWithConfirmed = data.map((rating: Rating) => ({
+            ...rating,
+            confirmed: rating.confirmed || 0
+          }));
+        }
+        
+        // Only show confirmed ratings
+        const confirmedRatingsList = ratingsWithConfirmed.filter((rating: Rating) => 
+          rating.confirmed
+        );
+        
+        setRatings(confirmedRatingsList);
       } catch (error) {
         console.error('Error fetching ratings:', error);
       } finally {

@@ -1,214 +1,215 @@
 # Cloudflare Migration Guide
 
-> **Note**: This document is for historical reference. The migration has been completed, and all migration scripts and Next.js API routes have been removed from the codebase. The application now uses Cloudflare Workers exclusively for its API and Cloudflare D1 as the single source of truth for data.
+This document outlines the migration process from a local SQLite database to Cloudflare D1 and the deployment of the API to Cloudflare Workers.
 
-This document outlines the migration of the Burrito Rater application from SQLite with Prisma to Cloudflare D1 and Workers.
+## Overview
 
-## Architecture Overview
+The Burrito Rater application has been migrated from using a local SQLite database to Cloudflare D1, a serverless SQL database. The API has also been migrated from Next.js API routes to Cloudflare Workers.
+
+## Architecture Changes
 
 ### Before Migration
-- **Database**: SQLite with Prisma
-- **API**: Next.js API Routes
-- **Frontend**: Next.js
+
+- **Database**: Local SQLite database
+- **API**: Next.js API routes
+- **Hosting**: Vercel or similar platform
 
 ### After Migration
-- **Database**: Cloudflare D1 (single source of truth)
+
+- **Database**: Cloudflare D1 (SQLite-compatible)
 - **API**: Cloudflare Workers
-- **Frontend**: Next.js (deployed to Cloudflare Pages)
+- **Hosting**: Cloudflare Pages for frontend, Cloudflare Workers for API
 
-## Benefits of Migration
+## Migration Steps
 
-1. **Serverless Architecture**
-   - No need to manage database servers
-   - Automatic scaling based on demand
-   - Global distribution for low-latency access
+### 1. Database Migration
 
-2. **Simplified Deployment**
-   - Database and API deployed together
-   - Frontend can be deployed separately
-   - No need to manage database connections
+#### Schema Creation
 
-3. **Cost Efficiency**
-   - Pay-as-you-go pricing model
-   - Free tier for low-traffic applications
-   - No need to pay for idle resources
-
-4. **Single Source of Truth**
-   - All environments use the same cloud database
-   - No need for local database development
-   - Consistent data across all environments
-
-## API Endpoints
-
-The Cloudflare Worker API is hosted at: `https://your-worker-name.your-account.workers.dev`
-
-### Available Endpoints
-
-| Endpoint | Method | Description |
-|----------|--------|-------------|
-| `/api/ratings` | GET | Get all ratings |
-| `/api/ratings` | POST | Create a new rating |
-| `/api/ratings/{id}` | DELETE | Delete a rating by ID |
-
-## Development Workflow
-
-### Frontend Development
-
-For frontend development, you only need to run the Next.js development server:
-
-```bash
-npm run dev
-```
-
-This will start the Next.js app on http://localhost:3000, which connects to the Cloudflare Worker API hosted in the cloud.
-
-### API Development
-
-When making changes to the API, you should:
-
-1. Edit the `worker.js` file
-2. Deploy the changes to Cloudflare:
-   ```bash
-   npm run deploy:worker
-   ```
-
-> **Note**: Local development with a local D1 database is no longer supported. All development should use the cloud D1 database as the single source of truth.
-
-### Deploying Changes
-
-To deploy changes to the Cloudflare Worker:
-
-```bash
-npm run deploy:worker
-```
-
-## Database Schema
-
-The D1 database schema is defined in `schema.sql`:
+The D1 database schema was created with the following structure:
 
 ```sql
 CREATE TABLE Rating (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
-  restaurantName TEXT NOT NULL,
-  burritoTitle TEXT NOT NULL,
-  latitude REAL NOT NULL,
-  longitude REAL NOT NULL,
-  zipcode TEXT,
+  title TEXT NOT NULL,
   rating REAL NOT NULL,
-  taste REAL NOT NULL,
-  value REAL NOT NULL,
-  price REAL NOT NULL,
-  hasPotatoes BOOLEAN NOT NULL DEFAULT 0,
-  hasCheese BOOLEAN NOT NULL DEFAULT 0,
-  hasBacon BOOLEAN NOT NULL DEFAULT 0,
-  hasChorizo BOOLEAN NOT NULL DEFAULT 0,
-  hasOnion BOOLEAN NOT NULL DEFAULT 0,
-  hasVegetables BOOLEAN NOT NULL DEFAULT 0,
-  review TEXT,
-  reviewerName TEXT,
-  identityPassword TEXT,
-  generatedEmoji TEXT,
-  reviewerEmoji TEXT
+  price REAL,
+  lat REAL NOT NULL,
+  lng REAL NOT NULL,
+  comment TEXT,
+  author TEXT,
+  created_at TEXT NOT NULL,
+  confirmed INTEGER DEFAULT 0
 );
 ```
 
-## Cloudflare Configuration
+#### Data Migration
 
-### Worker Configuration
+Data was migrated from the local SQLite database to Cloudflare D1 using the following steps:
 
-The Cloudflare Worker configuration is defined in `wrangler.toml`:
+1. Export data from SQLite:
+   ```bash
+   sqlite3 ratings.db .dump > ratings_dump.sql
+   ```
 
-```toml
-name = "burrito-rater"
-compatibility_date = "2023-09-01"
-main = "worker.js"
+2. Modify the SQL dump to be compatible with D1:
+   - Remove SQLite-specific commands
+   - Ensure table creation matches the D1 schema
+   - Format INSERT statements to be compatible with D1
 
-[[d1_databases]]
-binding = "DB"
-database_name = "your-database-name"
-database_id = "0e87da0b-9043-44f4-8782-3ee0c9fd6553"
-```
+3. Import data to D1:
+   ```bash
+   wrangler d1 execute burrito-rater --file=ratings_dump.sql
+   ```
 
-### Pages Configuration
+### 2. API Migration
 
-For Cloudflare Pages deployment, a separate configuration is used:
+#### Worker Creation
 
-```toml
-name = "burrito-rater"
-compatibility_date = "2023-09-01"
-compatibility_flags = ["nodejs_compat"]
-pages_build_output_dir = ".vercel/output/static"
+A Cloudflare Worker was created to handle API requests:
 
-[[d1_databases]]
-binding = "DB"
-database_name = "your-database-name"
-database_id = "0e87da0b-9043-44f4-8782-3ee0c9fd6553"
-```
+1. Create a new Worker project:
+   ```bash
+   wrangler init worker
+   ```
 
-> **Note**: The `nodejs_compat` compatibility flag is required for Next.js applications built with @cloudflare/next-on-pages. See [Cloudflare Pages Deployment Guide](./CLOUDFLARE_PAGES.md) for more details.
+2. Configure the Worker to use D1:
+   ```toml
+   # wrangler.toml
+   [[d1_databases]]
+   binding = "DB"
+   database_name = "burrito-rater"
+   database_id = "your-d1-database-id"
+   ```
 
-## Environment Variables
+3. Implement API endpoints in the Worker:
+   - GET /ratings - List all ratings
+   - POST /ratings - Create a new rating
+   - GET /ratings/:id - Get a specific rating
+   - DELETE /ratings/:id - Delete a rating
+   - PUT /ratings/:id/confirm - Confirm a rating
 
-### Cloudflare Worker Environment Variables
+#### API Endpoint Changes
 
-For the Cloudflare Worker API, environment variables are set in the Cloudflare Dashboard:
+| Old Endpoint (Next.js) | New Endpoint (Cloudflare Worker) |
+|------------------------|----------------------------------|
+| /api/ratings           | /ratings                         |
+| /api/ratings/:id       | /ratings/:id                     |
+| /api/ratings/:id/confirm | /ratings/:id/confirm           |
 
-1. Log in to the Cloudflare Dashboard: https://dash.cloudflare.com/
-2. Navigate to Workers & Pages
-3. Select your Worker (burrito-rater)
-4. Click on the "Settings" tab
-5. Scroll down to find the "Variables" section
-6. Click on "Add variable"
-7. Enter the variable name and value
-8. Choose the environment (Production and/or Preview)
-9. Click "Save"
+### 3. Frontend Updates
 
-Note that Worker environment variables are not exposed to the browser and are only available in the Worker runtime.
+The frontend was updated to use the new API endpoints:
 
-### Cloudflare Pages Environment Variables
+1. Update API base URL:
+   ```typescript
+   // Before
+   const API_BASE_URL = '/api';
+   
+   // After
+   const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '/api';
+   ```
 
-For the frontend application, environment variables are set in the Cloudflare Pages dashboard:
+2. Update API calls to use the new endpoints:
+   ```typescript
+   // Before
+   fetch('/api/ratings')
+   
+   // After
+   fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/ratings`)
+   ```
 
-1. Log in to the Cloudflare Dashboard: https://dash.cloudflare.com/
-2. Navigate to Workers & Pages
-3. Select your Pages project (burrito-rater)
-4. Go to Settings > Environment variables
-5. Add each variable with its corresponding value
-6. Choose the environment (Production and/or Preview)
-7. Click "Save"
-8. Trigger a new deployment for the changes to take effect
+3. Add CORS handling for cross-origin requests.
 
-Required environment variables for the frontend:
-- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Your Google Maps API key
-- `NEXT_PUBLIC_API_BASE_URL`: The URL of your Cloudflare Worker API
-- `NEXT_PUBLIC_ADMIN_PASSWORD`: Password for accessing the admin section
+### 4. Deployment Configuration
 
-For more details on setting up the admin password, see the [Admin Setup Guide](./ADMIN_SETUP.md).
+#### Cloudflare Worker Deployment
+
+1. Deploy the Worker:
+   ```bash
+   cd worker
+   npm run deploy
+   ```
+
+2. The Worker is now available at `https://your-worker-name.your-account.workers.dev`.
+
+#### Cloudflare Pages Deployment
+
+1. Configure the build settings in Cloudflare Pages:
+   - Build command: `npm run pages:build`
+   - Build output directory: `.vercel/output/static`
+
+2. Add environment variables:
+   - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`
+   - `NEXT_PUBLIC_API_BASE_URL`
+   - `NEXT_PUBLIC_ADMIN_PASSWORD`
+
+3. Enable the `nodejs_compat` compatibility flag in the Cloudflare Pages dashboard.
+
+## Local Development
+
+### API Development
+
+For local development with the Cloudflare Worker:
+
+1. Start the Worker development server:
+   ```bash
+   cd worker
+   npm run dev
+   ```
+
+2. The Worker will be available at `http://localhost:8787`.
+
+### Frontend Development
+
+For frontend development:
+
+1. Start the Next.js development server:
+   ```bash
+   npm run dev
+   ```
+
+2. The frontend will be available at `http://localhost:3000`.
+
+3. Set the `NEXT_PUBLIC_API_BASE_URL` environment variable in `.env.local` to point to the Worker:
+   ```
+   NEXT_PUBLIC_API_BASE_URL=https://your-worker-name.your-account.workers.dev
+   ```
 
 ## Troubleshooting
 
-### API Connection Issues
+### CORS Issues
 
-If you're having trouble connecting to the API:
+If you encounter CORS issues:
 
-1. Check your `.env.local` file to ensure `NEXT_PUBLIC_API_BASE_URL` is set correctly
-2. Verify that the Cloudflare Worker is deployed and running
-3. Check the browser console for CORS errors
+1. Ensure the Worker has the correct CORS headers:
+   ```javascript
+   const corsHeaders = {
+     'Access-Control-Allow-Origin': '*',
+     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+     'Access-Control-Allow-Headers': 'Content-Type',
+   };
+   ```
 
-### Database Issues
+2. Handle OPTIONS requests in the Worker:
+   ```javascript
+   if (request.method === 'OPTIONS') {
+     return new Response(null, {
+       headers: corsHeaders,
+     });
+   }
+   ```
 
-If you're experiencing database issues:
+### D1 Connection Issues
 
-1. Check the Cloudflare D1 dashboard to ensure the database exists
-2. Verify that the database ID in `wrangler.toml` matches the actual database ID
-3. Check the Cloudflare Worker logs for any database connection errors
+If you encounter issues connecting to D1:
 
-## Reverting to SQLite (If Needed)
+1. Verify your D1 database ID in `wrangler.toml`.
+2. Ensure you have the correct permissions to access the D1 database.
+3. Check that your Cloudflare API token has the necessary permissions.
 
-If you need to revert to SQLite for any reason:
+## References
 
-1. Restore the Prisma schema and migrations from Git
-2. Update the API routes to use Prisma instead of D1
-3. Update the `.env.local` file to remove the `NEXT_PUBLIC_API_BASE_URL` variable 
+- [Cloudflare D1 Documentation](https://developers.cloudflare.com/d1/)
+- [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers/)
+- [Cloudflare Pages Documentation](https://developers.cloudflare.com/pages/) 

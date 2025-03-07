@@ -15,6 +15,32 @@ export default {
     
     const url = new URL(request.url);
     
+    // Add migration endpoint to add confirmed column
+    if (url.pathname === '/api/migrate/add-confirmed-column') {
+      try {
+        // Check if the confirmed column exists
+        const tableInfo = await env.DB.prepare("PRAGMA table_info(Rating)").all();
+        const hasConfirmedColumn = tableInfo.results.some(column => column.name === 'confirmed');
+        
+        if (!hasConfirmedColumn) {
+          // Add the confirmed column
+          await env.DB.prepare("ALTER TABLE Rating ADD COLUMN confirmed INTEGER DEFAULT 0").run();
+          return new Response(JSON.stringify({ message: 'Confirmed column added successfully' }), {
+            headers: { 'Content-Type': 'application/json' }
+          });
+        } else {
+          return new Response(JSON.stringify({ message: 'Confirmed column already exists' }), {
+            headers: { 'Content-Type': 'application/json' }
+          });
+        }
+      } catch (error) {
+        return new Response(JSON.stringify({ error: 'Failed to add confirmed column', details: error.message }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' }
+        });
+      }
+    }
+    
     // Handle API routes
     if (url.pathname.startsWith('/api/')) {
       const response = await this.handleApiRequest(request, env);
@@ -88,12 +114,14 @@ export default {
     try {
       // Check if we should filter by confirmation status
       const showConfirmed = url.searchParams.get('confirmed');
-      let query = 'SELECT * FROM Rating';
+      
+      // Query with the confirmed column
+      let query = 'SELECT *, confirmed FROM Rating';
       
       if (showConfirmed === 'true') {
-        query += ' WHERE confirmed = TRUE';
+        query += ' WHERE confirmed = 1';
       } else if (showConfirmed === 'false') {
-        query += ' WHERE confirmed = FALSE';
+        query += ' WHERE confirmed = 0';
       }
       
       query += ' ORDER BY createdAt DESC';
@@ -114,6 +142,11 @@ export default {
     try {
       const data = await request.json();
       
+      // Set confirmed to false by default
+      if (data.confirmed === undefined) {
+        data.confirmed = 0;
+      }
+      
       // Create the rating
       const columns = Object.keys(data).join(', ');
       const placeholders = Object.keys(data).map(() => '?').join(', ');
@@ -126,7 +159,7 @@ export default {
       
       // Fetch the newly created rating
       const newRating = await db
-        .prepare('SELECT * FROM Rating WHERE id = ?')
+        .prepare('SELECT *, COALESCE(confirmed, 0) as confirmed FROM Rating WHERE id = ?')
         .bind(result.id)
         .first();
       
@@ -146,7 +179,7 @@ export default {
     try {
       // Check if the rating exists
       const rating = await db
-        .prepare('SELECT * FROM Rating WHERE id = ?')
+        .prepare('SELECT *, COALESCE(confirmed, 0) as confirmed FROM Rating WHERE id = ?')
         .bind(ratingId)
         .first();
       
@@ -191,17 +224,15 @@ export default {
       
       // Confirm the rating
       await db
-        .prepare('UPDATE Rating SET confirmed = TRUE WHERE id = ?')
+        .prepare('UPDATE Rating SET confirmed = 1 WHERE id = ?')
         .bind(ratingId)
         .run();
       
-      // Fetch the updated rating
-      const updatedRating = await db
-        .prepare('SELECT * FROM Rating WHERE id = ?')
-        .bind(ratingId)
-        .first();
-      
-      return new Response(JSON.stringify(updatedRating), {
+      // Return the rating with a confirmed property
+      return new Response(JSON.stringify({
+        ...rating,
+        confirmed: 1
+      }), {
         headers: { 'Content-Type': 'application/json' }
       });
     } catch (error) {
@@ -228,7 +259,7 @@ export default {
       
       // Confirm all ratings in the list
       await db
-        .prepare(`UPDATE Rating SET confirmed = TRUE WHERE id IN (${idList})`)
+        .prepare(`UPDATE Rating SET confirmed = 1 WHERE id IN (${idList})`)
         .run();
       
       return new Response(JSON.stringify({ 

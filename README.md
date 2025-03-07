@@ -1,17 +1,51 @@
 # 🌯 Burrito Rater
 
-A web application for discovering and rating the best breakfast burritos in Los Angeles. Built with Next.js, TypeScript, and Google Maps API.
+A web application for rating and discovering burritos. Users can submit ratings for burritos they've tried, view ratings on a map, and browse a list of all ratings.
 
-## 🚀 Quick Start
+## 🚀 Features
 
-1. **Clone and Install**
+- **🗺️ Interactive Map**: View burrito ratings on a Google Map
+- **⭐ Rating Submission**: Submit ratings for burritos with details like price, taste, and comments
+- **📋 Rating List**: Browse all submitted ratings in a sortable list
+- **🔐 Admin Interface**: Manage and confirm ratings through an admin portal
+- **📱 Responsive Design**: Works on desktop and mobile devices
+
+## 💻 Tech Stack
+
+- **Frontend**:
+  - Next.js
+  - React
+  - TypeScript
+  - Tailwind CSS
+  - Google Maps API
+
+- **Backend**:
+  - Cloudflare Workers
+  - Cloudflare D1 (SQLite-compatible database)
+
+## 🏁 Getting Started
+
+### Prerequisites
+
+- Node.js (v18 or later)
+- npm or yarn
+- Cloudflare account (for deployment)
+- Google Maps API key
+
+### Installation
+
+1. Clone the repository:
    ```bash
    git clone https://github.com/bennyb0y/burrito-rater.git
    cd burrito-rater
+   ```
+
+2. Install dependencies:
+   ```bash
    npm install
    ```
 
-2. **Set up Google Maps API**
+3. **Set up Google Maps API**
    - Go to [Google Cloud Console](https://console.cloud.google.com/)
    - Create a new project or select an existing one
    - Enable these APIs in "APIs & Services" > "Library":
@@ -35,196 +69,93 @@ A web application for discovering and rating the best breakfast burritos in Los 
      - Select the APIs you enabled (Maps JavaScript API and Places API)
      - Click "Save"
 
-3. **Set up Environment**
-   Create a `.env.local` file in the root directory:
-   ```bash
-   touch .env.local
+4. Create a `.env.local` file in the root directory with the following variables:
    ```
-   
-   Add your Google Maps API key and API base URL to `.env.local`:
-   ```
-   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
+   NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
    NEXT_PUBLIC_API_BASE_URL=https://your-worker-name.your-account.workers.dev
+   NEXT_PUBLIC_ADMIN_PASSWORD=your_admin_password
    ```
-   
+
+   For development with a separate API server, you can also add:
+   ```
+   NEXT_PUBLIC_DEV_API_BASE_URL=http://localhost:8787
+   ```
+
    > **Important**: 
    > - The `.env.local` file is automatically ignored by Git (see `.gitignore`)
    > - All environment variables must be prefixed with `NEXT_PUBLIC_` to be accessible in the browser
    > - Never commit API keys or sensitive information to version control
-   > - For production, set environment variables in your hosting platform (e.g., Vercel)
+   > - For production, set environment variables in your hosting platform
 
-4. **Run Development Server**
+### Development
+
+1. Start the development server:
    ```bash
    npm run dev
    ```
-   Open [http://localhost:3000](http://localhost:3000)
 
-   > **Note**: This project uses Cloudflare D1 as its database and Cloudflare Workers for the API. The API is hosted at https://your-worker-name.your-account.workers.dev and connects to the Cloudflare D1 database. See [docs/CLOUDFLARE_MIGRATION.md](docs/CLOUDFLARE_MIGRATION.md) for more details.
+2. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 🎯 Features
+3. (Optional) To run a local API server for development:
+   ```bash
+   npx wrangler dev worker.js --config wrangler.worker.toml
+   ```
+   This will start a local API server at http://localhost:8787 that you can use for development.
 
-### 🗺️ Interactive Map
-- Real-time location search with Google Maps
-- Color-coded burrito ratings
-- Click-to-rate any restaurant
-- Visual rating distribution
+### Building for Production
 
-### ⭐ Rating Systems
-- Overall rating (1-5)
-- Taste rating (1-5)
-- Value rating (1-5)
-- Price tracking
-- Ingredient tracking:
-  - 🥔 Potatoes
-  - 🧀 Cheese
-  - 🥓 Bacon
-  - 🌶️ Chorizo
-  - 🧅 Onion
-  - 🥬 Vegetables
-- Authenticated user reviews
+1. Build the application:
+   ```bash
+   npm run pages:build
+   ```
 
-### 👤 User Features
-- Anonymous or named reviews
-- Unique emoji identifiers
-- Personal rating history
-- Sort by rating or price
+2. The build output will be in the `.vercel/output` directory.
 
-### 🔐 Admin Features
-- Password-protected admin area
-- Manage all burrito ratings
-- Bulk delete functionality
-- Simple authentication system
+## 🚢 Deployment
 
-## 🛠️ Tech Stack
+See [Deployment Guide](./docs/DEPLOYMENT.md) for detailed deployment instructions.
 
-- **Frontend**: Next.js 14, React 18, TypeScript
-- **Styling**: Tailwind CSS
-- **Maps**: Google Maps API, @react-google-maps/api
-- **Database**: Cloudflare D1
-- **API**: Cloudflare Workers
-- **Hosting**: Cloudflare Pages
+## 📁 Project Structure
 
-## 📱 Screenshots
-
-[Coming Soon]
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 License
-
-MIT License - feel free to use this code for your own projects!
-
-## 🙏 Credits
-
-Created by [@bennyb0y](https://github.com/bennyb0y)
-
-## 🔄 Latest Updates
-
-- Added password-protected admin area for managing ratings
-- Added emoji-based user identification
-- Improved map interaction
-- Enhanced rating form UI
-- Added sorting and filtering options
-- Fixed Git integration in Cursor
-- Migrated to Cloudflare D1 and Workers
-- Reorganized documentation into `/docs` directory
-- Removed migration scripts and unused API routes
-- Deployed frontend to Cloudflare Pages
-- Removed local D1 development setup (using cloud as single source of truth)
+```
+burrito-rater/
+├── app/                  # Next.js app directory
+│   ├── admin/            # Admin interface
+│   ├── api/              # API routes
+│   ├── components/       # React components
+│   ├── list/             # Rating list page
+│   └── page.tsx          # Home page (map view)
+├── public/               # Static assets
+├── docs/                 # Documentation
+├── worker/               # Cloudflare Worker code
+├── next.config.ts        # Next.js configuration
+└── package.json          # Project dependencies
+```
 
 ## 📚 Documentation
 
 All project documentation is available in the [docs](./docs) directory:
 
+- [Deployment Guide](./docs/DEPLOYMENT.md) - Instructions for deploying the application
+- [Admin Interface Guide](./docs/ADMIN_GUIDE.md) - Guide for using the admin interface
+- [Database Schema](./docs/DATABASE_SCHEMA.md) - Details about the database schema and structure
 - [Cloudflare Migration Guide](./docs/CLOUDFLARE_MIGRATION.md) - Details about the migration from SQLite to Cloudflare D1
-- [Cloudflare Pages Deployment Guide](./docs/CLOUDFLARE_PAGES.md) - Guide for deploying the frontend to Cloudflare Pages
-- [Admin Setup Guide](./docs/ADMIN_SETUP.md) - Instructions for setting up and securing the admin section
-- [Development Workflow Guide](./docs/WORKFLOW.md) - Complete CI/CD workflow from development to deployment
-- [Development Guidelines](./docs/CURSOR_RULES.md) - Coding standards and development guidelines
-- [Project Checklist](./docs/TODO_CHECKLIST.md) - Completed milestones and upcoming tasks
 
-## Cloud Architecture
+## 🤝 Contributing
 
-This project uses a cloud-first architecture:
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
-- **Cloudflare D1** as the database (single source of truth)
-- **Cloudflare Workers** for the API (hosted at https://your-worker-name.your-account.workers.dev)
-- **Cloudflare Pages** for the frontend (automatically deployed from GitHub)
+## 📄 License
 
-### Development Setup
+This project is licensed under the MIT License - see the LICENSE file for details.
 
-To run the application locally, start the Next.js development server:
+## 🙏 Acknowledgments
 
-```bash
-npm run dev
-```
-
-This starts the Next.js app on http://localhost:3000, which connects to the Cloudflare Worker API hosted in the cloud.
-
-### Admin Access
-
-The application includes a password-protected admin section for managing burrito ratings:
-
-1. **Local Setup**
-   - Add `NEXT_PUBLIC_ADMIN_PASSWORD=your_password` to your `.env.local` file
-   - Access the admin panel at http://localhost:3000/admin
-
-2. **Production Setup**
-   - Add the `NEXT_PUBLIC_ADMIN_PASSWORD` environment variable in your Cloudflare Pages dashboard
-   - Access the admin panel at https://your-domain.com/admin
-
-For detailed instructions, see the [Admin Setup Guide](./docs/ADMIN_SETUP.md).
-
-### Deployment
-
-#### API Deployment
-
-To deploy changes to the Cloudflare Worker API:
-
-```bash
-npm run deploy:worker
-```
-
-#### Frontend Deployment
-
-The frontend is automatically deployed to Cloudflare Pages when you push to the main branch of your GitHub repository. You can also manually deploy it with:
-
-```bash
-npm run build
-npm run pages:build
-npm run pages:deploy
-```
-
-For local testing of the Cloudflare Pages build:
-
-```bash
-npm run build
-npm run pages:build
-npm run pages:dev
-```
-
-#### Important Configuration
-
-For Cloudflare Pages deployment, ensure:
-
-1. The `wrangler.toml` file includes:
-   ```toml
-   compatibility_flags = ["nodejs_compat"]
-   pages_build_output_dir = ".vercel/output/static"
-   ```
-
-2. The `nodejs_compat` compatibility flag is also set in the Cloudflare Pages dashboard:
-   - Go to your project settings
-   - Navigate to the "Functions" or "Build & Deploy" section
-   - Find "Compatibility flags"
-   - Add `nodejs_compat` as a compatibility flag for both Production and Preview environments
-
-Without this flag, the application will fail with a "Node.JS Compatibility Error" message.
-
-For more details, see the [Cloudflare Pages Deployment Guide](./docs/CLOUDFLARE_PAGES.md).
+- [Next.js](https://nextjs.org/)
+- [Cloudflare Workers](https://workers.cloudflare.com/)
+- [Google Maps API](https://developers.google.com/maps)
+- [Tailwind CSS](https://tailwindcss.com/)

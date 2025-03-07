@@ -34,7 +34,7 @@ CREATE TABLE Rating (
   identityPassword TEXT,
   generatedEmoji TEXT,
   reviewerEmoji TEXT,
-  confirmed BOOLEAN NOT NULL DEFAULT FALSE
+  confirmed INTEGER NOT NULL DEFAULT 0
 );
 
 -- Create index for location-based queries

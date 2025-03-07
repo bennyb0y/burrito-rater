@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
+    "build:pages": "next build",
+    "pages:build": "npm run build:pages && npx @cloudflare/next-on-pages",
+    "pages:deploy": "npx wrangler pages deploy .vercel/output/static",
     "start": "next start",
     "lint": "next lint",
-    "deploy:worker": "wrangler deploy worker.js --compatibility-flag nodejs_compat",
-    "pages:build": "npx @cloudflare/next-on-pages",
-    "pages:deploy": "npx wrangler pages deploy .vercel/output/static",
+    "deploy:worker": "wrangler deploy worker.js --config wrangler.worker.toml",
     "pages:watch": "npx @cloudflare/next-on-pages --watch",
     "pages:dev": "npx wrangler pages dev .vercel/output/static --compatibility-flag=nodejs_compat"
   },

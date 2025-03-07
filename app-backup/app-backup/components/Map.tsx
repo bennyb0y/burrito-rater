@@ -3,7 +3,7 @@
 import React, { useCallback, useState, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, Marker, StandaloneSearchBox, InfoWindow } from '@react-google-maps/api';
 import RatingForm from './RatingForm';
-import { getApiUrl } from '../config.js';
+import { getApiUrl } from '../config';
 
 const containerStyle = {
   width: '100%',
@@ -113,7 +113,7 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
       try {
         console.log('Fetching ratings from API');
         
-        // Fetch all ratings from the API
+        // Fetch all ratings from the API without the confirmed filter
         const response = await fetch(getApiUrl('ratings'));
         
         if (!response.ok) {
@@ -125,17 +125,32 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
         const data = await response.json();
         console.log('Fetched ratings:', data);
         
-        // Filter ratings that have confirmed=1 or confirmed=true
-        const confirmedRatings = data.filter((rating: Rating) => {
-          if (typeof rating.confirmed === 'number') {
-            return rating.confirmed === 1;
-          } else if (typeof rating.confirmed === 'boolean') {
-            return rating.confirmed === true;
-          }
-          return false;
+        // Load confirmed ratings from localStorage
+        let confirmedRatings: number[] = [];
+        try {
+          confirmedRatings = JSON.parse(localStorage.getItem('confirmedRatings') || '[]');
+        } catch (e) {
+          console.error('Error loading confirmed status from localStorage:', e);
+        }
+        
+        // Create a map of confirmed ratings
+        const confirmedMap: Record<number, boolean> = {};
+        confirmedRatings.forEach((id: number) => {
+          confirmedMap[id] = true;
         });
         
-        setRatings(confirmedRatings);
+        // Apply the confirmed status to the data and filter to only show confirmed ratings
+        const ratingsWithConfirmed = data.map((rating: Rating) => ({
+          ...rating,
+          confirmed: confirmedMap[Number(rating.id)] ? 1 : (rating.confirmed || 0)
+        }));
+        
+        // Only show confirmed ratings
+        const confirmedRatingsList = ratingsWithConfirmed.filter((rating: Rating) => 
+          rating.confirmed
+        );
+        
+        setRatings(confirmedRatingsList);
       } catch (error) {
         console.error('Error fetching ratings:', error);
       }
