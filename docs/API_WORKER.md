@@ -56,7 +56,11 @@ This command uses Wrangler to deploy the `api/worker.js` file to Cloudflare Work
 
 ## Configuration
 
-The worker is configured using the `wrangler.worker.toml` file:
+The project uses two separate Wrangler configuration files for different purposes:
+
+### Worker Configuration (`wrangler.worker.toml`)
+
+This file is specifically for the Cloudflare Worker deployment:
 
 ```toml
 name = "burrito-rater"
@@ -70,7 +74,30 @@ database_name = "your-database-name"
 database_id = "your-database-id"
 ```
 
-Make sure to update the `database_name` and `database_id` with your actual Cloudflare D1 database information.
+The key settings are:
+- `main = "api/worker.js"`: Specifies the entry point for the worker
+- `[[d1_databases]]`: Configures the D1 database binding
+
+### Pages Configuration (`wrangler.toml`)
+
+This file is used for Cloudflare Pages deployment:
+
+```toml
+name = "burrito-rater"
+compatibility_date = "2023-09-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = ".vercel/output/static"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "your-database-name"
+database_id = "your-database-id"
+```
+
+The key setting is:
+- `pages_build_output_dir = ".vercel/output/static"`: Specifies the directory containing the built static files
+
+Make sure to update the `database_name` and `database_id` with your actual Cloudflare D1 database information in both files.
 
 ## Development
 

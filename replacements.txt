@@ -1,4 +1,0 @@
-burrito-rater.bennyfischer.workers.dev==>your-worker-name.your-account.workers.dev
-burrito-rater-db==>your-database-name
-4467ef47f4344bb87ee9fc681c6ca144==>your-account-id
-AotCtiLFv3AitO69SlFTwWhpvl-VSujmg-rpyBDp==>your-api-token 

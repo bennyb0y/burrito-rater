@@ -16,6 +16,38 @@ The Burrito Rater application consists of two main components:
 1. **Frontend**: Next.js application in the `app/` directory
 2. **API**: Cloudflare Worker in the `api/worker.js` file
 
+## Wrangler Configuration Files
+
+The project uses two separate Wrangler configuration files:
+
+1. **`wrangler.toml`**: Used for Cloudflare Pages deployment
+   ```toml
+   name = "burrito-rater"
+   compatibility_date = "2023-09-01"
+   compatibility_flags = ["nodejs_compat"]
+   pages_build_output_dir = ".vercel/output/static"
+   
+   [[d1_databases]]
+   binding = "DB"
+   database_name = "your-database-name"
+   database_id = "your-database-id"
+   ```
+
+2. **`wrangler.worker.toml`**: Used for Cloudflare Worker deployment
+   ```toml
+   name = "burrito-rater"
+   compatibility_date = "2023-09-01"
+   compatibility_flags = ["nodejs_compat"]
+   main = "api/worker.js"
+   
+   [[d1_databases]]
+   binding = "DB"
+   database_name = "your-database-name"
+   database_id = "your-database-id"
+   ```
+
+These files are kept separate because they serve different purposes and have different configuration requirements.
+
 ## Environment Setup
 
 1. Create a `.env.local` file in the project root with the following variables:

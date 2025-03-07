@@ -55,6 +55,7 @@ next-env.d.ts
 
 # Build artifacts
 .deploy/
+deploy/
 .cache/
 .temp/
 
