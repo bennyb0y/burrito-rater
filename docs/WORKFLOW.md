@@ -33,7 +33,7 @@ A key principle of our architecture is that **Cloudflare D1 is the single source
 
 ### 1. Local Frontend Development
 
-For frontend development, you only need to run the Next.js development server:
+For frontend development, you run the Next.js development server locally while connecting to the remote Cloudflare Worker API and D1 database:
 
 ```bash
 npm run dev
@@ -42,10 +42,10 @@ npm run dev
 This starts the Next.js app on http://localhost:3000, which connects to the Cloudflare Worker API hosted in the cloud. The API, in turn, connects to the Cloudflare D1 database.
 
 **Key points:**
-- You're working with real data from the cloud database
-- API calls go to the production Cloudflare Worker
+- Your local frontend connects to the production Cloudflare Worker API
+- You're working with real data from the cloud D1 database
+- No local worker or database setup is required
 - Changes to the frontend are immediately visible locally
-- No need to set up a local database
 
 ### 2. Admin Access
 
@@ -79,9 +79,9 @@ When making changes to the API:
 The `deploy:worker` script uses the `wrangler deploy` command to upload your Worker to Cloudflare with the required `nodejs_compat` compatibility flag.
 
 **Key points:**
-- API changes are deployed directly to production
-- The Worker connects to the Cloudflare D1 database
-- No local API development environment is needed
+- API changes are deployed directly to the production Cloudflare Worker
+- The Worker connects to the production Cloudflare D1 database
+- No local API server or database is used at any point
 
 ## Testing Workflow
 
@@ -104,7 +104,7 @@ To test frontend changes before deployment:
    npm run pages:dev
    ```
 
-This will start a local server at http://localhost:8788 that simulates the Cloudflare Pages environment.
+This will start a local server at http://localhost:8788 that simulates the Cloudflare Pages environment. Note that this local server still connects to the production Cloudflare Worker API and D1 database.
 
 ### Testing API Changes
 
@@ -116,44 +116,114 @@ Since we use a cloud-first approach, API changes are deployed directly to produc
 
 ## Deployment Workflow
 
+### Prerequisites
+
+Before deploying, ensure you have:
+
+1. Cloudflare account credentials in your `.env.local` file:
+   ```
+   CF_ACCOUNT_ID=your_cloudflare_account_id
+   CF_API_TOKEN=your_cloudflare_api_token
+   ```
+2. The latest code changes committed (or use `--commit-dirty=true` flag)
+3. Node.js and npm installed
+4. Wrangler CLI installed globally or available via npx
+
 ### Frontend Deployment
 
-#### Automatic Deployment (Recommended)
+#### One-Command Deployment (Recommended)
 
-The frontend is automatically deployed to Cloudflare Pages when you push to the main branch of your GitHub repository. This is handled by the GitHub Actions workflow defined in `.github/workflows/cloudflare-pages.yml`.
-
-The workflow:
-1. Checks out the code
-2. Sets up Node.js
-3. Installs dependencies
-4. Builds the Next.js application
-5. Processes the build with @cloudflare/next-on-pages
-6. Deploys to Cloudflare Pages
-
-#### Manual Deployment
-
-You can also manually deploy the frontend:
+The simplest way to deploy the frontend is using the deploy script:
 
 ```bash
-# Build the Next.js application
+npm run deploy
+```
+
+This command:
+1. Builds the Next.js application
+2. Processes the build with @cloudflare/next-on-pages
+3. Deploys to Cloudflare Pages using your Cloudflare credentials from environment variables
+
+Under the hood, this runs:
+```bash
+npm run pages:build && CLOUDFLARE_ACCOUNT_ID=$CF_ACCOUNT_ID CLOUDFLARE_API_TOKEN=$CF_API_TOKEN npx wrangler pages deploy .vercel/output/static --project-name burrito-rater --commit-dirty=true
+```
+
+#### Manual Step-by-Step Deployment
+
+You can also manually deploy the frontend step by step:
+
+```bash
+# 1. Clean up previous build artifacts (optional but recommended)
+rm -rf .next out .vercel
+
+# 2. Install dependencies (if needed)
+npm install
+
+# 3. Build the Next.js application
 npm run build
 
-# Process the build with @cloudflare/next-on-pages
+# 4. Process the build with @cloudflare/next-on-pages
 npm run pages:build
 
-# Deploy to Cloudflare Pages
-npm run pages:deploy
+# 5. Deploy to Cloudflare Pages
+CLOUDFLARE_ACCOUNT_ID=$CF_ACCOUNT_ID CLOUDFLARE_API_TOKEN=$CF_API_TOKEN npx wrangler pages deploy .vercel/output/static --project-name burrito-rater --commit-dirty=true
 ```
+
+The deployment will output a URL where your application is accessible (e.g., `https://[hash].burrito-rater.pages.dev`).
 
 ### API Deployment
 
 To deploy changes to the Cloudflare Worker API:
 
 ```bash
+# Deploy the worker
 npm run deploy:worker
 ```
 
 This command deploys the `worker.js` file to Cloudflare Workers with the required `nodejs_compat` compatibility flag.
+
+Under the hood, this runs:
+```bash
+npx wrangler deploy worker.js
+```
+
+### Full Stack Deployment
+
+When making changes to both the frontend and API, deploy in this order:
+
+1. Deploy the API changes first:
+   ```bash
+   npm run deploy:worker
+   ```
+
+2. Then deploy the frontend:
+   ```bash
+   npm run deploy
+   ```
+
+This ensures that any API changes are available when the new frontend is deployed.
+
+### Deployment Verification
+
+After deployment, verify that:
+
+1. The frontend is accessible at the Cloudflare Pages URL
+2. The API endpoints are responding correctly
+3. The application is functioning as expected
+
+You can check the deployment status and logs in the Cloudflare dashboard under Pages > burrito-rater > Deployments.
+
+### Rollback Procedure
+
+If issues are detected after deployment:
+
+1. For frontend issues, you can roll back to a previous deployment in the Cloudflare Pages dashboard
+2. For API issues, revert your changes to `worker.js` and redeploy:
+   ```bash
+   git checkout [previous_commit] worker.js
+   npm run deploy:worker
+   ```
 
 ## Configuration Requirements
 
@@ -163,7 +233,9 @@ This command deploys the `worker.js` file to Cloudflare Workers with the require
 
 ```
 NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_api_key_here
-NEXT_PUBLIC_API_BASE_URL=https://your-worker-name.your-account.workers.dev
+NEXT_PUBLIC_API_BASE_URL=https://burrito-rater.your-account.workers.dev
+CF_ACCOUNT_ID=your_cloudflare_account_id
+CF_API_TOKEN=your_cloudflare_api_token
 ```
 
 #### Cloudflare Pages Dashboard
@@ -232,8 +304,8 @@ If you're having trouble connecting to the API:
 
 If you're experiencing database issues:
 
-1. Check the Cloudflare D1 dashboard to ensure the database exists
-2. Verify that the database ID in `wrangler.toml` matches the actual database ID
+1. Check the Cloudflare D1 dashboard to ensure the database exists and is accessible
+2. Verify that the database binding in the Cloudflare Worker is correct
 3. Check the Cloudflare Worker logs for any database connection errors
 
 ## Best Practices
@@ -248,6 +320,4 @@ If you're experiencing database issues:
 
 ## Conclusion
 
-The Burrito Rater application uses a cloud-first architecture with Cloudflare D1 as the single source of truth for all data. This approach simplifies development, ensures data consistency, and provides a reliable deployment process.
-
-By following this workflow guide, you can efficiently develop, test, and deploy changes to the application while maintaining a high level of quality and reliability. 
+This workflow guide outlines the development, testing, and deployment process for the Burrito Rater application. By following these guidelines, you can ensure a smooth and efficient development experience while maintaining a reliable and consistent application across all environments. 
