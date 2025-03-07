@@ -255,10 +255,9 @@ This workflow guide outlines the development, testing, and deployment process fo
 ### Key Files and Directories
 
 - **`app/`** - Contains the Next.js application code
-- **`worker.js`** - The Cloudflare Worker script that handles API requests and database operations
+- **`api/worker.js`** - The Cloudflare Worker script that handles API requests and database operations
 - **`wrangler.toml`** - Configuration for Cloudflare Pages deployment
 - **`wrangler.worker.toml`** - Configuration specifically for the Cloudflare Worker deployment
-- **`migrations/`** - Contains database migration scripts
 - **`schema.sql`** - The database schema definition
 
 ### File Organization Recommendations
