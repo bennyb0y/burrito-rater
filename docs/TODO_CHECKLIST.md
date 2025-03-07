@@ -14,6 +14,10 @@ This document tracks completed milestones and upcoming tasks for the Burrito Rat
 - [x] Implement responsive design with Tailwind CSS
 - [x] Add emoji-based user identification
 - [x] Implement sorting and filtering options
+- [x] Restrict ratings to USA only
+- [x] Implement user feedback for rating submissions
+- [x] Add loading states for API interactions
+- [x] Improve error handling for API failures
 
 ### Database & API
 - [x] Set up initial SQLite database with Prisma
@@ -23,6 +27,7 @@ This document tracks completed milestones and upcoming tasks for the Burrito Rat
 - [x] Configure Cloudflare D1 database binding
 - [x] Remove local database dependencies
 - [x] Establish cloud-first architecture
+- [x] Implement location validation for USA-only submissions
 
 ### Deployment
 - [x] Configure Cloudflare Pages deployment
@@ -47,28 +52,46 @@ This document tracks completed milestones and upcoming tasks for the Burrito Rat
 - [x] Document development workflow
 - [x] Create admin setup guide
 - [x] Organize documentation in `/docs` directory
+- [x] Create API documentation
+- [x] Create user guide
+- [x] Create contribution guidelines (in user guide)
+
+### Security
+- [x] Implement rate limiting for API
+- [x] Implement quotas for API
+- [x] Secure Google Maps API key with proper restrictions
+
+### Infrastructure
+- [x] Configure SSL certificates
+- [x] Implement CDN caching strategy
 
 ## 🔄 In Progress
 
 ### User Experience
-- [ ] Implement user feedback for rating submissions
-- [ ] Add loading states for API interactions
-- [ ] Improve error handling for API failures
+- [ ] Add image upload for burritos
+- [ ] Create restaurant profiles
 
 ### Admin Features
 - [ ] Add rating editing functionality
 - [ ] Implement rating statistics dashboard
-- [ ] Add user management capabilities
+
+### Infrastructure
+- [ ] **[HIGH PRIORITY]** Set up custom domain on Cloudflare
+- [ ] **[HIGH PRIORITY]** Set up CI/CD automation for Cloudflare deployment
+  - [ ] Configure GitHub Actions workflow for automated builds
+  - [ ] Set up automatic deployment to Cloudflare Pages on merge to main
+  - [ ] Implement deployment previews for pull requests
+  - [ ] Add automated testing before deployment
+  - [ ] Configure notifications for deployment success/failure
 
 ## 📋 Upcoming Tasks
 
 ### Features
-- [ ] Add image upload for burritos
-- [ ] Create restaurant profiles
 - [ ] Implement social sharing functionality
-- [ ] Add comments on restaurnt profile 
+- [ ] Add comments on restaurant profiles
 - [ ] Create "favorite burritos" functionality tied to passwords
 - [ ] Implement notifications for new ratings
+- [ ] Add user profiles based on combination of username + password
 
 ### Performance & SEO
 - [ ] Optimize image loading and rendering
@@ -76,6 +99,7 @@ This document tracks completed milestones and upcoming tasks for the Burrito Rat
 - [ ] Add sitemap generation
 - [ ] Implement performance monitoring
 - [ ] Add analytics integration
+- [ ] Add heatmap for popular burrito locations
 
 ### Testing
 - [ ] Set up unit testing framework
@@ -85,49 +109,35 @@ This document tracks completed milestones and upcoming tasks for the Burrito Rat
 - [ ] Set up continuous integration for tests
 
 ### Security
-- [X] Implement rate limiting for API
-- [X] Implement quotas for API
 - [ ] Add CSRF protection
 - [ ] Conduct security audit
 - [ ] Implement more secure admin authentication for /admin
 - [ ] Add input validation and sanitization
+- [ ] Add cloudflare captcha for submissions
+- [ ] Implement rate limiting for submissions
 
 ### Infrastructure
-- [x] **[HIGH PRIORITY]** Set up custom domain on Cloudflare
-- [ ] **[HIGH PRIORITY]** Set up CI/CD automation for Cloudflare deployment
-  - [ ] Configure GitHub Actions workflow for automated builds
-  - [ ] Set up automatic deployment to Cloudflare Pages on merge to main
-  - [ ] Implement deployment previews for pull requests
-  - [ ] Add automated testing before deployment
-  - [ ] Configure notifications for deployment success/failure
-- [x] Configure SSL certificates
-- [x] Implement CDN caching strategy
 - [ ] Set up monitoring and alerting
-- [ ] Create backup and recovery strategy
+- [ ] Create backup and recovery strategy for D1 database
+- [ ] Add basic admin alerting for critical errors
 
 ### Documentation
-- [x] Create API documentation
 - [ ] Add JSDoc comments to all components
-- [x] Create user guide
 - [ ] Document testing strategy
-- [x] Create contribution guidelines ( in user guide )
 
 ## 🚀 Future Enhancements
 
 ### Application
-- [x] Create mobile app version ( responsive design updated )
+- [ ] Implement mobile app version with React Native
 - [ ] Implement offline support
-- [ ] restrict ratings to USA only
+- [ ] Add advanced filtering and search
 
 ### Data & Analytics
-- [ ] Add advanced filtering and search
 - [ ] Implement machine learning for recommendations
 - [ ] Create data visualization dashboard
-- [ ] Add heatmap for popular burrito locations
 - [ ] Implement trend analysis for ratings
 
 ### Community
-- [ ] Add user profiles based on combonation of username + password = profile
 - [ ] Implement following/followers functionality
 - [ ] Create burrito challenges and badges
 - [ ] Add events and meetups feature

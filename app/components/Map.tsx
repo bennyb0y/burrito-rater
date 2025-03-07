@@ -224,7 +224,19 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
         body: JSON.stringify(ratingData),
       });
 
-      if (!response.ok) throw new Error('Failed to submit rating');
+      if (!response.ok) {
+        const errorData = await response.json();
+        
+        // Check if this is a location validation error
+        if (response.status === 400 && errorData.error === 'Location must be in the USA') {
+          alert("Sorry, we're currently only accepting ratings for restaurants in the United States during our beta phase.");
+          setShowRatingForm(false);
+          setSelectedLocation(null);
+          return;
+        }
+        
+        throw new Error(errorData.error || 'Failed to submit rating');
+      }
 
       // After successful submission, fetch the updated ratings list
       const ratingsResponse = await fetch(getApiUrl('ratings'));
@@ -252,6 +264,7 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
       
     } catch (error) {
       console.error('Error submitting rating:', error);
+      alert(`Error submitting rating: ${error instanceof Error ? error.message : 'Unknown error'}`);
       // Keep existing ratings on error
     }
   };

@@ -2,19 +2,24 @@
 
 // API configuration
 export const getApiUrl = (endpoint) => {
-  // Use the same API URL for both development and production
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://your-worker-name.your-account.workers.dev';
+  // Use the environment variable for the API base URL
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://burrito-rater.bennyfischer.workers.dev';
   
   console.log(`Using API base URL: ${baseUrl}`);
   
   // Ensure the endpoint has the correct format
   let formattedEndpoint = endpoint;
   
-  // Add /api/ prefix if not already present
-  if (!endpoint.startsWith('/api/') && !endpoint.startsWith('api/')) {
-    formattedEndpoint = `api/${endpoint}`;
-  } else if (endpoint.startsWith('/')) {
-    formattedEndpoint = endpoint.substring(1);
+  // Remove /api/ prefix if present (since our worker doesn't use this prefix)
+  if (formattedEndpoint.startsWith('/api/')) {
+    formattedEndpoint = formattedEndpoint.substring(5);
+  } else if (formattedEndpoint.startsWith('api/')) {
+    formattedEndpoint = formattedEndpoint.substring(4);
+  }
+  
+  // Remove leading slash if present
+  if (formattedEndpoint.startsWith('/')) {
+    formattedEndpoint = formattedEndpoint.substring(1);
   }
   
   // Combine the base URL and endpoint

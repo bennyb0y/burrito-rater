@@ -64,9 +64,13 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
     hasAvocado: false,
     hasVegetables: false,
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
     
     // Generate emoji if password is provided
     const reviewerEmoji = password.length >= 4 ? generateUserEmoji(password) : undefined;
@@ -74,7 +78,7 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
     // Extract zipcode from address
     const zipcode = extractZipcode(position.address);
     
-    onSubmit({
+    const ratingData = {
       latitude: position.lat,
       longitude: position.lng,
       burritoTitle,
@@ -89,7 +93,15 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
       reviewerEmoji,
       zipcode,
       ...ingredients,
-    });
+    };
+
+    try {
+      onSubmit(ratingData);
+    } catch (err) {
+      console.error('Error submitting rating:', err);
+      setError('Failed to submit rating. Please try again.');
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -105,6 +117,19 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
               ✕
             </button>
           </div>
+
+          {/* USA-only notice */}
+          <div className="bg-blue-50 border border-blue-200 rounded-md p-2 mb-3">
+            <p className="text-xs text-blue-800">
+              <span className="font-bold">Note:</span> During our beta phase, we're only accepting ratings for restaurants located in the United States. 🇺🇸
+            </p>
+          </div>
+
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-md p-2 mb-3">
+              <p className="text-xs text-red-800">{error}</p>
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-2">
             <div>
@@ -335,14 +360,16 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
                 type="button"
                 onClick={onClose}
                 className="px-3 py-1 border border-gray-300 rounded-md shadow-sm text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-blue-500"
+                disabled={isSubmitting}
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-3 py-1 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-blue-500"
+                className="px-3 py-1 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-blue-500 disabled:bg-blue-400 disabled:cursor-not-allowed"
+                disabled={isSubmitting}
               >
-                Submit Rating
+                {isSubmitting ? 'Submitting...' : 'Submit Rating'}
               </button>
             </div>
           </form>
