@@ -8,6 +8,9 @@ const containerStyle = {
   height: '100%'
 };
 
+// Custom CSS to hide Google attribution and terms
+const mapContainerClassName = "google-map-no-attribution";
+
 const libraries = ['places'];
 
 interface MiniMapProps {
@@ -64,8 +67,17 @@ const MiniMap: React.FC<MiniMapProps> = ({ latitude, longitude, rating, restaura
   try {
     return (
       <div className="relative w-full h-full rounded-lg overflow-hidden">
+        <style jsx global>{`
+          .google-map-no-attribution .gmnoprint,
+          .google-map-no-attribution .gm-style-cc,
+          .google-map-no-attribution a[href^="https://maps.google.com/maps"],
+          .google-map-no-attribution .gm-style a img {
+            display: none !important;
+          }
+        `}</style>
         <GoogleMap
           mapContainerStyle={containerStyle}
+          mapContainerClassName={mapContainerClassName}
           center={{ lat: latitude, lng: longitude }}
           zoom={15}
           options={{
@@ -82,6 +94,19 @@ const MiniMap: React.FC<MiniMapProps> = ({ latitude, longitude, rating, restaura
               {
                 featureType: 'poi',
                 elementType: 'labels',
+                stylers: [{ visibility: 'off' }]
+              },
+              {
+                featureType: 'transit',
+                elementType: 'labels',
+                stylers: [{ visibility: 'off' }]
+              },
+              {
+                featureType: 'administrative.land_parcel',
+                stylers: [{ visibility: 'off' }]
+              },
+              {
+                featureType: 'administrative.neighborhood',
                 stylers: [{ visibility: 'off' }]
               }
             ]

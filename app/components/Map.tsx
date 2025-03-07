@@ -23,11 +23,11 @@ const defaultCenter = {
 const mapOptions = {
   disableDefaultUI: false,
   zoomControl: true,
-  mapTypeControl: true,
+  mapTypeControl: false,
   scaleControl: true,
-  streetViewControl: true,
+  streetViewControl: false,
   rotateControl: true,
-  fullscreenControl: true,
+  fullscreenControl: false,
   gestureHandling: 'cooperative',
   clickableIcons: false,
   styles: [{
@@ -348,21 +348,9 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
             zoomControlOptions: {
               position: google.maps.ControlPosition.TOP_RIGHT
             },
-            mapTypeControl: true,
-            mapTypeControlOptions: {
-              position: google.maps.ControlPosition.TOP_RIGHT
-            },
             scaleControl: true,
-            streetViewControl: true,
-            streetViewControlOptions: {
-              position: google.maps.ControlPosition.TOP_RIGHT
-            },
             rotateControl: true,
             rotateControlOptions: {
-              position: google.maps.ControlPosition.TOP_RIGHT
-            },
-            fullscreenControl: true,
-            fullscreenControlOptions: {
               position: google.maps.ControlPosition.TOP_RIGHT
             }
           }}
