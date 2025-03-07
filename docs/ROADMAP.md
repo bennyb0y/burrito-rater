@@ -5,13 +5,14 @@ This document outlines the key milestones for the Burrito Rater project.
 ## Steps to Beta Launch
 
 - [ ] Restrict ratings to USA only
+- [ ] Add cloudflare captcha for submissions
 - [ ] Set up CI/CD automation for Cloudflare deployment directly from GitHub
 - [ ] Implement basic monitoring for API and frontend
 - [ ] Add basic admin alerting for critical errors
 - [ ] Improve error handling for API failures
 - [ ] Add loading states for API interactions
 - [ ] Implement user feedback for rating submissions
-- [ ] Secure Google Maps API key with proper restrictions
+- [X] Secure Google Maps API key with proper restrictions
 - [ ] Conduct basic security audit
 - [ ] Create backup and recovery strategy for D1 database
 
