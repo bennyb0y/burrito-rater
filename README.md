@@ -36,7 +36,7 @@ A web application for rating and discovering burritos. Users can submit ratings 
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/bennyb0y/burrito-rater.git
+   git clone https://github.com/yourusername/burrito-rater.git
    cd burrito-rater
    ```
 
@@ -58,13 +58,7 @@ A web application for rating and discovering burritos. Users can submit ratings 
    - Configure API key restrictions:
      - Click on your API key to edit
      - Under "Application restrictions", select "HTTP referrers (websites)"
-     - Add these domains:
-       ```
-       localhost
-       localhost:3000
-       127.0.0.1
-       127.0.0.1:3000
-       ```
+     - Add your domains (localhost, your production domain, etc.)
      - Under "API restrictions", select "Restrict key"
      - Select the APIs you enabled (Maps JavaScript API and Places API)
      - Click "Save"
@@ -109,11 +103,10 @@ A web application for rating and discovering burritos. Users can submit ratings 
    npm run pages:build
    ```
 
-2. The build output will be in the `.vercel/output` directory.
-
-## 🚢 Deployment
-
-See [Deployment Guide](./docs/DEPLOYMENT.md) for detailed deployment instructions.
+2. Deploy to Cloudflare Pages:
+   ```bash
+   npm run pages:deploy
+   ```
 
 ## 📁 Project Structure
 
@@ -134,12 +127,15 @@ burrito-rater/
 
 ## 📚 Documentation
 
-All project documentation is available in the [docs](./docs) directory:
+For detailed documentation, please refer to the [Documentation Index](./docs/README.md).
 
-- [Deployment Guide](./docs/DEPLOYMENT.md) - Instructions for deploying the application
-- [Admin Interface Guide](./docs/ADMIN_GUIDE.md) - Guide for using the admin interface
-- [Database Schema](./docs/DATABASE_SCHEMA.md) - Details about the database schema and structure
-- [Cloudflare Migration Guide](./docs/CLOUDFLARE_MIGRATION.md) - Details about the migration from SQLite to Cloudflare D1
+The documentation covers:
+- Deployment guides
+- Admin interface usage
+- Database schema
+- Development workflows
+- DevOps processes
+- And more
 
 ## 🤝 Contributing
 
