@@ -7,14 +7,14 @@ interface AdminLayoutProps {
   children: React.ReactNode;
 }
 
-export default function AdminLayout({ children }: AdminLayoutProps) {
+// Separate client-side authentication component
+function AdminAuth({ children }: { children: React.ReactNode }) {
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  // Check if user is already authenticated
   useEffect(() => {
     const authStatus = sessionStorage.getItem('adminAuthenticated');
     if (authStatus === 'true') {
@@ -26,7 +26,6 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Get the admin password from environment variable
     const correctPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
     
     console.log('Environment check:', {
@@ -131,4 +130,9 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       </main>
     </div>
   );
+}
+
+// Main layout component
+export default function AdminLayout({ children }: AdminLayoutProps) {
+  return <AdminAuth>{children}</AdminAuth>;
 } 

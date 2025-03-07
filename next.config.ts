@@ -26,6 +26,21 @@ const nextConfig: NextConfig = {
   },
   // Add trailing slashes to ensure proper static file handling
   trailingSlash: true,
+  // Ensure proper handling of client-side pages
+  webpack: (config, { isServer }) => {
+    // Add a rule to handle client-side pages
+    config.module.rules.push({
+      test: /\.(js|jsx|ts|tsx)$/,
+      include: [/app\/admin/],
+      use: {
+        loader: 'babel-loader',
+        options: {
+          presets: ['next/babel'],
+        },
+      },
+    });
+    return config;
+  },
 };
 
 export default nextConfig;
