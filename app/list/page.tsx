@@ -90,11 +90,19 @@ export default function ListPage() {
 
     // Apply sorting
     return filteredRatings.sort((a, b) => {
+      // Handle undefined values
+      if (a[sortBy] === undefined && b[sortBy] === undefined) return 0;
+      if (a[sortBy] === undefined) return sortOrder === 'high' ? -1 : 1;
+      if (b[sortBy] === undefined) return sortOrder === 'high' ? 1 : -1;
+
+      // Sort by rating or price
       if (sortBy === 'rating') {
         return sortOrder === 'high' ? b.rating - a.rating : a.rating - b.rating;
-      } else {
+      } else if (sortBy === 'price') {
         return sortOrder === 'high' ? b.price - a.price : a.price - b.price;
       }
+      
+      return 0;
     });
   };
 

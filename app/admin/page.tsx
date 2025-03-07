@@ -249,8 +249,8 @@ export default function AdminPage() {
       });
       
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to confirm rating');
+        const errorText = await response.text();
+        throw new Error(errorText || 'Failed to confirm rating');
       }
       
       // Update the UI state
@@ -260,7 +260,7 @@ export default function AdminPage() {
         )
       );
       
-      setSuccessMessage(`Rating #${id} marked as confirmed`);
+      setSuccessMessage('Rating confirmed successfully');
     } catch (error) {
       console.error('Error confirming rating:', error);
       setError(error instanceof Error ? error.message : 'Failed to confirm rating');

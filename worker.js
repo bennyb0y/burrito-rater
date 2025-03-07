@@ -102,7 +102,7 @@ export default {
     const confirmMatch = url.pathname.match(/^\/api\/ratings\/(\d+)\/confirm$/);
     if (confirmMatch) {
       const ratingId = parseInt(confirmMatch[1]);
-      if (request.method === 'POST') {
+      if (request.method === 'POST' || request.method === 'PUT') {
         return this.handleConfirmRating(ratingId, env.DB);
       }
     }
@@ -221,18 +221,15 @@ export default {
           headers: { 'Content-Type': 'application/json' }
         });
       }
-      
-      // Confirm the rating
+
+      // Update the rating to confirmed
       await db
         .prepare('UPDATE Rating SET confirmed = 1 WHERE id = ?')
         .bind(ratingId)
         .run();
-      
-      // Return the rating with a confirmed property
-      return new Response(JSON.stringify({
-        ...rating,
-        confirmed: 1
-      }), {
+
+      return new Response(JSON.stringify({ success: true }), {
+        status: 200,
         headers: { 'Content-Type': 'application/json' }
       });
     } catch (error) {
