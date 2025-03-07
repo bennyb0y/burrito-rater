@@ -1,6 +1,6 @@
 # 🌯 Burrito Rater
 
-A web application for rating and discovering burritos. Users can submit ratings for burritos they've tried, view ratings on a map, and browse a list of all ratings.
+A web application for rating and discovering burritos, built with Next.js and deployed on Cloudflare Pages.
 
 ## 🚀 Features
 
@@ -9,6 +9,7 @@ A web application for rating and discovering burritos. Users can submit ratings 
 - **📋 Rating List**: Browse all submitted ratings in a sortable list
 - **🔐 Admin Interface**: Manage and confirm ratings through an admin portal
 - **📱 Responsive Design**: Works on desktop and mobile devices
+- **🔄 Real-time Updates**: Updates are reflected instantly
 
 ## 💻 Tech Stack
 
@@ -28,9 +29,9 @@ A web application for rating and discovering burritos. Users can submit ratings 
 ### Prerequisites
 
 - Node.js (v18 or later)
-- npm or yarn
-- Cloudflare account (for deployment)
+- npm (v10 or later)
 - Google Maps API key
+- Cloudflare account
 
 ### Installation
 
@@ -96,17 +97,14 @@ A web application for rating and discovering burritos. Users can submit ratings 
    ```
    This will start a local API server at http://localhost:8787 that you can use for development.
 
-### Building for Production
+### Deployment
 
-1. Build the application:
-   ```bash
-   npm run pages:build
-   ```
+For detailed deployment instructions, see the [Deployment Guide](./docs/DEPLOYMENT.md).
 
-2. Deploy to Cloudflare Pages:
-   ```bash
-   npm run pages:deploy
-   ```
+Quick deployment command:
+```bash
+npm run deploy
+```
 
 ## 📁 Project Structure
 

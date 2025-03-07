@@ -108,6 +108,7 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
   const [mapCenter, setMapCenter] = useState(defaultCenter);
   const [locationRatings, setLocationRatings] = useState<Rating[]>([]);
   const [currentRatingIndex, setCurrentRatingIndex] = useState(0);
+  const [error, setError] = useState<string | null>(null);
 
   // Fetch ratings when component mounts or refreshTrigger changes
   useEffect(() => {
@@ -140,13 +141,22 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
         
         console.log(`Filtered ${data.length} ratings to ${confirmedRatings.length} confirmed ratings`);
         setRatings(confirmedRatings);
+        setError(null);
       } catch (error) {
         console.error('Error fetching ratings:', error);
+        setError('Failed to load ratings. Please try again later.');
       }
     };
 
     fetchRatings();
   }, [refreshTrigger]);
+
+  useEffect(() => {
+    if (loadError) {
+      console.error('Error loading Google Maps:', loadError);
+      setError('Failed to load Google Maps. Please check your internet connection and try again.');
+    }
+  }, [loadError]);
 
   const onMapLoad = useCallback((map: google.maps.Map) => {
     setMap(map);
@@ -298,13 +308,18 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
     }
   };
 
-  if (loadError) {
+  if (error) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-red-600 text-center">
-          <h2 className="text-2xl font-bold mb-2">Error Loading Google Maps</h2>
-          <p>Please check your API key and enabled services.</p>
-          <p className="text-sm mt-2">Error: {loadError.message}</p>
+      <div className="flex items-center justify-center h-full bg-gray-100">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Error Loading Map</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     );
@@ -312,220 +327,238 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
 
   if (!isLoaded) {
     return (
-      <div className="flex items-center justify-center h-full">
+      <div className="flex items-center justify-center h-full bg-gray-100">
         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-blue-500"></div>
       </div>
     );
   }
 
-  return (
-    <div className="relative w-full h-full">
-      <GoogleMap
-        mapContainerClassName={mapContainerClassName}
-        mapContainerStyle={containerStyle}
-        center={mapCenter}
-        zoom={14}
-        onLoad={onMapLoad}
-        options={{
-          ...mapOptions,
-          zoomControl: true,
-          zoomControlOptions: {
-            position: google.maps.ControlPosition.TOP_RIGHT
-          },
-          mapTypeControl: true,
-          mapTypeControlOptions: {
-            position: google.maps.ControlPosition.TOP_RIGHT
-          },
-          scaleControl: true,
-          streetViewControl: true,
-          streetViewControlOptions: {
-            position: google.maps.ControlPosition.TOP_RIGHT
-          },
-          rotateControl: true,
-          rotateControlOptions: {
-            position: google.maps.ControlPosition.TOP_RIGHT
-          },
-          fullscreenControl: true,
-          fullscreenControlOptions: {
-            position: google.maps.ControlPosition.TOP_RIGHT
-          }
-        }}
-      >
-        <StandaloneSearchBox
-          onLoad={onSearchBoxLoad}
-          onPlacesChanged={onPlacesChanged}
+  try {
+    return (
+      <div className="relative w-full h-full">
+        <GoogleMap
+          mapContainerClassName={mapContainerClassName}
+          mapContainerStyle={containerStyle}
+          center={mapCenter}
+          zoom={14}
+          onLoad={onMapLoad}
+          options={{
+            ...mapOptions,
+            zoomControl: true,
+            zoomControlOptions: {
+              position: google.maps.ControlPosition.TOP_RIGHT
+            },
+            mapTypeControl: true,
+            mapTypeControlOptions: {
+              position: google.maps.ControlPosition.TOP_RIGHT
+            },
+            scaleControl: true,
+            streetViewControl: true,
+            streetViewControlOptions: {
+              position: google.maps.ControlPosition.TOP_RIGHT
+            },
+            rotateControl: true,
+            rotateControlOptions: {
+              position: google.maps.ControlPosition.TOP_RIGHT
+            },
+            fullscreenControl: true,
+            fullscreenControlOptions: {
+              position: google.maps.ControlPosition.TOP_RIGHT
+            }
+          }}
         >
-          <input
-            type="text"
-            placeholder="Search for a restaurant"
-            className="absolute top-4 left-4 z-10"
-            style={searchBoxStyle.input}
-          />
-        </StandaloneSearchBox>
-
-        {ratings.map((rating) => (
-          <Marker
-            key={rating.id}
-            position={{ lat: rating.latitude, lng: rating.longitude }}
-            onClick={() => handleSelectRating(rating)}
-            title={`${rating.restaurantName}: ${rating.burritoTitle}`}
-            label={{
-              text: '🌯',
-              fontSize: '24px',
-              className: 'marker-label'
-            }}
-            icon={{
-              path: google.maps.SymbolPath.CIRCLE,
-              scale: 16,
-              fillColor: getRatingColor(rating.rating),
-              fillOpacity: 0.7,
-              strokeWeight: 2,
-              strokeColor: getRatingColor(rating.rating, true)
-            } as google.maps.Symbol}
-          />
-        ))}
-
-        {/* Selected location info window */}
-        {selectedLocation && (
-          <InfoWindow
-            position={{
-              lat: selectedLocation.lat,
-              lng: selectedLocation.lng
-            }}
-            onCloseClick={() => setSelectedLocation(null)}
-            options={{
-              maxWidth: 320
-            }}
+          <StandaloneSearchBox
+            onLoad={onSearchBoxLoad}
+            onPlacesChanged={onPlacesChanged}
           >
-            <div className="p-1 pt-0 min-w-[280px]">
-              <h3 className="font-bold text-base sm:text-lg mb-2 text-gray-900 mt-0">{selectedLocation.name}</h3>
-              <p className="text-sm text-gray-700 mb-4">{selectedLocation.address}</p>
-              <div className="space-y-2">
-                <button
-                  onClick={handleStartRating}
-                  className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md"
-                >
-                  Rate a Burrito Here
-                </button>
-              </div>
-            </div>
-          </InfoWindow>
-        )}
+            <input
+              type="text"
+              placeholder="Search for a restaurant"
+              className="absolute top-4 left-4 z-10"
+              style={searchBoxStyle.input}
+            />
+          </StandaloneSearchBox>
 
-        {/* Selected rating info window */}
-        {selectedRating && (
-          <InfoWindow
-            position={{
-              lat: selectedRating.latitude,
-              lng: selectedRating.longitude
-            }}
-            onCloseClick={() => {
-              setSelectedRating(null);
-              setLocationRatings([]);
-              setCurrentRatingIndex(0);
-            }}
-            options={{
-              maxWidth: 320
-            }}
-          >
-            <div className="p-1 pt-0 min-w-[280px] relative">
-              <div className="flex justify-between items-start mb-1">
-                <div>
-                  <h3 className="font-bold text-base sm:text-lg text-gray-900 mt-0">{selectedRating.restaurantName}</h3>
-                  <p className="text-sm text-gray-600">{selectedRating.burritoTitle}</p>
-                  <div className="mt-1 flex items-center gap-1">
-                    <span className="text-xs text-gray-500 italic">by</span>
-                    <span className="text-sm font-bold text-gray-700">
-                      {selectedRating.reviewerName || 'Anonymous'}
-                    </span>
-                    {selectedRating.reviewerEmoji && (
-                      <span className="text-lg">{selectedRating.reviewerEmoji}</span>
-                    )}
-                  </div>
+          {ratings.map((rating) => (
+            <Marker
+              key={rating.id}
+              position={{ lat: rating.latitude, lng: rating.longitude }}
+              onClick={() => handleSelectRating(rating)}
+              title={`${rating.restaurantName}: ${rating.burritoTitle}`}
+              label={{
+                text: '🌯',
+                fontSize: '24px',
+                className: 'marker-label'
+              }}
+              icon={{
+                path: google.maps.SymbolPath.CIRCLE,
+                scale: 16,
+                fillColor: getRatingColor(rating.rating),
+                fillOpacity: 0.7,
+                strokeWeight: 2,
+                strokeColor: getRatingColor(rating.rating, true)
+              } as google.maps.Symbol}
+            />
+          ))}
+
+          {/* Selected location info window */}
+          {selectedLocation && (
+            <InfoWindow
+              position={{
+                lat: selectedLocation.lat,
+                lng: selectedLocation.lng
+              }}
+              onCloseClick={() => setSelectedLocation(null)}
+              options={{
+                maxWidth: 320
+              }}
+            >
+              <div className="p-1 pt-0 min-w-[280px]">
+                <h3 className="font-bold text-base sm:text-lg mb-2 text-gray-900 mt-0">{selectedLocation.name}</h3>
+                <p className="text-sm text-gray-700 mb-4">{selectedLocation.address}</p>
+                <div className="space-y-2">
+                  <button
+                    onClick={handleStartRating}
+                    className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md"
+                  >
+                    Rate a Burrito Here
+                  </button>
                 </div>
-                <div className="flex flex-col items-end">
-                  <div className="flex items-center gap-2">
-                    <div className="bg-blue-100 px-3 py-1 rounded-full flex items-center gap-1">
-                      <span className="text-lg font-bold text-blue-800">{selectedRating.rating}</span>
-                      <span className="text-blue-600">/5</span>
+              </div>
+            </InfoWindow>
+          )}
+
+          {/* Selected rating info window */}
+          {selectedRating && (
+            <InfoWindow
+              position={{
+                lat: selectedRating.latitude,
+                lng: selectedRating.longitude
+              }}
+              onCloseClick={() => {
+                setSelectedRating(null);
+                setLocationRatings([]);
+                setCurrentRatingIndex(0);
+              }}
+              options={{
+                maxWidth: 320
+              }}
+            >
+              <div className="p-1 pt-0 min-w-[280px] relative">
+                <div className="flex justify-between items-start mb-1">
+                  <div>
+                    <h3 className="font-bold text-base sm:text-lg text-gray-900 mt-0">{selectedRating.restaurantName}</h3>
+                    <p className="text-sm text-gray-600">{selectedRating.burritoTitle}</p>
+                    <div className="mt-1 flex items-center gap-1">
+                      <span className="text-xs text-gray-500 italic">by</span>
+                      <span className="text-sm font-bold text-gray-700">
+                        {selectedRating.reviewerName || 'Anonymous'}
+                      </span>
+                      {selectedRating.reviewerEmoji && (
+                        <span className="text-lg">{selectedRating.reviewerEmoji}</span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <div className="flex items-center gap-2">
+                      <div className="bg-blue-100 px-3 py-1 rounded-full flex items-center gap-1">
+                        <span className="text-lg font-bold text-blue-800">{selectedRating.rating}</span>
+                        <span className="text-blue-600">/5</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="mt-2">
-                <div className="flex items-center gap-4 text-sm text-gray-600">
-                  <div className="flex items-center gap-1">
-                    <span>😋</span>
-                    <span>{selectedRating.taste.toFixed(1)}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <span>💰</span>
-                    <span>{selectedRating.value.toFixed(1)}</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <span>💵</span>
-                    <span>${selectedRating.price.toFixed(2)}</span>
+                <div className="mt-2">
+                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                    <div className="flex items-center gap-1">
+                      <span>😋</span>
+                      <span>{selectedRating.taste.toFixed(1)}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span>💰</span>
+                      <span>{selectedRating.value.toFixed(1)}</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span>💵</span>
+                      <span>${selectedRating.price.toFixed(2)}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {selectedRating.review && (
-                <div className="mt-2 text-sm text-gray-700">
-                  "{selectedRating.review}"
-                </div>
-              )}
-              
-              {locationRatings.length > 1 && (
-                <div className="flex justify-end items-center mt-3 text-gray-500">
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handlePrevRating();
-                    }}
-                    className="p-1 hover:bg-gray-100 rounded-full"
-                    aria-label="Previous rating"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                    </svg>
-                  </button>
-                  <span className="text-xs mx-1">
-                    {currentRatingIndex + 1}/{locationRatings.length}
-                  </span>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleNextRating();
-                    }}
-                    className="p-1 hover:bg-gray-100 rounded-full"
-                    aria-label="Next rating"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </button>
-                </div>
-              )}
-            </div>
-          </InfoWindow>
+                {selectedRating.review && (
+                  <div className="mt-2 text-sm text-gray-700">
+                    "{selectedRating.review}"
+                  </div>
+                )}
+                
+                {locationRatings.length > 1 && (
+                  <div className="flex justify-end items-center mt-3 text-gray-500">
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePrevRating();
+                      }}
+                      className="p-1 hover:bg-gray-100 rounded-full"
+                      aria-label="Previous rating"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                    <span className="text-xs mx-1">
+                      {currentRatingIndex + 1}/{locationRatings.length}
+                    </span>
+                    <button 
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNextRating();
+                      }}
+                      className="p-1 hover:bg-gray-100 rounded-full"
+                      aria-label="Next rating"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  </div>
+                )}
+              </div>
+            </InfoWindow>
+          )}
+        </GoogleMap>
+
+        {/* Rating Form Modal */}
+        {showRatingForm && selectedLocation && (
+          <RatingForm
+            position={selectedLocation}
+            placeName={selectedLocation.name}
+            onSubmit={handleRatingSubmit}
+            onClose={() => {
+              setShowRatingForm(false);
+              setSelectedLocation(null);
+            }}
+          />
         )}
-      </GoogleMap>
-
-      {/* Rating Form Modal */}
-      {showRatingForm && selectedLocation && (
-        <RatingForm
-          position={selectedLocation}
-          placeName={selectedLocation.name}
-          onSubmit={handleRatingSubmit}
-          onClose={() => {
-            setShowRatingForm(false);
-            setSelectedLocation(null);
-          }}
-        />
-      )}
-    </div>
-  );
+      </div>
+    );
+  } catch (error) {
+    console.error('Error rendering map:', error);
+    return (
+      <div className="flex items-center justify-center h-full bg-gray-100">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Error Rendering Map</h2>
+          <p className="text-gray-600 mb-4">There was an error rendering the map. Please try again.</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default Map; 

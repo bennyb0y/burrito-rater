@@ -1,9 +1,1 @@
-{
-  "version": 1,
-  "include": ["/*"],
-  "exclude": [
-    "/_next/*",
-    "/api/*",
-    "/_vercel/insights/*"
-  ]
-} 
+{"version":1,"description":"Built with @cloudflare/next-on-pages@1.13.9.","include":["/*"],"exclude":["/_next/static/*","/build/*","/static/*","/node_modules/*","/.next/*","/.git/*"]}

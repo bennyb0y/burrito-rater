@@ -1,99 +1,126 @@
 # Deployment Guide
 
-This document outlines the deployment process for the Burrito Rater application.
+This guide explains how to deploy the Burrito Rater application to Cloudflare Pages.
 
-## Architecture
+## Prerequisites
 
-The Burrito Rater application consists of two main components:
+- Node.js (v18 or later)
+- npm (v10 or later)
+- Cloudflare account with Pages enabled
+- Cloudflare API token with Pages deployment permissions
 
-1. **Frontend**: A Next.js application deployed to Cloudflare Pages
-2. **Backend API**: A Cloudflare Worker with D1 database integration
+## Environment Setup
+
+1. Create a `.env.local` file in the project root with the following variables:
+
+```env
+# API Configuration
+NEXT_PUBLIC_API_BASE_URL=https://your-worker-name.your-account.workers.dev
+
+# Google Maps API Key
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_api_key
+
+# Cloudflare Credentials
+CF_ACCOUNT_ID=your_account_id
+CF_API_TOKEN=your_api_token
+
+# Database Configuration
+DATABASE_URL=your-database-name
+
+# Admin Configuration
+NEXT_PUBLIC_ADMIN_PASSWORD=your_admin_password
+```
+
+## Deployment Commands
+
+### Development
+
+For local development:
+```bash
+npm run dev
+```
+
+### Production Deployment
+
+To deploy to Cloudflare Pages:
+```bash
+npm run deploy
+```
+
+This command will:
+1. Build the Next.js application
+2. Generate static files
+3. Deploy to Cloudflare Pages using credentials from `.env.local`
+4. Skip account selection prompts
+5. Allow deployment with uncommitted changes
+
+### Other Available Commands
+
+- `npm run build` - Build the Next.js application
+- `npm run pages:build` - Build for Cloudflare Pages
+- `npm run pages:deploy` - Deploy to Cloudflare Pages (requires manual authentication)
+- `npm run deploy:worker` - Deploy the API worker
+- `npm run pages:watch` - Watch for changes during development
+- `npm run pages:dev` - Run the application locally with Cloudflare Pages compatibility
 
 ## Deployment Process
 
-### Frontend Deployment
+1. The build process:
+   - Compiles Next.js application
+   - Generates static pages
+   - Optimizes assets
+   - Creates Cloudflare Pages worker
 
-To deploy the frontend to Cloudflare Pages:
-
-1. Build the application:
-   ```bash
-   npm run pages:build
-   ```
-
-2. Deploy to Cloudflare Pages:
-   ```bash
-   npm run pages:deploy
-   ```
-
-### Backend Deployment
-
-To deploy the backend API to Cloudflare Workers:
-
-1. Deploy the worker:
-   ```bash
-   npm run deploy:worker
-   ```
-
-## Environment Variables
-
-The following environment variables need to be set in Cloudflare Pages:
-
-- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Google Maps API key for map functionality
-- `NEXT_PUBLIC_API_BASE_URL`: URL of the Cloudflare Worker API (e.g., `https://your-worker-name.your-account.workers.dev`)
-- `NEXT_PUBLIC_ADMIN_PASSWORD`: Password for the admin interface
-
-### Development Environment Variables
-
-For local development, you can set additional environment variables in your `.env.local` file:
-
-- `NEXT_PUBLIC_DEV_API_BASE_URL`: URL for the development API server (e.g., `http://localhost:8787`)
-
-## API Configuration
-
-The application is configured to use different API endpoints based on the environment:
-
-- **Production**: Uses the `NEXT_PUBLIC_API_BASE_URL` environment variable
-- **Development**: Can be configured to use a separate development API by setting `NEXT_PUBLIC_DEV_API_BASE_URL`
-
-This separation allows you to:
-1. Keep development and production data separate
-2. Test changes to the API without affecting production data
-3. Use a local API server for development if needed
-
-## Current Implementation Notes
-
-### Confirmation System
-
-The application uses Cloudflare D1 database for storing and managing confirmation status:
-
-1. When an admin confirms a rating in the admin interface, the confirmation status is stored in the D1 database.
-2. The Map and List views filter ratings based on the confirmation status from the database.
-3. This ensures that confirmations are consistent across all devices and environments.
-
-### Known Limitations
-
-1. **API Integration**: The backend API handles confirmations through the Cloudflare D1 database. The database schema has been updated to include a `confirmed` column.
-
-## Future Improvements
-
-1. **Deployment Automation**: Set up GitHub Actions for automated deployments.
-
-2. **User Authentication**: Implement proper user authentication for the admin interface.
+2. The deployment process:
+   - Uploads static files
+   - Configures routing
+   - Sets up caching headers
+   - Deploys worker
 
 ## Troubleshooting
 
-### API Errors
+### Common Issues
 
-If you encounter API errors, check the following:
+1. **Build Failures**
+   - Check Node.js version compatibility
+   - Verify all dependencies are installed
+   - Check for TypeScript errors
 
-1. Ensure the Cloudflare Worker is deployed correctly.
-2. Verify that the `NEXT_PUBLIC_API_BASE_URL` environment variable is set correctly.
-3. Check the browser console for specific error messages.
+2. **Deployment Failures**
+   - Verify Cloudflare credentials in `.env.local`
+   - Check API token permissions
+   - Ensure project name matches Cloudflare Pages project
 
-### Deployment Errors
+3. **Runtime Errors**
+   - Check environment variables
+   - Verify API endpoints
+   - Check browser console for errors
 
-If you encounter deployment errors:
+### Environment Variables
 
-1. Ensure you have the correct Cloudflare credentials set up.
-2. Check that the wrangler.toml file is configured correctly.
-3. Verify that the build process completes successfully before deploying. 
+Make sure all required environment variables are set in:
+- `.env.local` for local development
+- Cloudflare Pages environment variables for production
+
+## Best Practices
+
+1. **Version Control**
+   - Keep `.env.local` in `.gitignore`
+   - Use environment variables for sensitive data
+   - Document all environment variables
+
+2. **Deployment**
+   - Test locally before deploying
+   - Use the automated deployment command
+   - Monitor deployment logs
+
+3. **Security**
+   - Rotate API tokens regularly
+   - Use environment-specific credentials
+   - Follow least privilege principle
+
+## Related Documentation
+
+- [Cloudflare Pages Documentation](https://developers.cloudflare.com/pages/)
+- [Next.js Documentation](https://nextjs.org/docs)
+- [API Worker Documentation](./API_WORKER.md) 

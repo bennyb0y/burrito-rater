@@ -2,17 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import dynamic from 'next/dynamic';
+import MiniMap from '../components/MiniMap';
 import { getApiUrl } from '../config.js';
-
-const MiniMap = dynamic(() => import('../components/MiniMap'), {
-  ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center h-full">
-      <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-    </div>
-  ),
-});
 
 interface Rating {
   id: string;
@@ -44,6 +35,7 @@ export default function ListPage() {
   const [sortOrder, setSortOrder] = useState<'high' | 'low'>('high');
   const [zipcode, setZipcode] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [mapError, setMapError] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchRatings = async () => {
@@ -186,13 +178,21 @@ export default function ListPage() {
             <div className="flex flex-col sm:flex-row gap-3">
               {/* Mini Map */}
               <div className="w-full sm:w-36 h-36 flex-shrink-0">
-                <MiniMap
-                  latitude={rating.latitude}
-                  longitude={rating.longitude}
-                  rating={rating.rating}
-                  restaurantName={rating.restaurantName}
-                  burritoTitle={rating.burritoTitle}
-                />
+                {!mapError ? (
+                  <MiniMap
+                    latitude={rating.latitude}
+                    longitude={rating.longitude}
+                    rating={rating.rating}
+                    restaurantName={rating.restaurantName}
+                    burritoTitle={rating.burritoTitle}
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full bg-gray-100 rounded-lg">
+                    <div className="text-center">
+                      <p className="text-sm text-gray-500">Map unavailable</p>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Rating Content */}

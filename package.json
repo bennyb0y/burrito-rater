@@ -12,18 +12,20 @@
     "lint": "next lint",
     "deploy:worker": "wrangler deploy worker.js --config wrangler.worker.toml",
     "pages:watch": "npx @cloudflare/next-on-pages --watch",
-    "pages:dev": "npx wrangler pages dev .vercel/output/static --compatibility-flag=nodejs_compat"
+    "pages:dev": "npx wrangler pages dev .vercel/output/static --compatibility-flag=nodejs_compat",
+    "deploy": "npm run pages:build && CLOUDFLARE_ACCOUNT_ID=$CF_ACCOUNT_ID CLOUDFLARE_API_TOKEN=$CF_API_TOKEN npx wrangler pages deploy .vercel/output/static --project-name burrito-rater --commit-dirty=true"
   },
   "dependencies": {
     "@react-google-maps/api": "^2.20.6",
     "autoprefixer": "^10.4.20",
+    "critters": "^0.0.23",
     "next": "15.2.1",
     "postcss": "^8.5.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
-    "@cloudflare/next-on-pages": "^1.10.0",
+    "@cloudflare/next-on-pages": "^1.13.9",
     "@cloudflare/workers-types": "^4.20250303.0",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
