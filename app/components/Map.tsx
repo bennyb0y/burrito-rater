@@ -129,14 +129,16 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
         
         // Filter ratings that have confirmed=1 or confirmed=true
         const confirmedRatings = data.filter((rating: Rating) => {
-          if (typeof rating.confirmed === 'number') {
-            return rating.confirmed === 1;
-          } else if (typeof rating.confirmed === 'boolean') {
-            return rating.confirmed === true;
-          }
-          return false;
+          const isConfirmed = (typeof rating.confirmed === 'number' && rating.confirmed === 1) || 
+                             (typeof rating.confirmed === 'boolean' && rating.confirmed === true);
+          
+          // Log each rating's confirmation status for debugging
+          console.log(`Rating ${rating.id} (${rating.restaurantName}): confirmed=${rating.confirmed}, isConfirmed=${isConfirmed}`);
+          
+          return isConfirmed;
         });
         
+        console.log(`Filtered ${data.length} ratings to ${confirmedRatings.length} confirmed ratings`);
         setRatings(confirmedRatings);
       } catch (error) {
         console.error('Error fetching ratings:', error);
@@ -219,9 +221,25 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
       if (!ratingsResponse.ok) throw new Error('Failed to fetch updated ratings');
       
       const updatedRatings = await ratingsResponse.json();
-      setRatings(updatedRatings);
+      
+      // Filter out unconfirmed ratings
+      const confirmedRatings = updatedRatings.filter((rating: Rating) => {
+        const isConfirmed = (typeof rating.confirmed === 'number' && rating.confirmed === 1) || 
+                           (typeof rating.confirmed === 'boolean' && rating.confirmed === true);
+        
+        console.log(`After submission - Rating ${rating.id} (${rating.restaurantName}): confirmed=${rating.confirmed}, isConfirmed=${isConfirmed}`);
+        
+        return isConfirmed;
+      });
+      
+      console.log(`After submission - Filtered ${updatedRatings.length} ratings to ${confirmedRatings.length} confirmed ratings`);
+      setRatings(confirmedRatings);
       setShowRatingForm(false);
       setSelectedLocation(null);
+      
+      // Show a notification that the rating was submitted but needs confirmation
+      alert("Your rating has been submitted and is awaiting admin confirmation. It will appear on the map once confirmed.");
+      
     } catch (error) {
       console.error('Error submitting rating:', error);
       // Keep existing ratings on error
