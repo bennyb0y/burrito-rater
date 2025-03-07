@@ -106,6 +106,8 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
     west: number;
   } | null>(null);
   const [mapCenter, setMapCenter] = useState(defaultCenter);
+  const [locationRatings, setLocationRatings] = useState<Rating[]>([]);
+  const [currentRatingIndex, setCurrentRatingIndex] = useState(0);
 
   // Fetch ratings when component mounts or refreshTrigger changes
   useEffect(() => {
@@ -238,6 +240,46 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
     return colors[roundedRating as keyof typeof colors] || colors[3];
   };
 
+  // Function to handle selecting a rating marker
+  const handleSelectRating = (rating: Rating) => {
+    // Find all ratings at the same location
+    const ratingsAtSameLocation = ratings.filter(
+      r => Math.abs(r.latitude - rating.latitude) < 0.0001 && 
+           Math.abs(r.longitude - rating.longitude) < 0.0001
+    );
+    
+    if (ratingsAtSameLocation.length > 1) {
+      // Multiple ratings at this location
+      setLocationRatings(ratingsAtSameLocation);
+      const index = ratingsAtSameLocation.findIndex(r => r.id === rating.id);
+      setCurrentRatingIndex(index >= 0 ? index : 0);
+      setSelectedRating(ratingsAtSameLocation[index >= 0 ? index : 0]);
+    } else {
+      // Only one rating at this location
+      setLocationRatings([rating]);
+      setCurrentRatingIndex(0);
+      setSelectedRating(rating);
+    }
+  };
+
+  // Function to navigate to the next rating
+  const handleNextRating = () => {
+    if (locationRatings.length > 1) {
+      const nextIndex = (currentRatingIndex + 1) % locationRatings.length;
+      setCurrentRatingIndex(nextIndex);
+      setSelectedRating(locationRatings[nextIndex]);
+    }
+  };
+
+  // Function to navigate to the previous rating
+  const handlePrevRating = () => {
+    if (locationRatings.length > 1) {
+      const prevIndex = (currentRatingIndex - 1 + locationRatings.length) % locationRatings.length;
+      setCurrentRatingIndex(prevIndex);
+      setSelectedRating(locationRatings[prevIndex]);
+    }
+  };
+
   if (loadError) {
     return (
       <div className="flex items-center justify-center h-full">
@@ -307,7 +349,7 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
           <Marker
             key={rating.id}
             position={{ lat: rating.latitude, lng: rating.longitude }}
-            onClick={() => setSelectedRating(rating)}
+            onClick={() => handleSelectRating(rating)}
             title={`${rating.restaurantName}: ${rating.burritoTitle}`}
             label={{
               text: '🌯',
@@ -333,9 +375,12 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
               lng: selectedLocation.lng
             }}
             onCloseClick={() => setSelectedLocation(null)}
+            options={{
+              maxWidth: 320
+            }}
           >
-            <div className="p-2 max-w-xs">
-              <h3 className="font-bold text-base sm:text-lg mb-2 text-gray-900">{selectedLocation.name}</h3>
+            <div className="p-1 pt-0 min-w-[280px]">
+              <h3 className="font-bold text-base sm:text-lg mb-2 text-gray-900 mt-0">{selectedLocation.name}</h3>
               <p className="text-sm text-gray-700 mb-4">{selectedLocation.address}</p>
               <div className="space-y-2">
                 <button
@@ -356,19 +401,27 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
               lat: selectedRating.latitude,
               lng: selectedRating.longitude
             }}
-            onCloseClick={() => setSelectedRating(null)}
+            onCloseClick={() => {
+              setSelectedRating(null);
+              setLocationRatings([]);
+              setCurrentRatingIndex(0);
+            }}
+            options={{
+              maxWidth: 320
+            }}
           >
-            <div className="p-2 max-w-xs">
-              <div className="flex justify-between items-start">
+            <div className="p-1 pt-0 min-w-[280px] relative">
+              <div className="flex justify-between items-start mb-1">
                 <div>
-                  <h3 className="font-bold text-base sm:text-lg text-gray-900">{selectedRating.restaurantName}</h3>
+                  <h3 className="font-bold text-base sm:text-lg text-gray-900 mt-0">{selectedRating.restaurantName}</h3>
                   <p className="text-sm text-gray-600">{selectedRating.burritoTitle}</p>
-                  <div className="mt-2 flex items-center gap-2">
-                    <span className="text-sm text-gray-500">
+                  <div className="mt-1 flex items-center gap-1">
+                    <span className="text-xs text-gray-500 italic">by</span>
+                    <span className="text-sm font-bold text-gray-700">
                       {selectedRating.reviewerName || 'Anonymous'}
                     </span>
                     {selectedRating.reviewerEmoji && (
-                      <span className="text-2xl">{selectedRating.reviewerEmoji}</span>
+                      <span className="text-lg">{selectedRating.reviewerEmoji}</span>
                     )}
                   </div>
                 </div>
@@ -379,13 +432,10 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
                       <span className="text-blue-600">/5</span>
                     </div>
                   </div>
-                  <div className="mt-2 text-sm text-gray-600">
-                    ${selectedRating.price.toFixed(2)}
-                  </div>
                 </div>
               </div>
 
-              <div className="mt-4">
+              <div className="mt-2">
                 <div className="flex items-center gap-4 text-sm text-gray-600">
                   <div className="flex items-center gap-1">
                     <span>😋</span>
@@ -403,8 +453,40 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
               </div>
 
               {selectedRating.review && (
-                <div className="mt-4 text-sm text-gray-700">
+                <div className="mt-2 text-sm text-gray-700">
                   "{selectedRating.review}"
+                </div>
+              )}
+              
+              {locationRatings.length > 1 && (
+                <div className="flex justify-end items-center mt-3 text-gray-500">
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePrevRating();
+                    }}
+                    className="p-1 hover:bg-gray-100 rounded-full"
+                    aria-label="Previous rating"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  <span className="text-xs mx-1">
+                    {currentRatingIndex + 1}/{locationRatings.length}
+                  </span>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleNextRating();
+                    }}
+                    className="p-1 hover:bg-gray-100 rounded-full"
+                    aria-label="Next rating"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
                 </div>
               )}
             </div>
