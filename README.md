@@ -37,7 +37,7 @@ A web application for rating and discovering burritos, built with Next.js and de
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/burrito-rater.git
+   git clone https://github.com/bennyb0y/burrito-rater.git
    cd burrito-rater
    ```
 
