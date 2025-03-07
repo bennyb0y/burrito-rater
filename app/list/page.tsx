@@ -35,6 +35,7 @@ interface Rating {
   hasVegetables: boolean;
   zipcode?: string;
   confirmed?: number;
+  createdAt?: string;
 }
 
 export default function ListPage() {
@@ -114,6 +115,15 @@ export default function ListPage() {
     return ingredients.join(' • ') || 'No ingredients listed';
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
@@ -165,15 +175,15 @@ export default function ListPage() {
         {getSortedRatings().length} {getSortedRatings().length === 1 ? 'result' : 'results'} found
       </div>
 
-      <div className="grid gap-4 sm:gap-6">
+      <div className="grid gap-3">
         {getSortedRatings().map((rating) => (
           <div
             key={rating.id}
-            className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 hover:border-blue-500 transition-colors"
+            className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 hover:border-blue-500 transition-colors"
           >
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6">
+            <div className="flex flex-col sm:flex-row gap-3">
               {/* Mini Map */}
-              <div className="w-full sm:w-48 h-48 flex-shrink-0">
+              <div className="w-full sm:w-36 h-36 flex-shrink-0">
                 <MiniMap
                   latitude={rating.latitude}
                   longitude={rating.longitude}
@@ -184,60 +194,65 @@ export default function ListPage() {
               </div>
 
               {/* Rating Content */}
-              <div className="flex-1">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-start gap-2 sm:gap-0">
+              <div className="flex-1 flex flex-col">
+                <div className="flex justify-between items-start">
                   <div>
-                    <h2 className="text-lg sm:text-xl font-bold text-gray-900">{rating.restaurantName}</h2>
-                    <p className="text-gray-600">{rating.burritoTitle}</p>
-                    <div className="mt-2 flex items-center gap-2">
-                      <span className="text-sm text-gray-500">
+                    <h2 className="text-base font-bold text-gray-900">{rating.restaurantName}</h2>
+                    <p className="text-sm text-gray-600">{rating.burritoTitle}</p>
+                    <div className="mt-1 flex items-center gap-1">
+                      <span className="text-xs text-gray-500 italic">by</span>
+                      <span className="text-xs font-bold text-gray-700">
                         {rating.reviewerName || 'Anonymous'}
                       </span>
                       {rating.reviewerEmoji && (
-                        <span className="text-2xl">{rating.reviewerEmoji}</span>
+                        <span className="text-sm">{rating.reviewerEmoji}</span>
                       )}
+                      <span className="text-xs text-gray-500 ml-2">
+                        {rating.createdAt ? formatDate(rating.createdAt) : ''}
+                      </span>
                     </div>
                   </div>
-                  <div className="flex flex-row sm:flex-col items-center sm:items-end gap-4 sm:gap-0">
-                    <div className="flex items-center gap-2">
-                      <div className="bg-blue-100 px-3 py-1 rounded-full flex items-center gap-1">
-                        <span className="text-lg font-bold text-blue-800">{rating.rating}</span>
-                        <span className="text-blue-600">/5</span>
-                      </div>
+                  <div className="flex flex-col items-end">
+                    <div className="bg-blue-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <span className="text-base font-bold text-blue-800">{rating.rating}</span>
+                      <span className="text-xs text-blue-600">/5</span>
                     </div>
-                    <div className="text-sm text-gray-600">
+                    <div className="text-xs text-gray-600 mt-1">
                       ${rating.price.toFixed(2)}
                     </div>
+                    {rating.zipcode && (
+                      <div className="text-xs text-gray-500 mt-1">
+                        ZIP: {rating.zipcode}
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                <div className="mt-4">
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
-                    <div className="flex items-center gap-1">
-                      <span>😋</span>
-                      <span>{rating.taste.toFixed(1)}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span>💰</span>
-                      <span>{rating.value.toFixed(1)}</span>
-                    </div>
+                <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-gray-600">
+                  <div className="flex items-center gap-1">
+                    <span>😋</span>
+                    <span>Taste: {rating.taste.toFixed(1)}</span>
                   </div>
-                </div>
-
-                <div className="mt-4 text-sm text-gray-600">
-                  {renderIngredients(rating)}
+                  <div className="flex items-center gap-1">
+                    <span>💰</span>
+                    <span>Value: {rating.value.toFixed(1)}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <span>🧩</span>
+                    <span>Ingredients: {renderIngredients(rating)}</span>
+                  </div>
                 </div>
 
                 {rating.review && (
-                  <div className="mt-4 text-gray-700">
+                  <div className="mt-2 text-xs text-gray-700 line-clamp-2">
                     "{rating.review}"
                   </div>
                 )}
 
-                <div className="mt-4">
+                <div className="mt-2 flex justify-end">
                   <Link
                     href={`/?lat=${rating.latitude}&lng=${rating.longitude}`}
-                    className="text-sm text-blue-600 hover:text-blue-800"
+                    className="text-xs text-blue-600 hover:text-blue-800"
                   >
                     View on Map →
                   </Link>
