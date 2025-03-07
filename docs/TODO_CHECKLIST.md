@@ -99,6 +99,12 @@ This document tracks completed milestones and upcoming tasks for the Burrito Rat
   - [ ] Set up custom domain for Cloudflare Pages
   - [ ] Update API references to use custom domain
   - [ ] Verify SSL certificate configuration
+- [ ] **[HIGH PRIORITY]** Set up CI/CD automation for Cloudflare deployment
+  - [ ] Configure GitHub Actions workflow for automated builds
+  - [ ] Set up automatic deployment to Cloudflare Pages on merge to main
+  - [ ] Implement deployment previews for pull requests
+  - [ ] Add automated testing before deployment
+  - [ ] Configure notifications for deployment success/failure
 - [ ] Configure SSL certificates
 - [ ] Implement CDN caching strategy
 - [ ] Set up monitoring and alerting
