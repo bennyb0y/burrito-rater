@@ -25,7 +25,7 @@ CF_ACCOUNT_ID=your_account_id
 CF_API_TOKEN=your_api_token
 
 # Database Configuration
-DATABASE_URL=your-database-name
+DATABASE_URL=your_database_name
 
 # Admin Configuration
 NEXT_PUBLIC_ADMIN_PASSWORD=your_admin_password
