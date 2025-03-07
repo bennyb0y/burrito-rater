@@ -1,6 +1,0 @@
-# pack-refs with: peeled fully-peeled sorted 
-78ddd1055055712e134d70a3501b3f4b0d3221ad refs/remotes/origin/feature/readme-update
-f6d6e74f3f8f08ac349c5d879f12ddcc27d683b3 refs/remotes/origin/feature/todo-list
-2be3e241f72d9745755a0b0cb24cfeb186ddaf14 refs/remotes/origin/main
-39541162f85a94cdebf19fd3945deabd2d59ede6 refs/remotes/origin/test-push
-bcf99b7dde1181ffadc7f06b825471bea649c7e2 refs/remotes/origin/update-api-key
