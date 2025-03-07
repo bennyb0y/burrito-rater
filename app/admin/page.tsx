@@ -25,6 +25,7 @@ interface Rating {
   longitude: number;
   createdAt: string;
   updatedAt: string;
+  zipcode?: string;
 }
 
 export default function AdminPage() {
@@ -37,6 +38,10 @@ export default function AdminPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [filterStatus, setFilterStatus] = useState<'all' | 'confirmed' | 'unconfirmed'>('all');
   const [selectedRating, setSelectedRating] = useState<Rating | null>(null);
+  const [zipcodeFilter, setZipcodeFilter] = useState<string>('');
+  const [sortField, setSortField] = useState<keyof Rating>('id');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [uniqueZipcodes, setUniqueZipcodes] = useState<string[]>([]);
 
   useEffect(() => {
     fetchRatings();
@@ -52,8 +57,13 @@ export default function AdminPage() {
         const data = await response.json();
         console.log('Fetched ratings:', data);
         
-        // Determine if we're in development or production
-        const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        // Extract unique zipcodes
+        const zipcodes = data
+          .map((rating: Rating) => rating.zipcode)
+          .filter((zipcode: string | undefined) => zipcode && zipcode.trim() !== '')
+          .filter((value: string, index: number, self: string[]) => self.indexOf(value) === index)
+          .sort();
+        setUniqueZipcodes(zipcodes);
         
         // Apply the confirmed status to the new data
         const updatedRatings = data.map((rating: Rating) => {
@@ -304,6 +314,67 @@ export default function AdminPage() {
     setFilterStatus(status);
   };
 
+  const handleZipcodeFilterChange = (zipcode: string) => {
+    setZipcodeFilter(zipcode);
+  };
+
+  const handleSort = (field: keyof Rating) => {
+    if (sortField === field) {
+      // Toggle sort direction if clicking the same field
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // Set new sort field and default to ascending
+      setSortField(field);
+      setSortDirection('asc');
+    }
+  };
+
+  // Filter and sort the ratings
+  const filteredAndSortedRatings = ratings
+    // Apply zipcode filter
+    .filter(rating => 
+      !zipcodeFilter || 
+      (rating.zipcode && rating.zipcode.toLowerCase().includes(zipcodeFilter.toLowerCase()))
+    )
+    // Sort the ratings
+    .sort((a, b) => {
+      const aValue = a[sortField];
+      const bValue = b[sortField];
+      
+      if (aValue === undefined || bValue === undefined) {
+        return 0;
+      }
+      
+      // Handle different types of values
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return sortDirection === 'asc' 
+          ? aValue.localeCompare(bValue) 
+          : bValue.localeCompare(aValue);
+      } else if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+      } else if (
+        aValue && 
+        bValue && 
+        typeof aValue === 'string' && 
+        typeof bValue === 'string' && 
+        !isNaN(new Date(aValue).getTime()) && 
+        !isNaN(new Date(bValue).getTime())
+      ) {
+        const dateA = new Date(aValue).getTime();
+        const dateB = new Date(bValue).getTime();
+        return sortDirection === 'asc' ? dateA - dateB : dateB - dateA;
+      }
+      
+      // Default comparison for other types
+      return 0;
+    });
+
+  // Render sort indicator
+  const renderSortIndicator = (field: keyof Rating) => {
+    if (sortField !== field) return null;
+    return sortDirection === 'asc' ? ' ↑' : ' ↓';
+  };
+
   return (
     <div className="max-w-full px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-3xl font-bold text-black mb-8">Admin Dashboard</h1>
@@ -322,148 +393,215 @@ export default function AdminPage() {
         </div>
       )}
       
-      <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="flex items-center gap-4">
+      <div className="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={handleDeleteSelected}
             disabled={selectedIds.size === 0 || isDeleting}
-            className={`px-4 py-2 rounded ${
+            className={`px-3 py-1 text-sm rounded ${
               selectedIds.size === 0 || isDeleting
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : 'bg-red-600 text-white hover:bg-red-700'
             }`}
           >
-            {isDeleting ? 'Deleting...' : `Delete Selected (${selectedIds.size})`}
+            {isDeleting ? 'Deleting...' : `Delete (${selectedIds.size})`}
           </button>
           
           <button
             onClick={handleConfirmSelected}
             disabled={selectedIds.size === 0 || isConfirming}
-            className={`px-4 py-2 rounded ${
+            className={`px-3 py-1 text-sm rounded ${
               selectedIds.size === 0 || isConfirming
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : 'bg-green-600 text-white hover:bg-green-700'
             }`}
           >
-            {isConfirming ? 'Confirming...' : `Confirm Selected (${selectedIds.size})`}
+            {isConfirming ? 'Confirming...' : `Confirm (${selectedIds.size})`}
           </button>
         </div>
         
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-black">Filter:</span>
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-1">
+            <span className="text-xs text-black">Status:</span>
             <select
               value={filterStatus}
               onChange={(e) => handleFilterChange(e.target.value as 'all' | 'confirmed' | 'unconfirmed')}
-              className="px-3 py-1 rounded-md border border-gray-300 text-sm text-black bg-white"
+              className="px-2 py-1 rounded-md border border-gray-300 text-xs text-black bg-white"
             >
-              <option value="all">All Ratings</option>
-              <option value="confirmed">Confirmed Only</option>
-              <option value="unconfirmed">Unconfirmed Only</option>
+              <option value="all">All</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="unconfirmed">Unconfirmed</option>
             </select>
           </div>
           
-          <span className="text-sm text-black">
-            {ratings.length} ratings found
+          <div className="flex items-center gap-1">
+            <span className="text-xs text-black">Zip:</span>
+            <select
+              value={zipcodeFilter}
+              onChange={(e) => handleZipcodeFilterChange(e.target.value)}
+              className="px-2 py-1 rounded-md border border-gray-300 text-xs text-black bg-white w-24"
+            >
+              <option value="">All</option>
+              {uniqueZipcodes.map(zipcode => (
+                <option key={zipcode} value={zipcode}>{zipcode}</option>
+              ))}
+            </select>
+          </div>
+          
+          <span className="text-xs text-black">
+            {filteredAndSortedRatings.length} found
           </span>
         </div>
       </div>
       
       <div className="overflow-x-auto bg-white shadow-md rounded-lg">
-        <table className="w-full table-auto divide-y divide-gray-200">
+        <table className="w-full table-auto divide-y divide-gray-200 text-xs">
           <thead className="bg-gray-50">
             <tr>
-              <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-black uppercase tracking-wider w-10">
+              <th scope="col" className="px-2 py-2 text-left text-xs font-medium text-black uppercase tracking-wider w-8">
                 <input
                   type="checkbox"
-                  checked={selectedIds.size > 0 && selectedIds.size === ratings.length}
+                  checked={selectedIds.size > 0 && selectedIds.size === filteredAndSortedRatings.length}
                   onChange={handleSelectAll}
-                  className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                  className="h-3 w-3 text-blue-600 border-gray-300 rounded"
                 />
               </th>
-              <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-black uppercase tracking-wider w-16">
-                ID
+              <th 
+                scope="col" 
+                className="px-2 py-2 text-left text-xs font-medium text-black uppercase tracking-wider w-10 cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('id')}
+              >
+                ID{renderSortIndicator('id')}
               </th>
-              <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                Restaurant
+              <th 
+                scope="col" 
+                className="px-2 py-2 text-left text-xs font-medium text-black uppercase tracking-wider w-24 cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('reviewerName')}
+              >
+                User{renderSortIndicator('reviewerName')}
               </th>
-              <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-black uppercase tracking-wider">
-                Burrito
+              <th 
+                scope="col" 
+                className="px-2 py-2 text-left text-xs font-medium text-black uppercase tracking-wider w-10"
+              >
+                Emoji
               </th>
-              <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-black uppercase tracking-wider w-32">
-                Rating
+              <th 
+                scope="col" 
+                className="px-2 py-2 text-left text-xs font-medium text-black uppercase tracking-wider w-32 cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('restaurantName')}
+              >
+                Restaurant{renderSortIndicator('restaurantName')}
               </th>
-              <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-black uppercase tracking-wider w-32">
-                Date
+              <th 
+                scope="col" 
+                className="px-2 py-2 text-left text-xs font-medium text-black uppercase tracking-wider w-32 cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('burritoTitle')}
+              >
+                Burrito{renderSortIndicator('burritoTitle')}
               </th>
-              <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-black uppercase tracking-wider w-28">
-                Status
+              <th 
+                scope="col" 
+                className="px-2 py-2 text-left text-xs font-medium text-black uppercase tracking-wider w-20 cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('rating')}
+              >
+                Rating{renderSortIndicator('rating')}
               </th>
-              <th scope="col" className="px-4 py-3 text-left text-xs font-medium text-black uppercase tracking-wider w-32">
+              <th 
+                scope="col" 
+                className="px-2 py-2 text-left text-xs font-medium text-black uppercase tracking-wider w-24 cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('createdAt')}
+              >
+                Date{renderSortIndicator('createdAt')}
+              </th>
+              <th 
+                scope="col" 
+                className="px-2 py-2 text-left text-xs font-medium text-black uppercase tracking-wider w-24 cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('confirmed')}
+              >
+                Status{renderSortIndicator('confirmed')}
+              </th>
+              <th 
+                scope="col" 
+                className="px-2 py-2 text-left text-xs font-medium text-black uppercase tracking-wider w-16 cursor-pointer hover:bg-gray-100"
+                onClick={() => handleSort('zipcode')}
+              >
+                Zip{renderSortIndicator('zipcode')}
+              </th>
+              <th scope="col" className="px-2 py-2 text-left text-xs font-medium text-black uppercase tracking-wider w-24">
                 Actions
               </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {ratings.map((rating) => (
+            {filteredAndSortedRatings.map((rating) => (
               <tr key={rating.id} className="hover:bg-gray-50">
-                <td className="px-4 py-4 whitespace-nowrap">
+                <td className="px-2 py-2 whitespace-nowrap">
                   <input
                     type="checkbox"
                     checked={selectedIds.has(rating.id)}
                     onChange={() => handleToggleSelect(rating.id)}
-                    className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                    className="h-3 w-3 text-blue-600 border-gray-300 rounded"
                   />
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-black">
+                <td className="px-2 py-2 whitespace-nowrap text-xs text-black">
                   {rating.id}
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-black">
+                <td className="px-2 py-2 whitespace-nowrap text-xs text-black truncate max-w-[6rem]">
+                  {rating.reviewerName || '-'}
+                </td>
+                <td className="px-2 py-2 whitespace-nowrap text-xs text-center">
+                  {rating.reviewerEmoji || '-'}
+                </td>
+                <td className="px-2 py-2 whitespace-nowrap text-xs text-black truncate max-w-[8rem]">
                   {rating.restaurantName}
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-black">
+                <td className="px-2 py-2 whitespace-nowrap text-xs text-black truncate max-w-[8rem]">
                   {rating.burritoTitle}
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap">
+                <td className="px-2 py-2 whitespace-nowrap">
                   <div className="flex items-center">
-                    <span className="text-sm text-black">{rating.rating.toFixed(1)}</span>
-                    <span className="ml-2 text-xs text-black">
-                      (T: {rating.taste.toFixed(1)} | V: {rating.value.toFixed(1)})
+                    <span className="text-xs text-black">{rating.rating.toFixed(1)}</span>
+                    <span className="ml-1 text-xs text-black">
+                      ({rating.taste.toFixed(1)}/{rating.value.toFixed(1)})
                     </span>
                   </div>
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm text-black">
-                  {formatDate(rating.createdAt)}
+                <td className="px-2 py-2 whitespace-nowrap text-xs text-black">
+                  {formatDate(rating.createdAt).split(' ')[0]}
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap w-28">
+                <td className="px-2 py-2 whitespace-nowrap">
                   {rating.confirmed ? (
-                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                    <span className="px-1 py-0.5 inline-flex text-xs leading-4 font-semibold rounded-full bg-green-100 text-green-800">
                       Confirmed
                     </span>
                   ) : (
-                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                      Unconfirmed
+                    <span className="px-1 py-0.5 inline-flex text-xs leading-4 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                      Pending
                     </span>
                   )}
                 </td>
-                <td className="px-4 py-4 whitespace-nowrap text-sm font-medium w-32">
-                  <div className="flex items-center space-x-2">
+                <td className="px-2 py-2 whitespace-nowrap text-xs text-black">
+                  {rating.zipcode || '-'}
+                </td>
+                <td className="px-2 py-2 whitespace-nowrap text-xs font-medium">
+                  <div className="flex items-center space-x-1">
                     <button
                       onClick={() => handleViewDetails(rating)}
-                      className="text-blue-600 hover:text-blue-900"
+                      className="text-blue-600 hover:text-blue-900 text-xs"
                     >
                       View
                     </button>
                     <button
                       onClick={() => handleDelete(rating.id)}
-                      className="text-red-600 hover:text-red-900"
+                      className="text-red-600 hover:text-red-900 text-xs"
                     >
-                      Delete
+                      Del
                     </button>
                     {!rating.confirmed && (
                       <button
                         onClick={() => handleConfirmRating(rating.id)}
-                        className="text-green-600 hover:text-green-900"
+                        className="text-green-600 hover:text-green-900 text-xs"
                       >
                         Confirm
                       </button>

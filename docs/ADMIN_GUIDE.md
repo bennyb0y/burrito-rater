@@ -9,7 +9,8 @@ The admin interface allows authorized users to manage burrito ratings, including
 - Viewing all submitted ratings
 - Confirming ratings to display them on the map and list views
 - Deleting unwanted or spam ratings
-- Filtering ratings by confirmation status
+- Filtering ratings by confirmation status and zipcode
+- Sorting ratings by any column
 
 ## Access
 
@@ -49,34 +50,74 @@ To set up the admin password:
 ### Rating Management
 
 The admin interface displays a table of all ratings with the following information:
-- Title
-- Rating (out of 5)
-- Price
-- Location
+- ID
+- User (reviewer name)
+- Emoji (reviewer emoji)
+- Restaurant
+- Burrito Title
+- Rating (overall, taste, and value)
 - Date submitted
-- Confirmation status
+- Status (confirmed or pending)
+- Zipcode
+- Actions (View, Delete, Confirm)
 
 ### Filtering
 
-Use the filter dropdown to view:
-- All ratings
-- Confirmed ratings only
-- Unconfirmed ratings only
+The admin interface provides two filtering options:
+
+1. **Status Filter**:
+   - All: Shows all ratings
+   - Confirmed: Shows only confirmed ratings
+   - Unconfirmed: Shows only unconfirmed ratings
+
+2. **Zipcode Filter**:
+   - All: Shows ratings from all zipcodes
+   - Individual zipcodes: Shows ratings from the selected zipcode only
+
+### Sorting
+
+You can sort the ratings by clicking on any column header. The sortable columns include:
+- ID
+- User
+- Restaurant
+- Burrito Title
+- Rating
+- Date
+- Status
+- Zipcode
+
+Clicking a column header toggles between ascending and descending order, indicated by an arrow icon.
 
 ### Confirming Ratings
 
 To confirm a rating:
 1. Select the checkbox next to the rating(s) you want to confirm
-2. Click the "Confirm Selected" button
+2. Click the "Confirm" button
 3. The rating will be marked as confirmed and will appear on the map and list views
+
+You can also confirm individual ratings by clicking the "Confirm" button in the Actions column.
 
 ### Deleting Ratings
 
 To delete a rating:
 1. Select the checkbox next to the rating(s) you want to delete
-2. Click the "Delete Selected" button
+2. Click the "Delete" button
 3. Confirm the deletion in the confirmation dialog
 4. The rating will be permanently removed from the database
+
+You can also delete individual ratings by clicking the "Del" button in the Actions column.
+
+### Viewing Rating Details
+
+To view detailed information about a rating:
+1. Click the "View" button in the Actions column
+2. A modal will appear showing all details of the rating, including:
+   - Restaurant and burrito information
+   - Rating scores
+   - Ingredients
+   - Review text
+   - Location data
+   - Submission details
 
 ## Implementation Details
 
