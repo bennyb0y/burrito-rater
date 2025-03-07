@@ -1,6 +1,6 @@
 # 🌯 Burrito Rater
 
-A web application for rating and discovering burritos, built with Next.js and deployed on Cloudflare Pages.
+A web application for rating and discovering burritos, built with Next.js and deployed on Cloudflare Pages and Cloudflare D1.
 
 ## 🚀 Features
 
