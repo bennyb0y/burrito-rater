@@ -41,7 +41,7 @@ npm run pages:build
 npm run pages:deploy
 ```
 
-### Local Testing
+### Testing the Build
 
 To test the Cloudflare Pages build locally:
 
@@ -55,6 +55,8 @@ npm run pages:build
 # Start a local server
 npm run pages:dev
 ```
+
+This will start a local server at http://localhost:8788 that simulates the Cloudflare Pages environment. Note that this is just for testing the build - the application still connects to the Cloudflare Worker API and D1 database.
 
 ## Environment Variables
 
@@ -124,8 +126,8 @@ pages_build_output_dir = ".vercel/output/static"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "your-database-name"
-database_id = "0e87da0b-9043-44f4-8782-3ee0c9fd6553"
+database_name = "burrito-rater-db"
+database_id = "your-database-id"
 ```
 
 > **Important**: The `nodejs_compat` compatibility flag is required for Next.js applications built with @cloudflare/next-on-pages. This flag must be set in both the `wrangler.toml` file and in the Cloudflare Pages dashboard.

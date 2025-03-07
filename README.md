@@ -22,7 +22,7 @@ A web application for rating and discovering burritos, built with Next.js and de
 
 - **Backend**:
   - Cloudflare Workers
-  - Cloudflare D1 (SQLite-compatible database)
+  - Cloudflare D1 (Edge Database)
 
 ## 🏁 Getting Started
 
@@ -71,11 +71,6 @@ A web application for rating and discovering burritos, built with Next.js and de
    NEXT_PUBLIC_ADMIN_PASSWORD=your_admin_password
    ```
 
-   For development with a separate API server, you can also add:
-   ```
-   NEXT_PUBLIC_DEV_API_BASE_URL=http://localhost:8787
-   ```
-
    > **Important**: 
    > - The `.env.local` file is automatically ignored by Git (see `.gitignore`)
    > - All environment variables must be prefixed with `NEXT_PUBLIC_` to be accessible in the browser
@@ -91,11 +86,7 @@ A web application for rating and discovering burritos, built with Next.js and de
 
 2. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-3. (Optional) To run a local API server for development:
-   ```bash
-   npx wrangler dev worker.js --config wrangler.worker.toml
-   ```
-   This will start a local API server at http://localhost:8787 that you can use for development.
+The application connects directly to the Cloudflare Worker API, which uses Cloudflare D1 as the database. This ensures that all environments (development and production) use the same data source.
 
 ### Deployment
 

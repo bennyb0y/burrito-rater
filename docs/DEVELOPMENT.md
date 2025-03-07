@@ -4,11 +4,12 @@ This document provides information about the development environment for the Bur
 
 ## Overview
 
-The Burrito Rater application is designed to support separate development and production environments. This separation allows you to:
+The Burrito Rater application uses a cloud-first architecture with Cloudflare D1 as the single source of truth for all data. This means:
 
-1. Keep development and production data separate
-2. Test changes to the API without affecting production data
-3. Use a local API server for development if needed
+1. All environments (development and production) use the same cloud database
+2. No local database development is needed
+3. Data is consistent across all environments
+4. Changes to data are immediately visible to all users
 
 ## Environment Setup
 
@@ -22,19 +23,6 @@ NEXT_PUBLIC_API_BASE_URL=https://your-worker-name.your-account.workers.dev
 NEXT_PUBLIC_ADMIN_PASSWORD=your_admin_password
 ```
 
-For development with a separate API server, you can also add:
-
-```
-NEXT_PUBLIC_DEV_API_BASE_URL=http://localhost:8787
-```
-
-### API Configuration
-
-The application is configured to use different API endpoints based on the environment:
-
-- **Production**: Uses the `NEXT_PUBLIC_API_BASE_URL` environment variable
-- **Development**: Can be configured to use a separate development API by setting `NEXT_PUBLIC_DEV_API_BASE_URL`
-
 ## Development Workflow
 
 ### Frontend Development
@@ -46,48 +34,23 @@ The application is configured to use different API endpoints based on the enviro
 
 2. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### API Development
+The application connects directly to the Cloudflare Worker API, which uses Cloudflare D1 as the database. This ensures that all environments use the same data source.
 
-To run a local API server for development:
+### Data Management
 
-1. Start the Cloudflare Worker locally:
-   ```bash
-   npx wrangler dev worker.js --config wrangler.worker.toml
-   ```
+Since we use Cloudflare D1 as the single source of truth:
 
-2. This will start a local API server at http://localhost:8787 that you can use for development.
-
-3. Make sure your `.env.local` file includes:
-   ```
-   NEXT_PUBLIC_DEV_API_BASE_URL=http://localhost:8787
-   ```
-
-### Data Separation
-
-When using a local API server, your development data is completely separate from the production data. This allows you to:
-
-1. Test new features without affecting production data
-2. Reset or modify development data without impacting production
-3. Use different database schemas or configurations for development
+1. All data changes are immediately visible to all users
+2. No need to sync data between environments
+3. Changes are persisted in the cloud database
+4. Data is consistent across all deployments
 
 ## Confirmation System
 
-The application uses Cloudflare D1 database for storing and managing confirmation status in both development and production environments:
-
-### Development Environment
-
-In the development environment, confirmations are stored in the D1 database. This means:
+The application uses Cloudflare D1 database for storing and managing confirmation status:
 
 1. Confirmations are consistent across all devices
 2. Confirmations persist between browser sessions
-3. Confirmations are stored in the database and available to all users
-
-### Production Environment
-
-In the production environment, confirmations are stored in the Cloudflare D1 database. This means:
-
-1. Confirmations are visible to all users
-2. Confirmations persist across all devices
 3. Confirmations are stored in the database and available to all users
 
 ## Troubleshooting
@@ -96,8 +59,8 @@ In the production environment, confirmations are stored in the Cloudflare D1 dat
 
 If you're having trouble connecting to the API:
 
-1. Check your `.env.local` file to ensure the API URLs are set correctly
-2. Verify that the API server is running (if using a local API server)
+1. Check your `.env.local` file to ensure the API URL is set correctly
+2. Verify that the Cloudflare Worker is deployed and running
 3. Check the browser console for CORS errors or other issues
 
 ### Database Issues
