@@ -63,12 +63,11 @@ This document tracks completed milestones and upcoming tasks for the Burrito Rat
 ## 📋 Upcoming Tasks
 
 ### Features
-- [ ] Implement user accounts and authentication
 - [ ] Add image upload for burritos
 - [ ] Create restaurant profiles
 - [ ] Implement social sharing functionality
-- [ ] Add comments on ratings
-- [ ] Create "favorite burritos" functionality
+- [ ] Add comments on restaurnt profile 
+- [ ] Create "favorite burritos" functionality tied to passwords
 - [ ] Implement notifications for new ratings
 
 ### Performance & SEO
@@ -86,45 +85,39 @@ This document tracks completed milestones and upcoming tasks for the Burrito Rat
 - [ ] Set up continuous integration for tests
 
 ### Security
-- [ ] Implement rate limiting for API
+- [X] Implement rate limiting for API
+- [X] Implement quotas for API
 - [ ] Add CSRF protection
 - [ ] Conduct security audit
-- [ ] Implement more secure admin authentication
+- [ ] Implement more secure admin authentication for /admin
 - [ ] Add input validation and sanitization
 
 ### Infrastructure
-- [ ] **[HIGH PRIORITY]** Set up custom domain on Cloudflare
-  - [ ] Purchase domain (if not already owned)
-  - [ ] Configure DNS settings in Cloudflare dashboard
-  - [ ] Set up custom domain for Cloudflare Pages
-  - [ ] Update API references to use custom domain
-  - [ ] Verify SSL certificate configuration
+- [x] **[HIGH PRIORITY]** Set up custom domain on Cloudflare
 - [ ] **[HIGH PRIORITY]** Set up CI/CD automation for Cloudflare deployment
   - [ ] Configure GitHub Actions workflow for automated builds
   - [ ] Set up automatic deployment to Cloudflare Pages on merge to main
   - [ ] Implement deployment previews for pull requests
   - [ ] Add automated testing before deployment
   - [ ] Configure notifications for deployment success/failure
-- [ ] Configure SSL certificates
-- [ ] Implement CDN caching strategy
+- [x] Configure SSL certificates
+- [x] Implement CDN caching strategy
 - [ ] Set up monitoring and alerting
 - [ ] Create backup and recovery strategy
 
 ### Documentation
-- [ ] Create API documentation
+- [x] Create API documentation
 - [ ] Add JSDoc comments to all components
-- [ ] Create user guide
+- [x] Create user guide
 - [ ] Document testing strategy
-- [ ] Create contribution guidelines
+- [x] Create contribution guidelines ( in user guide )
 
 ## 🚀 Future Enhancements
 
 ### Application
-- [ ] Create mobile app version
+- [x] Create mobile app version ( responsive design updated )
 - [ ] Implement offline support
-- [ ] Add dark mode
-- [ ] Create multi-language support
-- [ ] Implement accessibility improvements
+- [ ] restrict ratings to USA only
 
 ### Data & Analytics
 - [ ] Add advanced filtering and search
@@ -134,7 +127,7 @@ This document tracks completed milestones and upcoming tasks for the Burrito Rat
 - [ ] Implement trend analysis for ratings
 
 ### Community
-- [ ] Add user profiles
+- [ ] Add user profiles based on combonation of username + password = profile
 - [ ] Implement following/followers functionality
 - [ ] Create burrito challenges and badges
 - [ ] Add events and meetups feature
