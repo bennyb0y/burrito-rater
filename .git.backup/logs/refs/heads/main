@@ -1,0 +1,35 @@
+0000000000000000000000000000000000000000 2be3e241f72d9745755a0b0cb24cfeb186ddaf14 bennyb0y <bennyfischer@gmail.com> 1741287245 -0800	clone: from https://github.com/bennyb0y/burrito-rater
+2be3e241f72d9745755a0b0cb24cfeb186ddaf14 5ecebffb499175837fc83a980404ecd9aa0a0d9c bennyb0y <bennyfischer@gmail.com> 1741288307 -0800	commit: updated the readme files
+5ecebffb499175837fc83a980404ecd9aa0a0d9c 81f935350ee1c35468bd3eebc5c0437f9457a252 bennyb0y <bennyfischer@gmail.com> 1741289375 -0800	commit: added .cursorrules
+81f935350ee1c35468bd3eebc5c0437f9457a252 ca3da3760a2cd5f6734cbe3a06eb2c29ab5a8ddc bennyb0y <bennyfischer@gmail.com> 1741289869 -0800	commit: updated ident emoji function
+ca3da3760a2cd5f6734cbe3a06eb2c29ab5a8ddc 606890f4d37d70a4feab7af532d9abfd2af4532c bennyb0y <bennyfischer@gmail.com> 1741290397 -0800	commit: refactor: Simplify Map component and improve UI layout
+606890f4d37d70a4feab7af532d9abfd2af4532c 894592e3c6f5e658ef9ac6b9dedb7f90dc6b25dd bennyb0y <bennyfischer@gmail.com> 1741290672 -0800	commit: feat: Enhance Map component with improved search and location selection
+894592e3c6f5e658ef9ac6b9dedb7f90dc6b25dd 6e42feb2e7e0a306cc4b80c19bf0f96ef25be509 bennyb0y <bennyfischer@gmail.com> 1741290966 -0800	commit: feat: Add zipcode support for burrito ratings
+6e42feb2e7e0a306cc4b80c19bf0f96ef25be509 390d027ae2501111c1f6ceda506e08316db9661f bennyb0y <bennyfischer@gmail.com> 1741291269 -0800	commit: feat: Improve responsive design and UI refinements across components
+390d027ae2501111c1f6ceda506e08316db9661f 763a4d1871302bccf919d7ad1d752c4374518653 bennyb0y <bennyfischer@gmail.com> 1741291447 -0800	commit: refactor: Fine-tune UI components with micro-responsive design adjustments
+763a4d1871302bccf919d7ad1d752c4374518653 ba2a7b9e4f93f7e950b22e92640d44389cc8064b bennyb0y <bennyfischer@gmail.com> 1741294411 -0800	commit: chore: Implement secure environment variable management
+ba2a7b9e4f93f7e950b22e92640d44389cc8064b c7981a80e64cfbea1fef9d003f0cad1946275b25 bennyb0y <bennyfischer@gmail.com> 1741299038 -0800	commit: feat: Migrate from SQLite and Prisma to Cloudflare D1 and Workers
+c7981a80e64cfbea1fef9d003f0cad1946275b25 8b995970dbf11da21e50e6a2c2cded87bd0a0d6c bennyb0y <bennyfischer@gmail.com> 1741299514 -0800	commit: chore: Clean up migration artifacts and unused API routes
+8b995970dbf11da21e50e6a2c2cded87bd0a0d6c a94e75d4965fe241f1d37d1eaf898a2d7488524a bennyb0y <bennyfischer@gmail.com> 1741300942 -0800	commit: feat: Migrate to Cloudflare Pages and static site generation
+a94e75d4965fe241f1d37d1eaf898a2d7488524a e5e0efee61728d7482df7c94b5724d5183419c2f bennyb0y <bennyfischer@gmail.com> 1741301603 -0800	commit: chore: Update Cloudflare Pages deployment configuration
+e5e0efee61728d7482df7c94b5724d5183419c2f 7090c44d3611a20538b5f2e53f3ab41ff6c99676 bennyb0y <bennyfischer@gmail.com> 1741301739 -0800	commit: chore: Clean up Cloudflare Pages development artifacts
+7090c44d3611a20538b5f2e53f3ab41ff6c99676 5bf71794f05526f60946589a4e6401748365d9c8 bennyb0y <bennyfischer@gmail.com> 1741302073 -0800	commit: chore: Remove Cloudflare migration and deployment artifacts
+5bf71794f05526f60946589a4e6401748365d9c8 73859a3d0778dc87af3c8ccbabff08147713394d bennyb0y <bennyfischer@gmail.com> 1741302327 -0800	commit: chore: Remove Cloudflare Pages development temporary files
+73859a3d0778dc87af3c8ccbabff08147713394d 5f61a1a4e7975310af74a730e3675e0123475711 bennyb0y <bennyfischer@gmail.com> 1741302871 -0800	commit: chore: Remove Cloudflare Pages development temporary files
+5f61a1a4e7975310af74a730e3675e0123475711 c2f896e46e18fccccd88d99a48b009c97d82aea5 bennyb0y <bennyfischer@gmail.com> 1741303192 -0800	commit: feat: Add admin section with password protection
+c2f896e46e18fccccd88d99a48b009c97d82aea5 ae597ead825c792e90ed7ef436860ee866aab3e2 bennyb0y <bennyfischer@gmail.com> 1741303476 -0800	commit: docs: Update documentation index with new guides
+ae597ead825c792e90ed7ef436860ee866aab3e2 934f5d4d11d6856d08e3dfadf7e913afb727af88 bennyb0y <bennyfischer@gmail.com> 1741307090 -0800	commit: feat: Enhance admin panel with advanced rating management features
+934f5d4d11d6856d08e3dfadf7e913afb727af88 299ef56bf766c68035219c0db8a747476bb604f8 bennyb0y <bennyfischer@gmail.com> 1741315768 -0800	commit: refactor: Streamline API and frontend configuration
+299ef56bf766c68035219c0db8a747476bb604f8 062051ce05a7d97ddd1f7cd35443ce296259a3a7 bennyb0y <bennyfischer@gmail.com> 1741316745 -0800	commit: feat: Enhance admin dashboard with advanced filtering and sorting
+062051ce05a7d97ddd1f7cd35443ce296259a3a7 641a8efb508177bc630fb1a2d05d26c14bcfc577 bennyb0y <bennyfischer@gmail.com> 1741317809 -0800	commit: feat: Enhance map interaction with multi-rating location support
+641a8efb508177bc630fb1a2d05d26c14bcfc577 58e6b54eec827aa43c9394276b0ee1d694cdf5ae bennyb0y <bennyfischer@gmail.com> 1741318078 -0800	commit: feat: Refine list page design with compact and informative rating layout
+58e6b54eec827aa43c9394276b0ee1d694cdf5ae 906281aa7743c03b263ac53d4b26edb1c660c7dc bennyb0y <bennyfischer@gmail.com> 1741318333 -0800	commit: feat: Optimize rating display and layout across application
+906281aa7743c03b263ac53d4b26edb1c660c7dc 329d276a842c89a319be361c70c1186c06d1080f bennyb0y <bennyfischer@gmail.com> 1741318482 -0800	commit: docs: Add DevOps workflow guide to documentation index
+329d276a842c89a319be361c70c1186c06d1080f 719c4eadecbead4248f8db232366f6c824ed320a bennyb0y <bennyfischer@gmail.com> 1741319506 -0800	commit: feat: Improve rating confirmation filtering and user feedback
+719c4eadecbead4248f8db232366f6c824ed320a b1f797a45116f45f6f7398f787027c0f246fe112 bennyb0y <bennyfischer@gmail.com> 1741361897 -0800	commit: docs: Update README with more generic and flexible setup instructions
+b1f797a45116f45f6f7398f787027c0f246fe112 b5a9c30c517923903f060bf7ee90beed9d757ab7 bennyb0y <bennyfischer@gmail.com> 1741363024 -0800	commit: docs: Add high-priority CI/CD automation tasks to TODO checklist
+b5a9c30c517923903f060bf7ee90beed9d757ab7 59e3d08cdc69aafcb042b2a995f912d577b8a8b9 bennyb0y <bennyfischer@gmail.com> 1741364336 -0800	commit: feat: Replace 'hasOnion' with 'hasAvocado' in rating schema
+59e3d08cdc69aafcb042b2a995f912d577b8a8b9 02c584bc99a2470572d68c330ab1e6e1430ff12f bennyb0y <bennyfischer@gmail.com> 1741364679 -0800	commit: chore: Improve Next.js configuration and admin authentication logging
+02c584bc99a2470572d68c330ab1e6e1430ff12f 5ce53e9c32408aab1f5c8701210b7a5caef8fc3f bennyb0y <bennyfischer@gmail.com> 1741364795 -0800	commit: refactor: Separate admin authentication and improve webpack configuration
+5ce53e9c32408aab1f5c8701210b7a5caef8fc3f e81be690fbc76878c14a0db4803a0e6c33a4954f bennyb0y <bennyfischer@gmail.com> 1741367952 -0800	commit: feat: Optimize application performance and error handling
+e81be690fbc76878c14a0db4803a0e6c33a4954f ad2f8a0194ea174e6db8cf202ba303e68bc00a70 bennyb0y <bennyfischer@gmail.com> 1741368127 -0800	commit: chore: Update documentation with generic worker and database URLs

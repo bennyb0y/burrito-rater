@@ -1,0 +1,9 @@
+chore: Update documentation with generic worker and database URLs
+
+Replace hardcoded Cloudflare Worker and database URLs with generic placeholders across multiple documentation and configuration files:
+
+- Update README.md with generic API base URL
+- Modify app/config.ts to use a generic worker URL
+- Replace specific URLs in Cloudflare migration and deployment documentation
+- Update development and workflow documentation with generic URL templates
+- Ensure consistent placeholder naming across project files
