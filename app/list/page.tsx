@@ -31,7 +31,7 @@ interface Rating {
   hasCheese: boolean;
   hasBacon: boolean;
   hasChorizo: boolean;
-  hasOnion: boolean;
+  hasAvocado: boolean;
   hasVegetables: boolean;
   zipcode?: string;
   confirmed?: number;
@@ -112,7 +112,7 @@ export default function ListPage() {
     if (rating.hasCheese) ingredients.push('🧀 Cheese');
     if (rating.hasBacon) ingredients.push('🥓 Bacon');
     if (rating.hasChorizo) ingredients.push('🌭 Chorizo');
-    if (rating.hasOnion) ingredients.push('🧅 Onion');
+    if (rating.hasAvocado) ingredients.push('🥑 Avocado');
     if (rating.hasVegetables) ingredients.push('🥬 Vegetables');
     return ingredients.join(' • ') || 'No ingredients listed';
   };

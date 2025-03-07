@@ -32,7 +32,7 @@ CREATE TABLE Rating (
   hasCheese BOOLEAN NOT NULL DEFAULT FALSE,
   hasBacon BOOLEAN NOT NULL DEFAULT FALSE,
   hasChorizo BOOLEAN NOT NULL DEFAULT FALSE,
-  hasOnion BOOLEAN NOT NULL DEFAULT FALSE,
+  hasAvocado BOOLEAN NOT NULL DEFAULT FALSE,
   hasVegetables BOOLEAN NOT NULL DEFAULT FALSE,
   review TEXT,
   reviewerName TEXT,
@@ -63,7 +63,7 @@ CREATE TABLE Rating (
 | hasCheese       | BOOLEAN   | Whether the burrito contains cheese              |
 | hasBacon        | BOOLEAN   | Whether the burrito contains bacon               |
 | hasChorizo      | BOOLEAN   | Whether the burrito contains chorizo             |
-| hasOnion        | BOOLEAN   | Whether the burrito contains onion               |
+| hasAvocado      | BOOLEAN   | Whether the burrito contains avocado             |
 | hasVegetables   | BOOLEAN   | Whether the burrito contains vegetables          |
 | review          | TEXT      | Detailed review text                             |
 | reviewerName    | TEXT      | Name of the reviewer (optional)                  |

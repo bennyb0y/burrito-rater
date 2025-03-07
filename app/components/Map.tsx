@@ -71,7 +71,7 @@ interface Rating {
   hasCheese: boolean;
   hasBacon: boolean;
   hasChorizo: boolean;
-  hasOnion: boolean;
+  hasAvocado: boolean;
   hasVegetables: boolean;
   confirmed?: number;
 }

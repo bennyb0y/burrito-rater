@@ -17,7 +17,7 @@ export interface Rating {
   hasCheese: boolean;
   hasBacon: boolean;
   hasChorizo: boolean;
-  hasOnion: boolean;
+  hasAvocado: boolean;
   hasVegetables: boolean;
   review?: string;
   reviewerName?: string;

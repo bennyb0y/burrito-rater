@@ -61,7 +61,7 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
     hasCheese: false,
     hasBacon: false,
     hasChorizo: false,
-    hasOnion: false,
+    hasAvocado: false,
     hasVegetables: false,
   });
 
@@ -306,7 +306,7 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
                         {key === 'hasCheese' && '🧀'}
                         {key === 'hasBacon' && '🥓'}
                         {key === 'hasChorizo' && '🌭'}
-                        {key === 'hasOnion' && '🧅'}
+                        {key === 'hasAvocado' && '🥑'}
                         {key === 'hasVegetables' && '🥬'}
                       </span>
                       {key.replace('has', '')}

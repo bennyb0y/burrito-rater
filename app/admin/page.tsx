@@ -15,7 +15,7 @@ interface Rating {
   hasCheese: boolean;
   hasBacon: boolean;
   hasChorizo: boolean;
-  hasOnion: boolean;
+  hasAvocado: boolean;
   hasVegetables: boolean;
   review?: string;
   reviewerName?: string;
@@ -701,7 +701,7 @@ export default function AdminPage() {
                   {renderIngredientBadge(selectedRating.hasCheese, 'Cheese')}
                   {renderIngredientBadge(selectedRating.hasBacon, 'Bacon')}
                   {renderIngredientBadge(selectedRating.hasChorizo, 'Chorizo')}
-                  {renderIngredientBadge(selectedRating.hasOnion, 'Onion')}
+                  {renderIngredientBadge(selectedRating.hasAvocado, 'Avocado')}
                   {renderIngredientBadge(selectedRating.hasVegetables, 'Vegetables')}
                 </div>
               </div>

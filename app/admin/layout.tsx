@@ -29,16 +29,22 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     // Get the admin password from environment variable
     const correctPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
     
+    console.log('Admin password configured:', !!correctPassword);
+    console.log('Attempting login with password:', password);
+    
     if (!correctPassword) {
+      console.error('Admin password not configured');
       setError('Admin password not configured');
       return;
     }
     
     if (password === correctPassword) {
+      console.log('Login successful');
       setIsAuthenticated(true);
       sessionStorage.setItem('adminAuthenticated', 'true');
       setError(null);
     } else {
+      console.log('Login failed - incorrect password');
       setError('Incorrect password');
     }
   };
