@@ -15,6 +15,7 @@ This directory contains documentation for the Burrito Rater application.
 - [Development Guidelines](./CURSOR_RULES.md) - Coding standards and development guidelines
 - [Project Checklist](./TODO_CHECKLIST.md) - Completed milestones and upcoming tasks
 - [Development Workflow Guide](./WORKFLOW.md) - Complete CI/CD workflow from development to deployment
+- [DevOps Workflow Guide](./WORKFLOW_DEVOPS.md) - Comprehensive guide to the application architecture and operational processes from a DevOps perspective
 
 ## Project Overview
 
