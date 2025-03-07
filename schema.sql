@@ -33,7 +33,8 @@ CREATE TABLE Rating (
   reviewerName TEXT,
   identityPassword TEXT,
   generatedEmoji TEXT,
-  reviewerEmoji TEXT
+  reviewerEmoji TEXT,
+  confirmed BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 -- Create index for location-based queries
@@ -41,6 +42,9 @@ CREATE INDEX idx_rating_location ON Rating (latitude, longitude);
 
 -- Create index for zipcode-based queries
 CREATE INDEX idx_rating_zipcode ON Rating (zipcode);
+
+-- Create index for confirmation status
+CREATE INDEX idx_rating_confirmed ON Rating (confirmed);
 
 -- Create trigger to update the updatedAt timestamp
 CREATE TRIGGER update_rating_timestamp

@@ -1,8 +1,12 @@
 import type { NextConfig } from "next";
 
+// Determine if we're in development mode
+const isDevelopment = process.env.NODE_ENV === 'development';
+
 const nextConfig: NextConfig = {
   /* config options here */
-  output: 'export', // Required for static site generation
+  // Only use static export in production
+  ...(isDevelopment ? {} : { output: 'export' }),
   images: {
     unoptimized: true, // Required for static site generation
     remotePatterns: [

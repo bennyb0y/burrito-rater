@@ -61,7 +61,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-          <h1 className="text-2xl font-bold mb-6 text-center">Admin Login</h1>
+          <h1 className="text-2xl font-bold mb-6 text-center text-black">Admin Login</h1>
           
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -71,7 +71,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           
           <form onSubmit={handleLogin}>
             <div className="mb-4">
-              <label htmlFor="password" className="block text-gray-700 text-sm font-bold mb-2">
+              <label htmlFor="password" className="block text-black text-sm font-bold mb-2">
                 Password
               </label>
               <input
@@ -102,7 +102,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <h1 className="text-xl font-bold">Burrito Rater Admin</h1>
+              <h1 className="text-xl font-bold text-black">Burrito Rater Admin</h1>
             </div>
             <div className="flex items-center">
               <button

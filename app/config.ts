@@ -2,8 +2,8 @@
 
 // API base URL configuration
 // Set to empty string to use relative URLs (Next.js API routes)
-// Set to Cloudflare Worker URL to use the worker API
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
+// Set to Cloudflare Worker URL to use the worker API directly
+export const API_BASE_URL: string = '';
 
 // Helper function to get the full API URL
 export function getApiUrl(path: string): string {

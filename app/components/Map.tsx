@@ -73,6 +73,7 @@ interface Rating {
   hasChorizo: boolean;
   hasOnion: boolean;
   hasVegetables: boolean;
+  confirmed: boolean;
 }
 
 interface MapProps {
@@ -110,9 +111,19 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
   useEffect(() => {
     const fetchRatings = async () => {
       try {
-        const response = await fetch(getApiUrl('/api/ratings'));
-        if (!response.ok) throw new Error('Failed to fetch ratings');
+        console.log('Fetching ratings from API');
+        
+        // Fetch confirmed ratings from the API
+        const response = await fetch('/api/ratings?confirmed=true');
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`API Error (${response.status}): ${errorText}`);
+          throw new Error(`Failed to fetch ratings: ${response.status} ${response.statusText}`);
+        }
+        
         const data = await response.json();
+        console.log('Fetched ratings:', data);
         setRatings(data);
       } catch (error) {
         console.error('Error fetching ratings:', error);

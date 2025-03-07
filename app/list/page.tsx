@@ -34,6 +34,7 @@ interface Rating {
   hasOnion: boolean;
   hasVegetables: boolean;
   zipcode?: string;
+  confirmed: boolean;
 }
 
 export default function ListPage() {
@@ -41,16 +42,30 @@ export default function ListPage() {
   const [sortBy, setSortBy] = useState<'rating' | 'price'>('rating');
   const [sortOrder, setSortOrder] = useState<'high' | 'low'>('high');
   const [zipcode, setZipcode] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchRatings = async () => {
       try {
-        const response = await fetch(getApiUrl('/api/ratings'));
-        if (!response.ok) throw new Error('Failed to fetch ratings');
+        setIsLoading(true);
+        console.log('Fetching ratings from API');
+        
+        // Fetch confirmed ratings from the API
+        const response = await fetch('/api/ratings?confirmed=true');
+        
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error(`API Error (${response.status}): ${errorText}`);
+          throw new Error(`Failed to fetch ratings: ${response.status} ${response.statusText}`);
+        }
+        
         const data = await response.json();
+        console.log('Fetched ratings:', data);
         setRatings(data);
       } catch (error) {
         console.error('Error fetching ratings:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
