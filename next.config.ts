@@ -24,6 +24,8 @@ const nextConfig: NextConfig = {
     // Disable TypeScript checking during production builds
     ignoreBuildErrors: true,
   },
+  // Add trailing slashes to ensure proper static file handling
+  trailingSlash: true,
 };
 
 export default nextConfig;

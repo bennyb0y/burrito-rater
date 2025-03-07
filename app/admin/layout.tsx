@@ -29,12 +29,17 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     // Get the admin password from environment variable
     const correctPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
     
-    console.log('Admin password configured:', !!correctPassword);
-    console.log('Attempting login with password:', password);
+    console.log('Environment check:', {
+      isClient: typeof window !== 'undefined',
+      hasPassword: !!correctPassword,
+      passwordLength: correctPassword?.length,
+      nodeEnv: process.env.NODE_ENV,
+      location: window.location.href
+    });
     
     if (!correctPassword) {
-      console.error('Admin password not configured');
-      setError('Admin password not configured');
+      console.error('Admin password not configured. Check if NEXT_PUBLIC_ADMIN_PASSWORD is set in Cloudflare Pages environment variables.');
+      setError('Admin password not configured. Please contact the administrator.');
       return;
     }
     
