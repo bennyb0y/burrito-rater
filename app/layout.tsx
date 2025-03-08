@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Benny's Burrito Rating",
+  title: "Benny's Burrito Rating 🌯",
   description: "Find and rate the best burritos in Mar Vista",
 };
 
@@ -25,6 +25,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Use emoji directly as favicon */}
+        <link
+          rel="icon"
+          href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌯</text></svg>"
+        />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} font-sans`}>
         <Navigation />
         <main className="min-h-screen bg-gray-50">
