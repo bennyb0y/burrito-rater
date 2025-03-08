@@ -17,6 +17,9 @@ This document outlines the key milestones for the Burrito Rater project.
 - [ ] Create backup and recovery strategy for D1 database
 - [ ] Add custom domain configuration
 - [ ] Implement rate limiting for submissions
+- [ ] **[HIGH PRIORITY]** Fix mobile responsiveness issues
+- [ ] Remove unnecessary refresh button from map interface
+- [ ] Fix zipcode filter with sorting in list view
 
 ## Steps to 1.0
 
@@ -35,4 +38,5 @@ This document outlines the key milestones for the Burrito Rater project.
 - [ ] Add rating editing functionality in admin panel
 - [ ] Implement mobile app version with React Native
 - [ ] Add offline support for frequent users
-- [ ] Create data visualization dashboard for trends 
+- [ ] Create data visualization dashboard for trends
+- [ ] Fix all remaining bugs and issues (see [BUGS.md](./BUGS.md)) 

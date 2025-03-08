@@ -55,6 +55,7 @@ This document tracks completed milestones and upcoming tasks for the Burrito Rat
 - [x] Create API documentation
 - [x] Create user guide
 - [x] Create contribution guidelines (in user guide)
+- [x] Create bug tracking document (see [BUGS.md](./BUGS.md))
 
 ### Security
 - [x] Implement rate limiting for API
@@ -65,6 +66,12 @@ This document tracks completed milestones and upcoming tasks for the Burrito Rat
 - [x] Configure SSL certificates
 - [x] Implement CDN caching strategy
 
+### Bug Fixes
+- [x] Fix zipcode filter with sorting in list view (#003)
+- [x] Fix API connection errors in development environment (#004)
+- [x] Implement USA location validation (#007)
+- [x] Fix list view sorting (#008)
+
 ## 🔄 In Progress
 
 ### User Experience
@@ -74,6 +81,10 @@ This document tracks completed milestones and upcoming tasks for the Burrito Rat
 ### Admin Features
 - [ ] Add rating editing functionality
 - [ ] Implement rating statistics dashboard
+
+### Bug Fixes
+- [ ] **[HIGH PRIORITY]** Fix mobile responsiveness issues (#001)
+- [ ] Remove unnecessary refresh button from map interface (#002)
 
 ### Infrastructure
 - [ ] **[HIGH PRIORITY]** Set up custom domain on Cloudflare
@@ -92,6 +103,10 @@ This document tracks completed milestones and upcoming tasks for the Burrito Rat
 - [ ] Create "favorite burritos" functionality tied to passwords
 - [ ] Implement notifications for new ratings
 - [ ] Add user profiles based on combination of username + password
+
+### Bug Fixes
+- [ ] Improve rating form validation with clear error messages (#005)
+- [ ] Implement map marker clustering for areas with many ratings (#006)
 
 ### Performance & SEO
 - [ ] Optimize image loading and rendering
@@ -150,10 +165,13 @@ This document tracks completed milestones and upcoming tasks for the Burrito Rat
 - **API Requests/Day**: TBD
 - **Deployment Frequency**: Weekly
 - **Average Rating**: TBD
+- **Open Bugs**: 4 (see [BUGS.md](./BUGS.md) for details)
+- **Fixed Bugs**: 4
 
 ## 📝 Notes
 
 - Priority should be given to improving user experience and adding editing functionality to the admin panel
 - Consider implementing a more secure authentication system for the admin area in the future
 - Regular backups of the Cloudflare D1 database should be established
-- Performance monitoring should be set up to track API response times and frontend load times 
+- Performance monitoring should be set up to track API response times and frontend load times
+- Bug fixes should be prioritized based on their impact on user experience 
