@@ -51,40 +51,40 @@ Burrito Rater uses a cloud-first architecture with three main components:
 3. **Database**: Cloudflare D1 (single source of truth)
 
 ```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│                 │     │                 │     │                 │
-│  Next.js App    │────▶│  Cloudflare     │────▶│  Cloudflare D1  │
-│  (Cloudflare    │     │  Worker API     │     │  Database       │
-│   Pages)        │◀────│                 │◀────│                 │
-│                 │     │                 │     │                 │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
+┌─────────────┐     ┌─────────────┐     ┌─────────────┐
+│             │     │             │     │             │
+│  Next.js    │────▶│  Cloudflare │────▶│  Cloudflare │
+│  App        │     │  Worker API │     │  D1 DB      │
+│             │◀────│             │◀────│             │
+│             │     │             │     │             │
+└─────────────┘     └─────────────┘     └─────────────┘
 ```
 
 For a more detailed view of the architecture within the Cloudflare infrastructure:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                                                                 │
-│                     Cloudflare Infrastructure                   │
-│                                                                 │
-│  ┌───────────────┐      ┌───────────────┐     ┌──────────────┐  │
-│  │               │      │               │     │              │  │
-│  │ Cloudflare    │      │ Cloudflare    │     │ Cloudflare   │  │
-│  │ Pages         │◄────►│ Workers       │◄───►│ D1 Database  │  │
-│  │ (Frontend)    │      │ (API Backend) │     │              │  │
-│  │               │      │               │     │              │  │
-│  └───────────────┘      └───────────────┘     └──────────────┘  │
-│          ▲                                                      │
-└──────────┼──────────────────────────────────────────────────────┘
-           │
-           │ HTTPS
-           │
-┌──────────▼──────────┐
-│                     │
-│    End User         │
-│    Web Browser      │
-│                     │
-└─────────────────────┘
+┌───────────────────────────────────────────────────────┐
+│                                                       │
+│               Cloudflare Infrastructure               │
+│                                                       │
+│  ┌───────────┐      ┌───────────┐     ┌───────────┐   │
+│  │           │      │           │     │           │   │
+│  │ Cloudflare│      │ Cloudflare│     │ Cloudflare│   │
+│  │ Pages     │◄────►│ Workers   │◄───►│ D1 DB     │   │
+│  │ (Frontend)│      │ (API)     │     │           │   │
+│  │           │      │           │     │           │   │
+│  └───────────┘      └───────────┘     └───────────┘   │
+│        ▲                                              │
+└────────┼──────────────────────────────────────────────┘
+         │
+         │ HTTPS
+         │
+┌────────▼────────┐
+│                 │
+│    End User     │
+│    Browser      │
+│                 │
+└─────────────────┘
 ```
 
 ### Single Source of Truth
@@ -555,12 +555,12 @@ This section details how different components of the Burrito Rater application i
 The following diagram illustrates the flow when a user submits a new burrito rating:
 
 ```
-┌──────────┐     ┌───────────────┐     ┌───────────────┐     ┌──────────────┐
-│          │  1  │               │  2  │               │  3  │              │
-│  User    │────►│  Next.js      │────►│  Cloudflare   │────►│  D1 Database │
-│ Browser  │     │  Frontend     │     │  Worker       │     │              │
-│          │◄────│               │◄────│               │◄────│              │
-└──────────┘  6  └───────────────┘  5  └───────────────┘  4  └──────────────┘
+┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐
+│          │  1  │          │  2  │          │  3  │          │
+│  User    │────►│  Next.js │────►│ Cloudflare│────►│  D1 DB   │
+│ Browser  │     │ Frontend │     │  Worker  │     │          │
+│          │◀────│          │◀────│          │◀────│          │
+└──────────┘  6  └──────────┘  5  └──────────┘  4  └──────────┘
 ```
 
 1. User submits a burrito rating through the frontend interface
@@ -575,12 +575,12 @@ The following diagram illustrates the flow when a user submits a new burrito rat
 The following diagram illustrates the flow when an admin confirms a rating:
 
 ```
-┌──────────┐     ┌───────────────┐     ┌───────────────┐     ┌──────────────┐
-│          │  1  │               │  2  │               │  3  │              │
-│  Admin   │────►│  Admin        │────►│  Cloudflare   │────►│  D1 Database │
-│ Browser  │     │  Interface    │     │  Worker       │     │              │
-│          │◄────│               │◄────│               │◄────│              │
-└──────────┘  6  └───────────────┘  5  └───────────────┘  4  └──────────────┘
+┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐
+│          │  1  │          │  2  │          │  3  │          │
+│  Admin   │────►│  Admin   │────►│ Cloudflare│────►│  D1 DB   │
+│ Browser  │     │ Interface│     │  Worker  │     │          │
+│          │◀────│          │◀────│          │◀────│          │
+└──────────┘  6  └──────────┘  5  └──────────┘  4  └──────────┘
 ```
 
 1. Admin logs into the admin interface
@@ -595,16 +595,16 @@ The following diagram illustrates the flow when an admin confirms a rating:
 The following diagram illustrates the flow when a user views the map:
 
 ```
-┌──────────┐     ┌───────────────┐     ┌───────────────┐     ┌──────────────┐
-│          │  1  │               │  2  │               │  3  │              │
-│  User    │────►│  Map          │────►│  Cloudflare   │────►│  D1 Database │
-│ Browser  │     │  Component    │     │  Worker       │     │              │
-│          │◄────│               │◄────│               │◄────│              │
-└──────────┘  6  └───────────────┘  5  └───────────────┘  4  └──────────────┘
-      │                  ▲
-      │                  │
-      │        7         │
-      └──────────────────┘
+┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐
+│          │  1  │          │  2  │          │  3  │          │
+│  User    │────►│  Map     │────►│ Cloudflare│────►│  D1 DB   │
+│ Browser  │     │ Component│     │  Worker  │     │          │
+│          │◀────│          │◀────│          │◀────│          │
+└──────────┘  6  └──────────┘  5  └──────────┘  4  └──────────┘
+      │              ▲
+      │              │
+      │      7       │
+      └──────────────┘
 ```
 
 1. User visits the map view
@@ -622,12 +622,12 @@ The following diagram illustrates the flow when a user views the map:
 The database schema is managed through SQL files and deployed using the Wrangler CLI:
 
 ```
-┌──────────┐     ┌───────────────┐     ┌───────────────┐     ┌──────────────┐
-│          │     │               │     │               │     │              │
-│  Schema  │────►│  Wrangler     │────►│  Cloudflare   │────►│  D1 Database │
-│  SQL     │     │  CLI          │     │  API          │     │              │
-│          │     │               │     │               │     │              │
-└──────────┘     └───────────────┘     └───────────────┘     └──────────────┘
+┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐
+│          │     │          │     │          │     │          │
+│  Schema  │────►│ Wrangler │────►│ Cloudflare│────►│  D1 DB   │
+│  SQL     │     │  CLI     │     │  API     │     │          │
+│          │     │          │     │          │     │          │
+└──────────┘     └──────────┘     └──────────┘     └──────────┘
 ```
 
 1. **Schema Definition**: Maintained in `schema.sql`
@@ -639,12 +639,12 @@ The database schema is managed through SQL files and deployed using the Wrangler
 Regular backups of the D1 database should be performed:
 
 ```
-┌──────────────┐     ┌───────────────┐     ┌───────────────┐
-│              │     │               │     │               │
-│  D1 Database │────►│  Wrangler     │────►│  Local Backup │
-│              │     │  CLI          │     │  File         │
-│              │     │               │     │               │
-└──────────────┘     └───────────────┘     └───────────────┘
+┌──────────┐     ┌──────────┐     ┌──────────┐
+│          │     │          │     │          │
+│  D1 DB   │────►│ Wrangler │────►│  Local   │
+│          │     │  CLI     │     │  Backup  │
+│          │     │          │     │          │
+└──────────┘     └──────────┘     └──────────┘
 ```
 
 1. **Export Command**:
@@ -664,12 +664,12 @@ Regular backups of the D1 database should be performed:
 The monitoring architecture for the Burrito Rater application leverages Cloudflare's built-in monitoring tools:
 
 ```
-┌──────────────┐     ┌───────────────┐     ┌───────────────┐
-│              │     │               │     │               │
-│  Cloudflare  │────►│  Cloudflare   │────►│  Alert        │
-│  Services    │     │  Dashboard    │     │  Notifications │
-│              │     │               │     │               │
-└──────────────┘     └───────────────┘     └───────────────┘
+┌──────────┐     ┌──────────┐     ┌──────────┐
+│          │     │          │     │          │
+│ Cloudflare│────►│ Cloudflare│────►│  Alert   │
+│ Services │     │ Dashboard │     │  Notifs  │
+│          │     │          │     │          │
+└──────────┘     └──────────┘     └──────────┘
 ```
 
 ### Key Metrics to Monitor
@@ -724,12 +724,12 @@ If you see a "Node.JS Compatibility Error" message:
 The troubleshooting process typically follows this pattern:
 
 ```
-┌──────────────┐     ┌───────────────┐     ┌───────────────┐
-│              │     │               │     │               │
-│  Error Logs  │────►│  Error        │────►│  Resolution   │
-│              │     │  Identification│     │  Steps        │
-│              │     │               │     │               │
-└──────────────┘     └───────────────┘     └───────────────┘
+┌──────────┐     ┌──────────┐     ┌──────────┐
+│          │     │          │     │          │
+│  Error   │────►│  Error   │────►│ Resolution│
+│  Logs    │     │  ID      │     │  Steps    │
+│          │     │          │     │          │
+└──────────┘     └──────────┘     └──────────┘
 ```
 
 ### Edge Runtime Error
