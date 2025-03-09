@@ -4,9 +4,8 @@ This directory contains documentation for the Burrito Rater application.
 
 ## Available Documentation
 
-- [Deployment Guide](./DEPLOYMENT.md) - Instructions for deploying the application
+- [Deployment and Administration Guide](./DEPLOYMENT_AND_ADMIN.md) - Comprehensive guide for deploying and administering the application
 - [Development Guide](./DEVELOPMENT.md) - Guide for setting up and using the development environment
-- [Admin Interface Guide](./ADMIN_GUIDE.md) - Guide for using the admin interface
 - [Database Schema](./DATABASE_SCHEMA.md) - Details about the database schema and structure
 - [Cloudflare Migration Guide](./CLOUDFLARE_MIGRATION.md) - Details about the migration from SQLite to Cloudflare D1
 - [Cloudflare Pages Deployment Guide](./CLOUDFLARE_PAGES.md) - Guide for deploying the frontend to Cloudflare Pages
