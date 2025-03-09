@@ -19,7 +19,15 @@ This document outlines the key milestones for the Burrito Rater project.
 - [ ] Implement rate limiting for submissions
 - [ ] **[HIGH PRIORITY]** Fix mobile responsiveness issues
 - [ ] Remove unnecessary refresh button from map interface
-- [ ] Fix zipcode filter with sorting in list view
+- [X] Fix zipcode filter with sorting in list view
+- [X] Fix API connection errors in development environment
+
+## ✅ Recently Completed
+
+- [X] Implement USA location validation with bounding box check
+- [X] Fix list view sorting functionality
+- [X] Fix zipcode filter with sorting in list view
+- [X] Resolve API connection errors in development environment
 
 ## Steps to 1.0
 
