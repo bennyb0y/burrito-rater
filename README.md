@@ -90,7 +90,7 @@ The application connects directly to the Cloudflare Worker API, which uses Cloud
 
 ### Deployment
 
-For detailed deployment instructions, see the [Deployment and Administration Guide](./docs/DEPLOYMENT_AND_ADMIN.md).
+For detailed deployment instructions, see the [Administration and DevOps Guide](./docs/ADMIN_DEVOPS.md).
 
 Quick deployment commands:
 ```bash
@@ -101,7 +101,7 @@ npm run deploy:worker
 npm run pages:deploy
 ```
 
-> **Note**: Always deploy the API worker and frontend separately to avoid Edge Runtime errors. See the [Deployment and Administration Guide](./docs/DEPLOYMENT_AND_ADMIN.md#edge-runtime-error) for more details.
+> **Note**: Always deploy the API worker and frontend separately to avoid Edge Runtime errors. See the [Administration and DevOps Guide](./docs/ADMIN_DEVOPS.md#edge-runtime-error) for more details.
 
 ## 📁 Project Structure
 
@@ -130,6 +130,10 @@ The documentation covers:
 - Database schema
 - Development workflows
 - DevOps processes
+- Product management
+  - [Project Roadmap](./docs/PRODUCT_MGMT/ROADMAP.md)
+  - [Project Checklist](./docs/PRODUCT_MGMT/TODO_CHECKLIST.md)
+  - [Bug Tracking](./docs/PRODUCT_MGMT/BUGS.md)
 - And more
 
 ## 🤝 Contributing
