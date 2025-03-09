@@ -96,30 +96,6 @@ This document tracks completed milestones and upcoming tasks for the internal de
 - [x] Remove unnecessary refresh button from map interface
 - [x] Configure custom domain with SSL
 
-## 📊 Project Metrics
-
-- **Deployment Frequency**: Weekly
-- **Open Bugs**: 3 (see [BUGS.md](./BUGS.md) for details)
-- **Fixed Bugs**: 5
-- **Current Sprint Completion**: 35%
-- **Time to Production**: 2-3 days after PR merge
-
-## 📝 Development Guidelines
-
-- Create a branch for each task with the format `feature/short-description` or `fix/issue-number`
-- Submit PRs with detailed descriptions of changes
-- Request code reviews from at least one team member
-- Update documentation as you implement features
-- Add tests for new functionality
-- Mark completed tasks in this document when merged to main
-
-## 🔄 Weekly Team Sync
-
-- Frontend Team: Mondays at 10:00 AM
-- Backend Team: Tuesdays at 10:00 AM
-- DevOps Team: Wednesdays at 10:00 AM
-- All-Hands: Fridays at 2:00 PM
-
 ## 📚 Reference Documentation
 
 - [Public Roadmap](./ROADMAP.md) - External-facing feature timeline
