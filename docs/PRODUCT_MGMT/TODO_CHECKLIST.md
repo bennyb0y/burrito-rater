@@ -1,177 +1,128 @@
-# Burrito Rater Project Checklist
+# Burrito Rater Internal Task Checklist
 
-This document tracks completed milestones and upcoming tasks for the Burrito Rater project.
+This document tracks completed milestones and upcoming tasks for the internal development team. Use this as your primary reference for what needs to be done next.
 
-## ✅ Completed Milestones
+## 🔥 Current Sprint Priorities
 
-### Core Application
-- [x] Set up Next.js project with TypeScript
-- [x] Implement Google Maps integration
-- [x] Create rating form UI
-- [x] Implement rating submission functionality
-- [x] Add restaurant search functionality
-- [x] Create ratings list view
-- [x] Implement responsive design with Tailwind CSS
-- [x] Add emoji-based user identification
-- [x] Implement sorting and filtering options
-- [x] Restrict ratings to USA only
-- [x] Implement user feedback for rating submissions
-- [x] Add loading states for API interactions
-- [x] Improve error handling for API failures
+1. **Fix Mobile Responsiveness Issues** (Frontend Team)
+   - Fix layout issues on small screens
+   - Ensure map controls are usable on touch devices
+   - Optimize form inputs for mobile
+   - Test on various device sizes
 
-### Database & API
-- [x] Set up initial SQLite database with Prisma
-- [x] Create Next.js API routes for ratings
-- [x] Migrate from SQLite to Cloudflare D1
-- [x] Implement Cloudflare Worker for API
-- [x] Configure Cloudflare D1 database binding
-- [x] Remove local database dependencies
-- [x] Establish cloud-first architecture
-- [x] Implement location validation for USA-only submissions
+2. **Set up CI/CD Automation** (DevOps Team)
+   - Configure GitHub Actions workflow for automated builds
+   - Set up automatic deployment to Cloudflare Pages on merge to main
+   - Implement deployment previews for pull requests
+   - Add automated testing before deployment
 
-### Deployment
-- [x] Configure Cloudflare Pages deployment
-- [x] Set up environment variables in Cloudflare dashboard
-- [x] Configure `wrangler.toml` for Cloudflare Workers
-- [x] Deploy API to Cloudflare Workers
-- [x] Deploy frontend to Cloudflare Pages
-- [x] Add `nodejs_compat` compatibility flag
+3. **Implement Basic Monitoring** (DevOps Team)
+   - Set up Cloudflare Analytics
+   - Configure error logging and alerting
+   - Implement uptime monitoring
+   - Create dashboard for key metrics
 
-### Admin Features
-- [x] Create password-protected admin page
-- [x] Implement admin authentication system
-- [x] Add rating management functionality
-- [x] Create bulk delete capability
-- [x] Add session persistence for admin login
-- [x] Configure admin password environment variable
+4. **Create Backup Strategy** (Backend Team)
+   - Implement automated D1 database backups
+   - Document restore procedures
+   - Test backup and restore process
+   - Set up scheduled backup jobs
 
-### Documentation
-- [x] Create comprehensive README
-- [x] Document Cloudflare migration process
-- [x] Create Cloudflare Pages deployment guide
-- [x] Document development workflow
-- [x] Create admin setup guide
-- [x] Organize documentation in `/docs` directory
-- [x] Create API documentation
-- [x] Create user guide
-- [x] Create contribution guidelines (in user guide)
-- [x] Create bug tracking document (see [BUGS.md](./BUGS.md))
+## 📋 Team-Specific Tasks
 
-### Security
-- [x] Implement rate limiting for API
-- [x] Implement quotas for API
-- [x] Secure Google Maps API key with proper restrictions
-- [x] Add Cloudflare Turnstile CAPTCHA for submissions
+### Frontend Team
 
-### Infrastructure
-- [x] Configure SSL certificates
-- [x] Implement CDN caching strategy
-
-### Bug Fixes
-- [x] Fix zipcode filter with sorting in list view (#003)
-- [x] Fix API connection errors in development environment (#004)
-- [x] Implement USA location validation (#007)
-- [x] Fix list view sorting (#008)
-
-## 🔄 In Progress
-
-### User Experience
-- [ ] Add image upload for burritos
-- [ ] Create restaurant profiles
-
-### Admin Features
-- [ ] Add rating editing functionality
-- [ ] Implement rating statistics dashboard
-
-### Bug Fixes
-- [ ] **[HIGH PRIORITY]** Fix mobile responsiveness issues (#001)
-- [ ] Remove unnecessary refresh button from map interface (#002)
-
-### Infrastructure
-- [ ] **[HIGH PRIORITY]** Set up custom domain on Cloudflare
-- [ ] **[HIGH PRIORITY]** Set up CI/CD automation for Cloudflare deployment
-  - [ ] Configure GitHub Actions workflow for automated builds
-  - [ ] Set up automatic deployment to Cloudflare Pages on merge to main
-  - [ ] Implement deployment previews for pull requests
-  - [ ] Add automated testing before deployment
-  - [ ] Configure notifications for deployment success/failure
-
-## 📋 Upcoming Tasks
-
-### Features
-- [ ] Implement social sharing functionality
-- [ ] Add comments on restaurant profiles
-- [ ] Create "favorite burritos" functionality tied to passwords
-- [ ] Implement notifications for new ratings
-- [ ] Add user profiles based on combination of username + password
-
-### Bug Fixes
-- [ ] Improve rating form validation with clear error messages (#005)
+#### High Priority
+- [ ] Fix mobile responsiveness issues (#001)
 - [ ] Implement map marker clustering for areas with many ratings (#006)
+- [ ] Improve rating form validation with clear error messages (#005)
 
-### Performance & SEO
-- [ ] Optimize image loading and rendering
+#### Medium Priority
+- [ ] Add image upload for burritos
+- [ ] Create restaurant profile UI components
+- [ ] Implement social sharing functionality
+- [ ] Add advanced filtering and search UI
+
+#### Low Priority
 - [ ] Implement proper SEO metadata
-- [ ] Add sitemap generation
-- [ ] Implement performance monitoring
-- [ ] Add analytics integration
-- [ ] Add heatmap for popular burrito locations
+- [ ] Add offline support for frequent users
+- [ ] Create data visualization dashboard for trends
 
-### Testing
-- [ ] Set up unit testing framework
-- [ ] Create component tests
-- [ ] Implement API integration tests
-- [ ] Add end-to-end testing
-- [ ] Set up continuous integration for tests
+### Backend Team
 
-### Security
-- [ ] Add CSRF protection
-- [ ] Conduct basic security audit
-- [ ] Implement more secure admin authentication for /admin
-- [ ] Add input validation and sanitization
-- [ ] Implement rate limiting for submissions
-
-### Infrastructure
-- [ ] Set up monitoring and alerting
+#### High Priority
 - [ ] Create backup and recovery strategy for D1 database
+- [ ] Implement rate limiting for submissions
+- [ ] Add server-side validation for all form inputs
+
+#### Medium Priority
+- [ ] Create restaurant profiles data model
+- [ ] Implement image storage and retrieval
+- [ ] Add comments API endpoints
+- [ ] Create "favorite burritos" functionality
+
+#### Low Priority
+- [ ] Implement more secure admin authentication
+- [ ] Add user profiles based on username + password
+- [ ] Create API for rating statistics
+
+### DevOps Team
+
+#### High Priority
+- [ ] Set up CI/CD automation for Cloudflare deployment
+- [ ] Implement basic monitoring for API and frontend
 - [ ] Add basic admin alerting for critical errors
+- [ ] Configure custom domain with SSL
 
-### Documentation
-- [ ] Add JSDoc comments to all components
-- [ ] Document testing strategy
+#### Medium Priority
+- [ ] Set up monitoring and alerting for performance metrics
+- [ ] Conduct basic security audit
+- [ ] Implement automated testing in CI pipeline
 
-## 🚀 Future Enhancements
+#### Low Priority
+- [ ] Set up staging environment
+- [ ] Create deployment documentation
+- [ ] Implement blue/green deployment strategy
 
-### Application
-- [ ] Implement mobile app version with React Native
-- [ ] Implement offline support
-- [ ] Add advanced filtering and search
+## ✅ Recently Completed Tasks
 
-### Data & Analytics
-- [ ] Implement machine learning for recommendations
-- [ ] Create data visualization dashboard
-- [ ] Implement trend analysis for ratings
-
-### Community
-- [ ] Implement following/followers functionality
-- [ ] Create burrito challenges and badges
-- [ ] Add events and meetups feature
-- [ ] Implement leaderboards
+- [x] Restrict ratings to USA only with bounding box check
+- [x] Add Cloudflare Turnstile CAPTCHA for submissions
+- [x] Improve error handling for API failures
+- [x] Add loading states for API interactions
+- [x] Implement user feedback for rating submissions
+- [x] Secure Google Maps API key with proper restrictions
+- [x] Fix zipcode filter with sorting in list view
+- [x] Fix API connection errors in development environment
+- [x] Remove unnecessary refresh button from map interface
 
 ## 📊 Project Metrics
 
-- **Ratings in Database**: TBD
-- **Active Users**: TBD
-- **API Requests/Day**: TBD
 - **Deployment Frequency**: Weekly
-- **Average Rating**: TBD
-- **Open Bugs**: 4 (see [BUGS.md](./BUGS.md) for details)
-- **Fixed Bugs**: 4
+- **Open Bugs**: 3 (see [BUGS.md](./BUGS.md) for details)
+- **Fixed Bugs**: 5
+- **Current Sprint Completion**: 35%
+- **Time to Production**: 2-3 days after PR merge
 
-## 📝 Notes
+## 📝 Development Guidelines
 
-- Priority should be given to improving user experience and adding editing functionality to the admin panel
-- Consider implementing a more secure authentication system for the admin area in the future
-- Regular backups of the Cloudflare D1 database should be established
-- Performance monitoring should be set up to track API response times and frontend load times
-- Bug fixes should be prioritized based on their impact on user experience 
+- Create a branch for each task with the format `feature/short-description` or `fix/issue-number`
+- Submit PRs with detailed descriptions of changes
+- Request code reviews from at least one team member
+- Update documentation as you implement features
+- Add tests for new functionality
+- Mark completed tasks in this document when merged to main
+
+## 🔄 Weekly Team Sync
+
+- Frontend Team: Mondays at 10:00 AM
+- Backend Team: Tuesdays at 10:00 AM
+- DevOps Team: Wednesdays at 10:00 AM
+- All-Hands: Fridays at 2:00 PM
+
+## 📚 Reference Documentation
+
+- [Public Roadmap](./ROADMAP.md) - External-facing feature timeline
+- [Bug Tracker](./BUGS.md) - Current bugs and issues
+- [API Documentation](../API_WORKER.md) - API endpoints and usage
+- [Database Schema](../DATABASE_SCHEMA.md) - Database structure and relationships 

@@ -1,51 +1,63 @@
-# Burrito Rater Roadmap
+# Burrito Rater Public Roadmap
 
-This document outlines the key milestones for the Burrito Rater project.
+This document outlines the planned development path for the Burrito Rater application, focusing on user-facing features and improvements.
 
-## Steps to Beta Launch
+## 🚀 Beta Release (Q2 2023)
 
-- [X] Restrict ratings to USA only
-- [X] Add cloudflare captcha for submissions
-- [ ] Set up CI/CD automation for Cloudflare deployment directly from GitHub
-- [ ] Implement basic monitoring for API and frontend
-- [ ] Add basic admin alerting for critical errors
-- [X] Improve error handling for API failures
-- [X] Add loading states for API interactions
-- [X] Implement user feedback for rating submissions
-- [X] Secure Google Maps API key with proper restrictions
-- [ ] Conduct basic security audit
-- [ ] Create backup and recovery strategy for D1 database
-- [ ] Add custom domain configuration
-- [ ] Implement rate limiting for submissions
-- [ ] **[HIGH PRIORITY]** Fix mobile responsiveness issues
-- [ ] Remove unnecessary refresh button from map interface
-- [X] Fix zipcode filter with sorting in list view
-- [X] Fix API connection errors in development environment
+Our Beta release focuses on core functionality and a stable user experience:
 
-## ✅ Recently Completed
+### Core Features
+- [x] Interactive map of burrito ratings across the USA
+- [x] Detailed burrito rating submission form
+- [x] Filtering and sorting of ratings by location and score
+- [x] Mobile-responsive design for on-the-go burrito hunters
+- [x] Emoji-based user identification system
+- [x] USA-only submissions with location validation
+- [x] CAPTCHA protection to prevent spam submissions
 
-- [X] Implement USA location validation with bounding box check
-- [X] Fix list view sorting functionality
-- [X] Fix zipcode filter with sorting in list view
-- [X] Resolve API connection errors in development environment
-- [X] Add Cloudflare Turnstile CAPTCHA for form submissions
+### Coming Soon to Beta
+- [ ] Enhanced mobile experience with improved responsiveness
+- [ ] Custom domain with SSL for secure browsing
+- [ ] Improved error handling and user feedback
+- [ ] Performance optimizations for faster loading
+- [ ] Enhanced map experience with clustering for popular areas
 
-## Steps to 1.0
+## 🌮 Version 1.0 (Q4 2023)
 
-- [ ] Implement more secure admin authentication for /admin
-- [ ] Add image upload for burritos
-- [ ] Create restaurant profiles
-- [ ] Implement social sharing functionality
-- [ ] Add comments on restaurant profiles
-- [ ] Create "favorite burritos" functionality tied to passwords
-- [ ] Add advanced filtering and search
-- [ ] Implement proper SEO metadata
-- [ ] Add heatmap for popular burrito locations
-- [ ] Set up monitoring and alerting for performance metrics
-- [ ] Add user profiles based on combination of username + password
-- [ ] Implement rating statistics dashboard
-- [ ] Add rating editing functionality in admin panel
-- [ ] Implement mobile app version with React Native
-- [ ] Add offline support for frequent users
-- [ ] Create data visualization dashboard for trends
-- [ ] Fix all remaining bugs and issues (see [BUGS.md](./BUGS.md)) 
+Our full release will expand on the Beta with richer features:
+
+### User Experience
+- [ ] Image uploads for burrito photos
+- [ ] Restaurant profiles with aggregated ratings
+- [ ] Social sharing functionality for your favorite burritos
+- [ ] User profiles with rating history
+- [ ] "Favorite burritos" collection for registered users
+- [ ] Advanced filtering and search capabilities
+
+### Community Features
+- [ ] Comments and discussions on restaurant profiles
+- [ ] Heatmap visualization of popular burrito locations
+- [ ] Rating statistics and trends dashboard
+- [ ] Weekly "Top Burrito" highlights
+- [ ] Email notifications for new ratings in your area
+
+### Platform Expansion
+- [ ] Mobile app version for iOS and Android
+- [ ] Offline support for frequent users
+- [ ] Integration with popular review platforms
+
+## 🔮 Future Vision (Beyond 1.0)
+
+Looking further ahead, we're exploring:
+
+- [ ] Burrito recommendation engine based on your preferences
+- [ ] Burrito challenges and achievement badges
+- [ ] Local burrito events and meetups
+- [ ] Expanded coverage to international locations
+- [ ] Partnerships with restaurants for special offers
+
+## 📝 Feedback
+
+We value your input! If you have suggestions for features you'd like to see in future versions, please submit them through our feedback form or contact the development team directly.
+
+*Note: This roadmap represents our current plans and is subject to change based on user feedback and development priorities.* 

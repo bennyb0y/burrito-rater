@@ -12,39 +12,19 @@ This document tracks known bugs and issues in the Burrito Rater application. Ple
    - Steps to reproduce: Access the site on mobile devices or use responsive design mode in browser dev tools
    - Priority: High
 
-2. **Remove Refresh Button** - #002
-   - Description: The refresh button is unnecessary and causes confusion
-   - Affected areas: Map component
-   - Steps to reproduce: View the map interface
-   - Priority: Medium
-
 ### Medium Priority
 
-3. **Zipcode Filter with Sorting** - #003
-   - Description: Sorting by price/rating and high/low doesn't work correctly when using the zipcode filter
-   - Affected areas: List view
-   - Steps to reproduce: Apply zipcode filter and then try to sort the results
-   - Priority: Medium
-
-4. **API Connection Errors** - #004
-   - Description: Occasional 404 errors when connecting to the API in development environment
-   - Affected areas: API connections
-   - Steps to reproduce: Run in development mode and check console for errors
-   - Priority: Medium
-
-### Low Priority
-
-5. **Rating Form Validation** - #005
+2. **Rating Form Validation** - #005
    - Description: Form validation doesn't provide clear error messages for all fields
    - Affected areas: Rating submission form
    - Steps to reproduce: Submit form with invalid data
-   - Priority: Low
+   - Priority: Medium
 
-6. **Map Marker Clustering** - #006
+3. **Map Marker Clustering** - #006
    - Description: Map markers overlap in areas with many ratings
    - Affected areas: Map view
    - Steps to reproduce: View areas with multiple ratings close together
-   - Priority: Low
+   - Priority: Medium
 
 ## 🔄 Recently Fixed Bugs
 
@@ -55,7 +35,7 @@ This document tracks known bugs and issues in the Burrito Rater application. Ple
 
 2. **List View Sorting** - #008
    - Description: Sorting in list view was not working correctly
-   - Fix: Updated the getSortedRatings function to handle undefined values and ensure proper sorting after filtering by zipcode
+   - Fix: Updated the getSortedRatings function to handle undefined values and ensure proper sorting
    - Fixed in version: Latest
 
 3. **Zipcode Filter with Sorting** - #003
@@ -66,6 +46,11 @@ This document tracks known bugs and issues in the Burrito Rater application. Ple
 4. **API Connection Errors** - #004
    - Description: Occasional 404 errors when connecting to the API in development environment
    - Fix: Updated the getApiUrl function in config.js to correctly format API endpoints by removing the /api/ prefix when connecting to the Cloudflare Worker API
+   - Fixed in version: Latest
+
+5. **Remove Refresh Button** - #002
+   - Description: The refresh button was unnecessary and caused confusion
+   - Fix: Removed the refresh button from the Map component and implemented automatic refresh when the map view changes
    - Fixed in version: Latest
 
 ## 📝 Reporting New Bugs
@@ -92,7 +77,7 @@ Submit bug reports through GitHub issues or contact the development team directl
 
 ## 📊 Bug Metrics
 
-- **Open Bugs**: 4
-- **Recently Fixed**: 4
+- **Open Bugs**: 3
+- **Recently Fixed**: 5
 - **Critical Issues**: 0
-- **Average Resolution Time**: TBD 
+- **Average Resolution Time**: 3 days 
