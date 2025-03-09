@@ -6,6 +6,7 @@ This comprehensive guide covers all aspects of deploying, administering, and mai
 
 - [Architecture Overview](#architecture-overview)
 - [Prerequisites](#prerequisites)
+- [Project Structure](#project-structure)
 - [Environment Setup](#environment-setup)
 - [Deployment](#deployment)
   - [API Deployment](#api-deployment)
@@ -13,16 +14,31 @@ This comprehensive guide covers all aspects of deploying, administering, and mai
   - [Full Stack Deployment](#full-stack-deployment)
   - [Deployment Process](#deployment-process)
 - [Admin Interface](#admin-interface)
+  - [Admin Setup](#admin-setup)
   - [Access and Authentication](#access-and-authentication)
   - [Features](#features)
   - [Implementation Details](#implementation-details)
+  - [Confirmation System](#confirmation-system)
 - [Development Workflow](#development-workflow)
   - [Local Frontend Development](#local-frontend-development)
   - [API Development](#api-development)
   - [Testing Workflow](#testing-workflow)
+- [Component Interaction](#component-interaction)
+  - [User Rating Submission Flow](#user-rating-submission-flow)
+  - [Admin Confirmation Flow](#admin-confirmation-flow)
+  - [Map View Data Flow](#map-view-data-flow)
+- [Database Operations](#database-operations)
+  - [Database Schema Management](#database-schema-management)
+  - [Database Backup Process](#database-backup-process)
+- [Monitoring and Maintenance](#monitoring-and-maintenance)
+  - [Monitoring Architecture](#monitoring-architecture)
+  - [Key Metrics to Monitor](#key-metrics-to-monitor)
 - [Troubleshooting](#troubleshooting)
   - [Common Issues](#common-issues)
   - [Edge Runtime Error](#edge-runtime-error)
+  - [API Connection Issues](#api-connection-issues)
+  - [Database Issues](#database-issues)
+  - [Authentication Issues](#authentication-issues)
 - [Best Practices](#best-practices)
 - [GitHub Integration](#github-integration)
 
@@ -44,6 +60,33 @@ Burrito Rater uses a cloud-first architecture with three main components:
 └─────────────────┘     └─────────────────┘     └─────────────────┘
 ```
 
+For a more detailed view of the architecture within the Cloudflare infrastructure:
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                                                                 │
+│                     Cloudflare Infrastructure                   │
+│                                                                 │
+│  ┌───────────────┐      ┌───────────────┐     ┌──────────────┐  │
+│  │               │      │               │     │              │  │
+│  │ Cloudflare    │      │ Cloudflare    │     │ Cloudflare   │  │
+│  │ Pages         │◄────►│ Workers       │◄───►│ D1 Database  │  │
+│  │ (Frontend)    │      │ (API Backend) │     │              │  │
+│  │               │      │               │     │              │  │
+│  └───────────────┘      └───────────────┘     └──────────────┘  │
+│          ▲                                                      │
+└──────────┼──────────────────────────────────────────────────────┘
+           │
+           │ HTTPS
+           │
+┌──────────▼──────────┐
+│                     │
+│    End User         │
+│    Web Browser      │
+│                     │
+└─────────────────────┘
+```
+
 ### Single Source of Truth
 
 A key principle of our architecture is that **Cloudflare D1 is the single source of truth** for all data. This means:
@@ -52,6 +95,8 @@ A key principle of our architecture is that **Cloudflare D1 is the single source
 - No local database development is needed
 - Data is consistent across all environments
 - Changes to data are immediately visible to all users
+- All data changes are persisted in the cloud database
+- No need to sync data between environments
 
 ## Prerequisites
 
@@ -70,6 +115,9 @@ The Burrito Rater application consists of two main components:
 ### Key Files and Directories
 
 - **`app/`** - Contains the Next.js application code
+  - **`app/admin/`** - Admin interface components
+  - **`app/admin/layout.tsx`** - Admin authentication implementation
+  - **`app/admin/page.tsx`** - Admin page functionality
 - **`api/worker.js`** - The Cloudflare Worker script that handles API requests and database operations
 - **`wrangler.toml`** - Configuration for Cloudflare Pages deployment
 - **`wrangler.worker.toml`** - Configuration specifically for the Cloudflare Worker deployment
@@ -128,16 +176,23 @@ CF_API_TOKEN=your_api_token
 DATABASE_URL=your_database_name
 
 # Admin Configuration
-NEXT_PUBLIC_ADMIN_PASSWORD=your_admin_password
+NEXT_PUBLIC_ADMIN_PASSWORD=your_secure_password
 ```
 
 ### Cloudflare Pages Dashboard
 
 Set the following environment variables in the Cloudflare Pages dashboard:
 
-- `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Your Google Maps API key
-- `NEXT_PUBLIC_API_BASE_URL`: The URL of your Cloudflare Worker API
-- `NEXT_PUBLIC_ADMIN_PASSWORD`: Your admin password
+1. Go to the Cloudflare Pages dashboard
+2. Select your Burrito Rater project
+3. Navigate to the "Settings" tab
+4. Click on "Environment variables"
+5. Add the following variables:
+   - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`: Your Google Maps API key
+   - `NEXT_PUBLIC_API_BASE_URL`: The URL of your Cloudflare Worker API
+   - `NEXT_PUBLIC_ADMIN_PASSWORD`: Your admin password
+6. Save the changes
+7. Trigger a new deployment for the changes to take effect
 
 ### Compatibility Flags
 
@@ -175,6 +230,17 @@ npm run deploy:worker
 
 This command deploys the `api/worker.js` file to Cloudflare Workers using the configuration in `wrangler.worker.toml`.
 
+The Worker deployment process follows this flow:
+
+```
+┌──────────┐     ┌───────────────┐     ┌───────────────┐
+│          │     │               │     │               │
+│  Local   │────►│  Wrangler     │────►│  Cloudflare   │
+│  Dev     │     │  CLI          │     │  Workers      │
+│          │     │               │     │               │
+└──────────┘     └───────────────┘     └───────────────┘
+```
+
 ### Frontend Deployment
 
 To deploy the frontend to Cloudflare Pages:
@@ -186,6 +252,17 @@ This command will:
 1. Build the Next.js application
 2. Generate static files
 3. Deploy to Cloudflare Pages using credentials from `.env.local`
+
+The frontend deployment process follows this flow:
+
+```
+┌──────────┐     ┌───────────────┐     ┌───────────────┐     ┌──────────────┐
+│          │     │               │     │               │     │              │
+│  Local   │────►│  GitHub       │────►│  Cloudflare   │────►│  Cloudflare  │
+│  Dev     │     │  Repository   │     │  Pages CI/CD  │     │  Pages       │
+│          │     │               │     │               │     │              │
+└──────────┘     └───────────────┘     └───────────────┘     └──────────────┘
+```
 
 > **IMPORTANT**: Do not use `npm run deploy` as it may cause Edge Runtime errors (see [Edge Runtime Error](#edge-runtime-error) section below).
 
@@ -242,38 +319,31 @@ The workflow:
 
 The admin interface allows authorized users to manage burrito ratings, including viewing, confirming, and deleting ratings.
 
-### Access and Authentication
+### Admin Setup
 
-The admin interface is password-protected to prevent unauthorized access.
+The admin section of the Burrito Rater application is protected by a simple password mechanism. This password is stored as an environment variable.
 
-#### URL
+#### Local Development Setup
 
-Access the admin interface at:
-- Local development: http://localhost:3000/admin
-- Production: https://your-domain.com/admin
+For local development, the admin password is stored in the `.env.local` file:
 
-#### Authentication
+```
+NEXT_PUBLIC_ADMIN_PASSWORD=your_secure_password
+```
 
-1. When you visit the admin page, you'll be prompted to enter a password.
-2. Enter the password set in the `NEXT_PUBLIC_ADMIN_PASSWORD` environment variable.
-3. If the password is correct, you'll be granted access to the admin interface.
+#### Production Setup
 
-#### Configuration
+For production deployment on Cloudflare Pages, you need to set up the admin password as an environment variable:
 
-To set up the admin password:
-
-1. **Local Development**:
-   Add the following to your `.env.local` file:
-   ```
-   NEXT_PUBLIC_ADMIN_PASSWORD=your_secure_password
-   ```
-
-2. **Production**:
-   Add the `NEXT_PUBLIC_ADMIN_PASSWORD` environment variable in your Cloudflare Pages dashboard:
-   - Go to your Cloudflare Pages project
-   - Navigate to Settings > Environment variables
-   - Add a new variable with the name `NEXT_PUBLIC_ADMIN_PASSWORD` and your chosen password as the value
-   - Deploy your application to apply the changes
+1. Go to the Cloudflare Pages dashboard
+2. Select your Burrito Rater project
+3. Navigate to the "Settings" tab
+4. Click on "Environment variables"
+5. Add a new variable:
+   - Variable name: `NEXT_PUBLIC_ADMIN_PASSWORD`
+   - Value: Your secure password
+6. Save the changes
+7. Trigger a new deployment for the changes to take effect
 
 #### Security Considerations
 
@@ -285,6 +355,21 @@ Please note the following security considerations:
    - Server-side authentication
    - OAuth integration
    - Multi-factor authentication
+
+### Access and Authentication
+
+#### URL
+
+Access the admin interface at:
+- Local development: http://localhost:3000/admin
+- Production: https://your-domain.com/admin
+
+#### Authentication Process
+
+1. When you visit the admin page, you'll be prompted to enter a password.
+2. Enter the password set in the `NEXT_PUBLIC_ADMIN_PASSWORD` environment variable.
+3. If the password is correct, you'll be granted access to the admin interface.
+4. Your session will remain active until you log out or close the browser.
 
 ### Features
 
@@ -379,14 +464,21 @@ The admin page functionality is implemented in `app/admin/page.tsx`, which:
 2. Provides UI for selecting and managing ratings
 3. Handles deletion and confirmation of ratings through API calls
 
-#### Confirmation System
+#### Authentication Features
+
+- **Session Persistence**: Your login session persists until you log out or close the browser
+- **Logout**: Securely end your session with the logout button
+- **Error Handling**: Clear error messages for authentication issues
+
+### Confirmation System
 
 The application uses Cloudflare D1 database for storing and managing confirmation status:
 
-1. When an admin confirms a rating, the confirmation status is stored in the D1 database.
-2. The Map and List views filter ratings based on the confirmation status from the database.
-3. This ensures that confirmations are consistent across all devices and environments.
-4. Confirmations persist between browser sessions.
+1. When an admin confirms a rating, the confirmation status is stored in the D1 database
+2. The Map and List views filter ratings based on the confirmation status from the database
+3. Confirmations are consistent across all devices and environments
+4. Confirmations persist between browser sessions
+5. Confirmations are stored in the database and available to all users
 
 ## Development Workflow
 
@@ -454,6 +546,149 @@ Since we use a cloud-first approach, API changes are deployed directly to produc
 2. Using feature flags to control rollout
 3. Implementing proper error handling and fallbacks
 
+## Component Interaction
+
+This section details how different components of the Burrito Rater application interact with each other.
+
+### User Rating Submission Flow
+
+The following diagram illustrates the flow when a user submits a new burrito rating:
+
+```
+┌──────────┐     ┌───────────────┐     ┌───────────────┐     ┌──────────────┐
+│          │  1  │               │  2  │               │  3  │              │
+│  User    │────►│  Next.js      │────►│  Cloudflare   │────►│  D1 Database │
+│ Browser  │     │  Frontend     │     │  Worker       │     │              │
+│          │◄────│               │◄────│               │◄────│              │
+└──────────┘  6  └───────────────┘  5  └───────────────┘  4  └──────────────┘
+```
+
+1. User submits a burrito rating through the frontend interface
+2. Next.js frontend sends POST request to Cloudflare Worker API
+3. Worker validates the data and inserts it into D1 Database
+4. D1 Database confirms successful insertion
+5. Worker returns success response to frontend
+6. Frontend updates UI to show submission confirmation
+
+### Admin Confirmation Flow
+
+The following diagram illustrates the flow when an admin confirms a rating:
+
+```
+┌──────────┐     ┌───────────────┐     ┌───────────────┐     ┌──────────────┐
+│          │  1  │               │  2  │               │  3  │              │
+│  Admin   │────►│  Admin        │────►│  Cloudflare   │────►│  D1 Database │
+│ Browser  │     │  Interface    │     │  Worker       │     │              │
+│          │◄────│               │◄────│               │◄────│              │
+└──────────┘  6  └───────────────┘  5  └───────────────┘  4  └──────────────┘
+```
+
+1. Admin logs into the admin interface
+2. Admin interface sends confirmation request to Worker API
+3. Worker updates rating status in D1 Database
+4. D1 Database confirms update
+5. Worker returns success response
+6. Admin interface updates to show confirmed status
+
+### Map View Data Flow
+
+The following diagram illustrates the flow when a user views the map:
+
+```
+┌──────────┐     ┌───────────────┐     ┌───────────────┐     ┌──────────────┐
+│          │  1  │               │  2  │               │  3  │              │
+│  User    │────►│  Map          │────►│  Cloudflare   │────►│  D1 Database │
+│ Browser  │     │  Component    │     │  Worker       │     │              │
+│          │◄────│               │◄────│               │◄────│              │
+└──────────┘  6  └───────────────┘  5  └───────────────┘  4  └──────────────┘
+      │                  ▲
+      │                  │
+      │        7         │
+      └──────────────────┘
+```
+
+1. User visits the map view
+2. Map component requests ratings data from Worker API
+3. Worker queries confirmed ratings from D1 Database
+4. D1 Database returns confirmed ratings
+5. Worker sends ratings data to frontend
+6. Map component renders ratings on Google Maps
+7. User interacts with map markers to view rating details
+
+## Database Operations
+
+### Database Schema Management
+
+The database schema is managed through SQL files and deployed using the Wrangler CLI:
+
+```
+┌──────────┐     ┌───────────────┐     ┌───────────────┐     ┌──────────────┐
+│          │     │               │     │               │     │              │
+│  Schema  │────►│  Wrangler     │────►│  Cloudflare   │────►│  D1 Database │
+│  SQL     │     │  CLI          │     │  API          │     │              │
+│          │     │               │     │               │     │              │
+└──────────┘     └───────────────┘     └───────────────┘     └──────────────┘
+```
+
+1. **Schema Definition**: Maintained in `schema.sql`
+2. **Local Development**: Uses local D1 database
+3. **Schema Migration**: Applied through Wrangler CLI
+
+### Database Backup Process
+
+Regular backups of the D1 database should be performed:
+
+```
+┌──────────────┐     ┌───────────────┐     ┌───────────────┐
+│              │     │               │     │               │
+│  D1 Database │────►│  Wrangler     │────►│  Local Backup │
+│              │     │  CLI          │     │  File         │
+│              │     │               │     │               │
+└──────────────┘     └───────────────┘     └───────────────┘
+```
+
+1. **Export Command**:
+   ```
+   npx wrangler d1 export <DATABASE_NAME> --output=backup.sql
+   ```
+
+2. **Import Command** (for restoration):
+   ```
+   npx wrangler d1 execute <DATABASE_NAME> --file=backup.sql
+   ```
+
+## Monitoring and Maintenance
+
+### Monitoring Architecture
+
+The monitoring architecture for the Burrito Rater application leverages Cloudflare's built-in monitoring tools:
+
+```
+┌──────────────┐     ┌───────────────┐     ┌───────────────┐
+│              │     │               │     │               │
+│  Cloudflare  │────►│  Cloudflare   │────►│  Alert        │
+│  Services    │     │  Dashboard    │     │  Notifications │
+│              │     │               │     │               │
+└──────────────┘     └───────────────┘     └───────────────┘
+```
+
+### Key Metrics to Monitor
+
+1. **Worker Performance**:
+   - Request count
+   - CPU time
+   - Error rate
+
+2. **Pages Performance**:
+   - Page load time
+   - Cache hit ratio
+   - Error rate
+
+3. **D1 Database**:
+   - Query performance
+   - Storage usage
+   - Error rate
+
 ## Troubleshooting
 
 ### Common Issues
@@ -486,30 +721,16 @@ If you see a "Node.JS Compatibility Error" message:
 2. Verify that `compatibility_flags = ["nodejs_compat"]` is in your `wrangler.toml` file
 3. Redeploy the application
 
-#### API Connection Issues
+The troubleshooting process typically follows this pattern:
 
-If you're having trouble connecting to the API:
-
-1. Check your `.env.local` file to ensure the API URL is set correctly
-2. Verify that the Cloudflare Worker is deployed and running
-3. Check the browser console for CORS errors
-
-#### Database Issues
-
-If you're experiencing database issues:
-
-1. Check the Cloudflare D1 dashboard to ensure the database exists
-2. Verify that the database ID in `wrangler.toml` matches the actual database ID
-3. Check the Cloudflare Worker logs for any database connection errors
-
-#### Authentication Issues
-
-If you're having trouble with admin authentication:
-
-1. Verify that the `NEXT_PUBLIC_ADMIN_PASSWORD` environment variable is set correctly
-2. Check for any whitespace in the password value
-3. Ensure the environment variable is available in the client-side code
-4. Try clearing your browser's sessionStorage and cache
+```
+┌──────────────┐     ┌───────────────┐     ┌───────────────┐
+│              │     │               │     │               │
+│  Error Logs  │────►│  Error        │────►│  Resolution   │
+│              │     │  Identification│     │  Steps        │
+│              │     │               │     │               │
+└──────────────┘     └───────────────┘     └───────────────┘
+```
 
 ### Edge Runtime Error
 
@@ -544,6 +765,31 @@ There are two ways to fix this issue:
 This project uses a separate Cloudflare Worker for the API instead of Next.js API routes. The build process detects the `/api/worker` path and tries to treat it as a Next.js API route, which requires the Edge Runtime configuration.
 
 By using `npm run pages:deploy` instead of `npm run deploy`, you bypass this check and deploy only the static files, which is the intended behavior for this project.
+
+### API Connection Issues
+
+If you're having trouble connecting to the API:
+
+1. Check your `.env.local` file to ensure the API URL is set correctly
+2. Verify that the Cloudflare Worker is deployed and running
+3. Check the browser console for CORS errors or other issues
+
+### Database Issues
+
+If you're experiencing database issues:
+
+1. Check the Cloudflare D1 dashboard to ensure the database exists
+2. Verify that the database ID in `wrangler.toml` matches the actual database ID
+3. Check the Cloudflare Worker logs for any database connection errors
+
+### Authentication Issues
+
+If you're having trouble with admin authentication:
+
+1. Verify that the `NEXT_PUBLIC_ADMIN_PASSWORD` environment variable is set correctly
+2. Check for any whitespace in the password value
+3. Ensure the environment variable is available in the client-side code
+4. Try clearing your browser's sessionStorage and cache
 
 ## Best Practices
 
@@ -596,4 +842,5 @@ The GitHub Actions workflow automatically builds and deploys the frontend whenev
 - [Cloudflare Pages Documentation](https://developers.cloudflare.com/pages/)
 - [Next.js Documentation](https://nextjs.org/docs)
 - [API Worker Documentation](./API_WORKER.md)
-- [Database Schema](./DATABASE_SCHEMA.md) 
+- [Database Schema](./DATABASE_SCHEMA.md)
+- [Product Management](./PRODUCT_MGMT/) 
