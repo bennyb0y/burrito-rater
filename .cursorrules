@@ -48,6 +48,22 @@ The application we are working on uses the following tech stack:
 - For database changes, update `docs/DATABASE_SCHEMA.md`
 - For API changes, update `docs/API_WORKER.md`
 
+## Project Structure
+
+### Scripts Directory
+- The `/scripts` directory is designated for temporary utility scripts that are not part of the production application
+- Use this directory for:
+  - Database migration scripts
+  - Data transformation utilities
+  - One-time setup or cleanup tasks
+  - Development utilities and helpers
+  - Testing or benchmarking tools
+- Scripts in this directory should:
+  - Be well-documented with comments explaining their purpose
+  - Include clear instructions for usage
+  - Be removed once they are no longer needed (unless they might be needed again)
+- Do not place production code or critical application components in this directory
+
 ## Environment Variables Rules
 
 ### File Location
