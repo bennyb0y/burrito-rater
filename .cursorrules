@@ -27,6 +27,27 @@ The application we are working on uses the following tech stack:
   - Break it down into smaller steps. Provide a clear breakdown of the issue or question at hand at the start.
   - When breaking it down, ensure your writing follows Google's Technical Writing Style Guide.
 
+## Documentation Updates
+
+### Product Management Documentation
+- When resolving product issues, always update the relevant files in the `/docs/PRODUCT_MGMT` folder:
+  - Update `BUGS.md` when fixing bugs (move from "Active Bugs" to "Recently Fixed Bugs")
+  - Update `ROADMAP.md` when completing features (mark items as completed)
+  - Update `TODO_CHECKLIST.md` when completing tasks (move to "Recently Completed Tasks")
+- Keep these documents in sync with the actual state of the application
+- Ensure each document serves its specific purpose:
+  - `BUGS.md`: Only for tracking actual bugs, not feature requests
+  - `ROADMAP.md`: External-facing document showing what Beta and 1.0 will include
+  - `TODO_CHECKLIST.md`: Internal team tasks organized by priority and team
+
+### Application Documentation
+- When making application changes that affect architecture, deployment, or administration:
+  - Update `docs/ADMIN_DEVOPS.md` to reflect the current state
+  - Ensure diagrams and process descriptions are accurate
+  - Update configuration examples if they've changed
+- For database changes, update `docs/DATABASE_SCHEMA.md`
+- For API changes, update `docs/API_WORKER.md`
+
 ## Environment Variables Rules
 
 ### File Location

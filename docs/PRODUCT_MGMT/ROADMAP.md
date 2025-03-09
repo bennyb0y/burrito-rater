@@ -2,7 +2,7 @@
 
 This document outlines the planned development path for the Burrito Rater application, focusing on user-facing features and improvements.
 
-## 🚀 Beta Release (Q2 2023)
+## 🚀 Beta Release
 
 Our Beta release focuses on core functionality and a stable user experience:
 
@@ -14,15 +14,15 @@ Our Beta release focuses on core functionality and a stable user experience:
 - [x] Emoji-based user identification system
 - [x] USA-only submissions with location validation
 - [x] CAPTCHA protection to prevent spam submissions
+- [x] Custom domain with SSL for secure browsing
 
 ### Coming Soon to Beta
 - [ ] Enhanced mobile experience with improved responsiveness
-- [ ] Custom domain with SSL for secure browsing
 - [ ] Improved error handling and user feedback
 - [ ] Performance optimizations for faster loading
 - [ ] Enhanced map experience with clustering for popular areas
 
-## 🌮 Version 1.0 (Q4 2023)
+## 🌮 Version 1.0
 
 Our full release will expand on the Beta with richer features:
 
