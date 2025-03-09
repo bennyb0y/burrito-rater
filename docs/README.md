@@ -9,9 +9,8 @@ This directory contains documentation for the Burrito Rater application.
 - [Administration and DevOps Guide](./ADMIN_DEVOPS.md) - Comprehensive guide for deploying, administering, and maintaining the application, including admin setup and DevOps workflows
 - [Database Schema](./DATABASE_SCHEMA.md) - Details about the database schema and structure
 - [Cloudflare Migration Guide](./CLOUDFLARE_MIGRATION.md) - Details about the migration from SQLite to Cloudflare D1
-- [Cloudflare Pages Deployment Guide](./CLOUDFLARE_PAGES.md) - Guide for deploying the frontend to Cloudflare Pages
 - [Custom Domain Setup Guide](./CUSTOM_DOMAIN.md) - Step-by-step guide for configuring a custom domain
-- [Development Guidelines](./CURSOR_RULES.md) - Coding standards and development guidelines
+- [Development Guidelines](../.cursorrules) - Coding standards and development guidelines
 - [CAPTCHA Implementation Guide](./CAPTCHA_IMPLEMENTATION.md) - Detailed documentation on the Cloudflare Turnstile CAPTCHA integration
 - [API Worker Documentation](./API_WORKER.md) - Information about the Cloudflare Worker API and its endpoints
 

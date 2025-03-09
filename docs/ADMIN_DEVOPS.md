@@ -121,7 +121,7 @@ The Burrito Rater application consists of two main components:
 - **`api/worker.js`** - The Cloudflare Worker script that handles API requests and database operations
 - **`wrangler.toml`** - Configuration for Cloudflare Pages deployment
 - **`wrangler.worker.toml`** - Configuration specifically for the Cloudflare Worker deployment
-- **`schema.sql`** - The database schema definition
+- **`docs/DATABASE_SCHEMA.md`** - The complete database schema definition
 
 ### Wrangler Configuration Files
 
@@ -265,6 +265,43 @@ The frontend deployment process follows this flow:
 ```
 
 > **IMPORTANT**: Do not use `npm run deploy` as it may cause Edge Runtime errors (see [Edge Runtime Error](#edge-runtime-error) section below).
+
+### Frontend Configuration
+
+#### next.config.ts
+
+The Next.js configuration has been updated to be compatible with Cloudflare Pages:
+
+```typescript
+const nextConfig: NextConfig = {
+  output: 'export', // Required for static site generation
+  images: {
+    unoptimized: true, // Required for static site generation
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
+  },
+};
+```
+
+#### _routes.json
+
+The `public/_routes.json` file configures Cloudflare Pages routing:
+
+```json
+{
+  "version": 1,
+  "include": ["/*"],
+  "exclude": [
+    "/_next/*",
+    "/api/*",
+    "/_vercel/insights/*"
+  ]
+}
+```
 
 ### Full Stack Deployment
 
@@ -536,7 +573,7 @@ To test frontend changes before deployment:
    npm run pages:dev
    ```
 
-This will start a local server at http://localhost:8788 that simulates the Cloudflare Pages environment.
+This will start a local server at http://localhost:8788 that simulates the Cloudflare Pages environment. Note that this is just for testing the build - the application still connects to the Cloudflare Worker API and D1 database in the cloud.
 
 #### Testing API Changes
 
@@ -619,19 +656,19 @@ The following diagram illustrates the flow when a user views the map:
 
 ### Database Schema Management
 
-The database schema is managed through SQL files and deployed using the Wrangler CLI:
+The database schema is documented in `docs/DATABASE_SCHEMA.md` and managed through the Wrangler CLI:
 
 ```
 ┌──────────┐     ┌──────────┐     ┌──────────┐     ┌──────────┐
 │          │     │          │     │          │     │          │
 │  Schema  │────►│ Wrangler │────►│ Cloudflare│────►│  D1 DB   │
-│  SQL     │     │  CLI     │     │  API     │     │          │
+│  Doc     │     │  CLI     │     │  API     │     │          │
 │          │     │          │     │          │     │          │
 └──────────┘     └──────────┘     └──────────┘     └──────────┘
 ```
 
-1. **Schema Definition**: Maintained in `schema.sql`
-2. **Local Development**: Uses local D1 database
+1. **Schema Definition**: Documented in `docs/DATABASE_SCHEMA.md`
+2. **Local Development**: Uses cloud D1 database
 3. **Schema Migration**: Applied through Wrangler CLI
 
 ### Database Backup Process
