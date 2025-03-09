@@ -16,6 +16,8 @@ This directory contains documentation for the Burrito Rater application.
 - [Project Checklist](./TODO_CHECKLIST.md) - Completed milestones and upcoming tasks
 - [Development Workflow Guide](./WORKFLOW.md) - Complete CI/CD workflow from development to deployment
 - [DevOps Workflow Guide](./WORKFLOW_DEVOPS.md) - Comprehensive guide to the application architecture and operational processes from a DevOps perspective
+- [CAPTCHA Implementation Guide](./CAPTCHA_IMPLEMENTATION.md) - Detailed documentation on the Cloudflare Turnstile CAPTCHA integration
+- [API Worker Documentation](./API_WORKER.md) - Information about the Cloudflare Worker API and its endpoints
 
 ## Project Overview
 
@@ -25,5 +27,6 @@ Burrito Rater is a web application for discovering and rating burritos. Users ca
 - **Backend**: Cloudflare Workers
 - **Database**: Cloudflare D1
 - **Maps**: Google Maps API
+- **Security**: Cloudflare Turnstile CAPTCHA
 
 For more information, see the [main README](../README.md) file. 

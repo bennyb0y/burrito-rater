@@ -61,6 +61,7 @@ This document tracks completed milestones and upcoming tasks for the Burrito Rat
 - [x] Implement rate limiting for API
 - [x] Implement quotas for API
 - [x] Secure Google Maps API key with proper restrictions
+- [x] Add Cloudflare Turnstile CAPTCHA for submissions
 
 ### Infrastructure
 - [x] Configure SSL certificates
@@ -125,10 +126,9 @@ This document tracks completed milestones and upcoming tasks for the Burrito Rat
 
 ### Security
 - [ ] Add CSRF protection
-- [ ] Conduct security audit
+- [ ] Conduct basic security audit
 - [ ] Implement more secure admin authentication for /admin
 - [ ] Add input validation and sanitization
-- [ ] Add cloudflare captcha for submissions
 - [ ] Implement rate limiting for submissions
 
 ### Infrastructure

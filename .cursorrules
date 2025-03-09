@@ -182,6 +182,7 @@ process.env.NEXT_PUBLIC_API_BASE_URL
 - The application uses Cloudflare D1 as the database
 - The API is hosted on Cloudflare Workers at https://your-worker-name.your-account.workers.dev
 - The frontend connects to the API using the NEXT_PUBLIC_API_BASE_URL environment variable
+- Allways confirm changes are working on the local npm dev version before recomending publishing
 - To deploy changes to the worker, use npm run deploy:worker
 - For local development with the worker, use npm run dev:d1
 - For frontend-only development, use npm run dev 

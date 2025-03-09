@@ -216,6 +216,11 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
 
   const handleRatingSubmit = async (ratingData: any) => {
     try {
+      console.log('Submitting rating to API with data:', {
+        ...ratingData,
+        turnstileToken: ratingData.turnstileToken ? `${ratingData.turnstileToken.substring(0, 20)}...` : 'none'
+      });
+      
       const response = await fetch(getApiUrl('ratings'), {
         method: 'POST',
         headers: {
@@ -225,7 +230,7 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => ({ error: 'Failed to parse error response' }));
         
         // Check if this is a location validation error
         if (response.status === 400 && errorData.error === 'Location must be in the USA') {
@@ -235,6 +240,16 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
           return;
         }
         
+        // Check if this is a CAPTCHA validation error
+        if (response.status === 400 && errorData.error && errorData.error.includes('CAPTCHA')) {
+          console.error('CAPTCHA validation failed:', errorData.error);
+          alert("CAPTCHA verification failed. Please try again.");
+          setShowRatingForm(false);
+          setSelectedLocation(null);
+          return;
+        }
+        
+        console.error('API error:', response.status, errorData);
         throw new Error(errorData.error || 'Failed to submit rating');
       }
 

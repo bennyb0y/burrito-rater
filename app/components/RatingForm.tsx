@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { generateUserEmoji, validatePassword } from '../utils/auth';
+import Turnstile from './Turnstile';
 
 interface Position {
   lat: number;
@@ -47,6 +48,15 @@ function extractZipcode(address: string): string | undefined {
   return zipcodeMatch ? zipcodeMatch[0] : undefined;
 }
 
+// Cloudflare Turnstile site key - use test key for development
+// Test keys from Cloudflare docs: https://developers.cloudflare.com/turnstile/reference/testing/
+// 1x00000000000000000000AA - Always passes
+// 2x00000000000000000000AB - Always blocks
+// 3x00000000000000000000FF - Forces an interactive challenge
+const TURNSTILE_SITE_KEY = process.env.NODE_ENV === 'production' 
+  ? (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAA_9y3MwYADqg0-_')
+  : '1x00000000000000000000AA'; // Always passes in development
+
 export default function RatingForm({ position, placeName, onSubmit, onClose }: Props) {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -66,9 +76,52 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
+  const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
+  const [turnstileError, setTurnstileError] = useState<boolean>(false);
+  const [turnstileErrorMessage, setTurnstileErrorMessage] = useState<string>('There was an error loading the CAPTCHA. Please refresh the page and try again.');
+
+  // Log the site key being used when the component mounts
+  useEffect(() => {
+    console.log('RatingForm mounted with Turnstile site key:', TURNSTILE_SITE_KEY);
+    console.log('Environment:', process.env.NODE_ENV);
+  }, []);
+
+  const handleTurnstileVerify = (token: string) => {
+    console.log('CAPTCHA verified successfully with token:', token.substring(0, 10) + '...');
+    setTurnstileToken(token);
+    setIsCaptchaVerified(true);
+    setTurnstileError(false);
+    setTurnstileErrorMessage('');
+    setError(null);
+  };
+
+  // Add a function to handle Turnstile errors
+  const handleTurnstileError = (errorCode?: string) => {
+    console.log('CAPTCHA encountered an error', errorCode ? `with code: ${errorCode}` : '');
+    setTurnstileError(true);
+    setIsCaptchaVerified(false);
+    
+    if (errorCode === '110200') {
+      setTurnstileErrorMessage('Invalid site key. Please check your configuration or contact support.');
+    } else if (errorCode === 'invalid_key_format') {
+      setTurnstileErrorMessage('The CAPTCHA site key has an invalid format. Please check your configuration or contact support.');
+    } else {
+      setTurnstileErrorMessage('There was an error with the CAPTCHA verification. Please refresh the page and try again.');
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate CAPTCHA
+    if (!isCaptchaVerified || !turnstileToken) {
+      setError('Please complete the CAPTCHA verification');
+      return;
+    }
+    
+    console.log('Submitting form with turnstile token:', turnstileToken.substring(0, 20) + '...');
+    
     setIsSubmitting(true);
     setError(null);
     
@@ -92,6 +145,7 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
       identityPassword: password.length >= 4 ? password : undefined,
       reviewerEmoji,
       zipcode,
+      turnstileToken, // Include the CAPTCHA token
       ...ingredients,
     };
 
@@ -355,6 +409,42 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
               />
             </div>
 
+            {/* Cloudflare Turnstile CAPTCHA */}
+            <div className="mt-4">
+              <label className="block text-xs font-bold text-black mb-2">
+                Verify you're human
+              </label>
+              {turnstileError ? (
+                <div className="bg-red-50 border border-red-200 rounded-md p-2 mb-3">
+                  <p className="text-xs text-red-800">
+                    {turnstileErrorMessage}
+                  </p>
+                  <button 
+                    onClick={() => window.location.reload()} 
+                    className="mt-2 px-2 py-1 text-xs bg-red-100 text-red-800 rounded hover:bg-red-200"
+                  >
+                    Refresh Page
+                  </button>
+                </div>
+              ) : isCaptchaVerified ? (
+                <div className="p-2 bg-green-50 border border-green-200 rounded-md text-sm text-green-800">
+                  CAPTCHA verification successful ✓
+                </div>
+              ) : (
+                <div className="border border-gray-200 rounded-md p-2">
+                  <Turnstile 
+                    siteKey={TURNSTILE_SITE_KEY} 
+                    onVerify={handleTurnstileVerify}
+                    onError={handleTurnstileError}
+                    theme="light"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Please complete the CAPTCHA verification to submit your rating.
+                  </p>
+                </div>
+              )}
+            </div>
+
             <div className="flex justify-end gap-1 mt-2">
               <button
                 type="button"
@@ -367,7 +457,7 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
               <button
                 type="submit"
                 className="px-3 py-1 border border-transparent rounded-md shadow-sm text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-blue-500 disabled:bg-blue-400 disabled:cursor-not-allowed"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !isCaptchaVerified}
               >
                 {isSubmitting ? 'Submitting...' : 'Submit Rating'}
               </button>

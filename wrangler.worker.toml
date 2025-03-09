@@ -7,3 +7,9 @@ main = "api/worker.js"
 binding = "DB"
 database_name = "your-database-name"
 database_id = "0e87da0b-9043-44f4-8782-3ee0c9fd6553" 
+
+# Environment variables
+[vars]
+# The secret key should be set using wrangler secret command
+# DO NOT put the actual secret key here as it would be exposed in the repository
+# TURNSTILE_SECRET_KEY = "xxx" # Set this using: npx wrangler secret put TURNSTILE_SECRET_KEY 

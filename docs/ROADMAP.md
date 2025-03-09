@@ -5,7 +5,7 @@ This document outlines the key milestones for the Burrito Rater project.
 ## Steps to Beta Launch
 
 - [X] Restrict ratings to USA only
-- [ ] Add cloudflare captcha for submissions
+- [X] Add cloudflare captcha for submissions
 - [ ] Set up CI/CD automation for Cloudflare deployment directly from GitHub
 - [ ] Implement basic monitoring for API and frontend
 - [ ] Add basic admin alerting for critical errors
@@ -28,6 +28,7 @@ This document outlines the key milestones for the Burrito Rater project.
 - [X] Fix list view sorting functionality
 - [X] Fix zipcode filter with sorting in list view
 - [X] Resolve API connection errors in development environment
+- [X] Add Cloudflare Turnstile CAPTCHA for form submissions
 
 ## Steps to 1.0
 

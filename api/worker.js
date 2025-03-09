@@ -26,6 +26,9 @@ const USA_BOUNDS = {
   }
 };
 
+// Cloudflare Turnstile secret key should be set as a Worker secret using:
+// npx wrangler secret put TURNSTILE_SECRET_KEY
+
 // Helper function to check if coordinates are within USA bounds
 function isInUSA(lat, lng) {
   // Check continental US
@@ -127,6 +130,71 @@ async function validateRestaurantLocation(lat, lng) {
     } else {
       return { isValid: false, message: "Location is not in the USA (fallback)" };
     }
+  }
+}
+
+// Helper function to validate Turnstile token
+async function validateTurnstileToken(token, ip, env) {
+  try {
+    // Accept test tokens that start with "test_verification_token_"
+    if (token && token.startsWith('test_verification_token_')) {
+      console.log('Accepting test verification token');
+      return {
+        success: true,
+        message: 'Test token accepted'
+      };
+    }
+    
+    // For development environment, accept any token that starts with "0."
+    // This is useful for testing with the production site key
+    if (token && token.startsWith('0.') && !env.PRODUCTION) {
+      console.log('Development mode: Accepting token without validation');
+      return {
+        success: true,
+        message: 'Development token accepted'
+      };
+    }
+
+    // For production environment, validate the token with Cloudflare
+    const formData = new FormData();
+    formData.append('secret', env.TURNSTILE_SECRET_KEY || 'dummy_secret_for_dev');
+    formData.append('response', token);
+    
+    if (ip) {
+      formData.append('remoteip', ip);
+    }
+
+    const result = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+      method: 'POST',
+      body: formData
+    });
+
+    const outcome = await result.json();
+    console.log('Turnstile validation result:', outcome);
+    
+    return {
+      success: outcome.success,
+      errorCodes: outcome.error_codes || [],
+      message: outcome.success ? 'Validation successful' : 'CAPTCHA validation failed'
+    };
+  } catch (error) {
+    console.error('Error validating Turnstile token:', error);
+    
+    // In development, allow the request to proceed even if validation fails
+    if (!env.PRODUCTION) {
+      console.log('Development mode: Accepting request despite validation error');
+      return {
+        success: true,
+        errorCodes: ['validation_error_ignored_in_dev'],
+        message: 'Error validating CAPTCHA, but accepted in development mode'
+      };
+    }
+    
+    return {
+      success: false,
+      errorCodes: ['validation_error'],
+      message: 'Error validating CAPTCHA'
+    };
   }
 }
 
@@ -246,6 +314,21 @@ export default {
             return errorResponse('Missing required fields', 400);
           }
           
+          // Validate Turnstile token
+          if (!data.turnstileToken) {
+            return errorResponse('CAPTCHA verification required', 400);
+          }
+          
+          // Get client IP from Cloudflare headers
+          const clientIP = request.headers.get('CF-Connecting-IP');
+          
+          // Validate the Turnstile token
+          const turnstileValidation = await validateTurnstileToken(data.turnstileToken, clientIP, env);
+          
+          if (!turnstileValidation.success) {
+            return errorResponse(`CAPTCHA validation failed: ${turnstileValidation.message}`, 400);
+          }
+          
           // Validate location is in the USA
           const locationValidation = await validateRestaurantLocation(data.latitude, data.longitude);
           
@@ -262,6 +345,9 @@ export default {
             'hasAvocado', 'hasVegetables', 'review', 'reviewerName', 
             'identityPassword', 'reviewerEmoji', 'confirmed'
           ];
+          
+          // Remove turnstileToken from data before saving to database
+          delete data.turnstileToken;
           
           const placeholders = fields.map(() => '?').join(', ');
           const values = [

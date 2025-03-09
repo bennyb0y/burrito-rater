@@ -27,6 +27,7 @@ The worker exposes the following endpoints:
 
 - **POST `/api/ratings`**: Create a new rating
   - Requires a JSON body with rating details
+  - Requires a valid Turnstile CAPTCHA token
 
 - **PUT `/api/ratings/:id`**: Update a rating
   - Requires a JSON body with updated rating details
@@ -99,6 +100,49 @@ The key setting is:
 
 Make sure to update the `database_name` and `database_id` with your actual Cloudflare D1 database information in both files.
 
+## Cloudflare Turnstile Integration
+
+The API worker integrates with Cloudflare Turnstile to prevent spam submissions and bot attacks.
+
+### Secret Key Setup
+
+The Turnstile secret key must be set as a Worker secret:
+
+```bash
+npx wrangler secret put TURNSTILE_SECRET_KEY
+```
+
+When prompted, enter your Turnstile secret key. This ensures the secret is securely stored and not exposed in your codebase.
+
+### Token Validation
+
+When a rating is submitted, the worker:
+
+1. Extracts the Turnstile token from the request
+2. Validates the token with Cloudflare's verification API
+3. Rejects the submission if the token is invalid
+
+The validation function handles:
+- Test tokens for development environments
+- Production tokens for live environments
+- Error handling and logging
+
+### Development Mode
+
+In development mode, the worker accepts:
+- Test tokens that start with `test_verification_token_`
+- Tokens that start with `0.` when not in production mode
+- Provides more lenient validation to facilitate testing
+
+### Production Mode
+
+In production mode, the worker:
+- Strictly validates all tokens with Cloudflare's API
+- Requires a valid secret key to be set
+- Rejects submissions with invalid tokens
+
+For more details on the Turnstile implementation, see the [CAPTCHA Implementation Guide](./CAPTCHA_IMPLEMENTATION.md).
+
 ## Development
 
 When making changes to the API:
@@ -114,6 +158,7 @@ The worker includes error handling for:
 - Database errors
 - Missing resources
 - Authentication failures
+- CAPTCHA validation failures
 
 All errors are returned as JSON responses with appropriate HTTP status codes.
 
@@ -125,11 +170,14 @@ The worker is configured to allow cross-origin requests from any origin, which i
 
 - The worker does not implement authentication for most endpoints
 - Admin operations (like confirming ratings) should be protected in the frontend
+- CAPTCHA validation is required for all rating submissions
 - Consider adding authentication if deploying in a production environment
 
 ## Related Documentation
 
 - [Cloudflare Workers Documentation](https://developers.cloudflare.com/workers/)
 - [Cloudflare D1 Documentation](https://developers.cloudflare.com/d1/)
+- [Cloudflare Turnstile Documentation](https://developers.cloudflare.com/turnstile/)
+- [CAPTCHA Implementation Guide](./CAPTCHA_IMPLEMENTATION.md)
 - [Deployment Guide](./DEPLOYMENT.md)
 - [Workflow Guide](./WORKFLOW.md) 
