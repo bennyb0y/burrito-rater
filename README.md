@@ -92,10 +92,16 @@ The application connects directly to the Cloudflare Worker API, which uses Cloud
 
 For detailed deployment instructions, see the [Deployment Guide](./docs/DEPLOYMENT.md).
 
-Quick deployment command:
+Quick deployment commands:
 ```bash
-npm run deploy
+# Deploy API worker
+npm run deploy:worker
+
+# Deploy frontend
+npm run pages:deploy
 ```
+
+> **Note**: Always deploy the API worker and frontend separately to avoid Edge Runtime errors. See the [Deployment Guide](./docs/DEPLOYMENT.md#edge-runtime-error) for more details.
 
 ## 📁 Project Structure
 

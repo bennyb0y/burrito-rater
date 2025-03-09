@@ -102,6 +102,12 @@ This command will:
 4. Skip account selection prompts
 5. Allow deployment with uncommitted changes
 
+> **IMPORTANT**: If you encounter an Edge Runtime error during deployment (see [Edge Runtime Error](#edge-runtime-error) section below), use the following command instead:
+> ```bash
+> npm run pages:deploy
+> ```
+> This command will deploy only the static files without attempting to deploy the API worker.
+
 ### Full Stack Deployment
 
 When making changes to both the frontend and API, deploy in this order:
@@ -113,7 +119,7 @@ When making changes to both the frontend and API, deploy in this order:
 
 2. Then deploy the frontend:
    ```bash
-   npm run deploy
+   npm run pages:deploy
    ```
 
 This ensures that any API changes are available when the new frontend is deployed.
@@ -164,6 +170,40 @@ This ensures that any API changes are available when the new frontend is deploye
    - Check that `wrangler.worker.toml` has the correct path (`main = "api/worker.js"`)
    - Verify D1 database bindings are correct
 
+### Edge Runtime Error
+
+When deploying with `npm run deploy` or `npm run pages:build`, you may encounter the following error:
+
+```
+ERROR: Failed to produce a Cloudflare Pages build from the project.
+
+     The following routes were not configured to run with the Edge Runtime:
+       - /api/worker
+
+     Please make sure that all your non-static routes export the following edge runtime route segment config:
+       export const runtime = 'edge';
+```
+
+This error occurs because the build process is trying to deploy the API worker as a Next.js API route, but it's not configured to use the Edge Runtime.
+
+#### How to Fix
+
+There are two ways to fix this issue:
+
+1. **Recommended Approach**: Deploy the frontend and API separately
+   - Deploy the API worker using `npm run deploy:worker`
+   - Deploy the frontend using `npm run pages:deploy`
+
+2. **Alternative Approach**: Add Edge Runtime configuration to the API worker
+   - Add `export const runtime = 'edge';` to the top of your API route files
+   - Note: This approach is not recommended for this project as we're using a separate Cloudflare Worker for the API
+
+#### Why This Happens
+
+This project uses a separate Cloudflare Worker for the API instead of Next.js API routes. The build process detects the `/api/worker` path and tries to treat it as a Next.js API route, which requires the Edge Runtime configuration.
+
+By using `npm run pages:deploy` instead of `npm run deploy`, you bypass this check and deploy only the static files, which is the intended behavior for this project.
+
 ### Environment Variables
 
 Make sure all required environment variables are set in:
@@ -181,6 +221,7 @@ Make sure all required environment variables are set in:
    - Test locally before deploying
    - Use the automated deployment command
    - Monitor deployment logs
+   - Always deploy the API worker and frontend separately to avoid Edge Runtime errors
 
 3. **Security**
    - Rotate API tokens regularly

@@ -272,9 +272,9 @@ export default function Turnstile({ siteKey, onVerify, onError, theme = 'light',
   }, [siteKey, onVerify, onError, theme, size, scriptLoaded, loadAttempts, isVerified]);
 
   return (
-    <div ref={containerRef} className="my-3">
+    <div ref={containerRef} className="my-1 min-h-[70px] flex items-center justify-center">
       {isVerified && (
-        <div className="p-2 bg-green-50 border border-green-200 rounded text-sm text-green-800">
+        <div className="p-2 bg-green-50 border border-green-200 rounded text-sm text-green-800 w-full text-center">
           CAPTCHA verification successful ✓
         </div>
       )}

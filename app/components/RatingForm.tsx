@@ -161,9 +161,9 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-1 sm:p-2 overflow-y-auto">
       <div className="bg-white rounded-lg w-full max-w-xl max-h-[95vh] overflow-y-auto my-2">
-        <div className="p-2 sm:p-3">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-base sm:text-lg font-bold text-black">Rate this Burrito</h2>
+        <div className="p-2">
+          <div className="flex justify-between items-center mb-1">
+            <h2 className="text-base font-bold text-black">Rate this Burrito</h2>
             <button
               onClick={onClose}
               className="text-gray-500 hover:text-gray-700"
@@ -173,276 +173,266 @@ export default function RatingForm({ position, placeName, onSubmit, onClose }: P
           </div>
 
           {/* USA-only notice */}
-          <div className="bg-blue-50 border border-blue-200 rounded-md p-2 mb-3">
-            <p className="text-xs text-blue-800">
-              <span className="font-bold">Note:</span> During our beta phase, we're only accepting ratings for restaurants located in the United States. 🇺🇸
-            </p>
+          <div className="bg-blue-50 border border-blue-200 rounded-md p-1 mb-2 text-xs text-blue-800">
+            <span className="font-bold">Note:</span> During our beta phase, we're only accepting ratings for restaurants in the United States. 🇺🇸
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-md p-2 mb-3">
-              <p className="text-xs text-red-800">{error}</p>
+            <div className="bg-red-50 border border-red-200 rounded-md p-1 mb-2 text-xs text-red-800">
+              {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-2">
-            <div>
-              <label className="block text-xs font-bold text-black">Restaurant</label>
-              <p className="text-sm text-black leading-tight">{position.name}</p>
-              <p className="text-xs text-black leading-tight">{position.address}</p>
-            </div>
+            <div className="flex">
+              {/* Left Column */}
+              <div className="w-1/2 pr-3 space-y-2">
+                <div>
+                  <label htmlFor="name" className="block text-xs font-bold text-black">
+                    Your Name (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="block w-full px-2 py-1 text-xs text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Anonymous"
+                  />
+                </div>
 
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label htmlFor="name" className="block text-xs font-bold text-black">
-                  Your Name (Optional)
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="block w-full px-2 py-1 text-sm text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="Anonymous"
-                />
+                <div>
+                  <label htmlFor="password" className="block text-xs font-bold text-black">
+                    Reviewer Identity Password (Optional)
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="block w-full px-2 py-1 text-xs text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="4-10 chars for emoji"
+                    maxLength={10}
+                  />
+                  {password && !validatePassword(password) && (
+                    <p className="text-xs text-black leading-tight mt-0.5">
+                      Password must be 4-10 characters
+                    </p>
+                  )}
+                  {validatePassword(password) && (
+                    <div className="flex items-center gap-1 bg-gray-50 px-2 py-0.5 rounded-md mt-0.5 min-h-[30px]">
+                      <span className="text-lg">{generateUserEmoji(password)}</span>
+                      <span className="text-xs text-gray-600">Your Reviewer Identity</span>
+                    </div>
+                  )}
+                  {!validatePassword(password) && (
+                    <div className="min-h-[30px]"></div>
+                  )}
+                </div>
               </div>
 
-              <div>
-                <label htmlFor="password" className="block text-xs font-bold text-black">
-                  Reviewer Identity Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full px-2 py-1 text-sm text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                  placeholder="4-10 chars for emoji"
-                  maxLength={10}
-                />
-                {password && !validatePassword(password) && (
-                  <p className="text-xs text-black leading-tight mt-0.5">
-                    Password must be 4-10 characters
-                  </p>
-                )}
-                {validatePassword(password) && (
-                  <div className="flex items-center gap-1 bg-gray-50 px-2 py-1 rounded-md mt-0.5">
-                    <span className="text-2xl">{generateUserEmoji(password)}</span>
-                    <div className="flex flex-col">
-                      <span className="text-xs font-medium text-black">Your Reviewer Identity</span>
-                      <span className="text-[10px] text-gray-600">This emoji will appear on your review</span>
+              {/* Divider */}
+              <div className="mx-2 border-l border-gray-200"></div>
+
+              {/* Right Column */}
+              <div className="w-1/2 pl-2 space-y-2">
+                <div>
+                  <p className="text-xs font-bold text-black">{position.name}</p>
+                  <p className="text-xs text-gray-500 leading-tight">{position.address}</p>
+                </div>
+
+                <div>
+                  <label htmlFor="burritoTitle" className="block text-xs font-bold text-black">
+                    Burrito Name
+                  </label>
+                  <input
+                    type="text"
+                    id="burritoTitle"
+                    value={burritoTitle}
+                    onChange={(e) => setBurritoTitle(e.target.value)}
+                    className="block w-full px-2 py-1 text-xs text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-black">Base Price ($)</label>
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="range"
+                      min="3"
+                      max="35"
+                      step="0.5"
+                      value={price}
+                      onChange={(e) => setPrice(Number(e.target.value))}
+                      className="w-full h-4"
+                    />
+                    <span className="text-lg" role="img" aria-label="price reaction">
+                      {getPriceEmoji(price)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-xs text-black leading-tight">
+                    <span>$3</span>
+                    <span className="font-bold">${price.toFixed(2)}</span>
+                    <span>$35</span>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-black">Overall Rating</label>
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="range"
+                      min="1"
+                      max="5"
+                      step="0.1"
+                      value={rating}
+                      onChange={(e) => setRating(Number(e.target.value))}
+                      className="w-full h-4"
+                    />
+                    <span className="text-lg" role="img" aria-label="rating emotion">
+                      {getRatingEmoji(rating)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-xs text-black leading-tight">
+                    <span>Poor</span>
+                    <span className="font-bold">{rating.toFixed(1)}</span>
+                    <span>Amazing</span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-xs font-bold text-black">Taste</label>
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="range"
+                        min="1"
+                        max="5"
+                        step="0.1"
+                        value={taste}
+                        onChange={(e) => setTaste(Number(e.target.value))}
+                        className="w-full h-4"
+                      />
+                      <span className="text-lg" role="img" aria-label="taste rating">
+                        {getRatingEmoji(taste)}
+                      </span>
                     </div>
+                    <div className="text-center text-xs font-medium text-black">
+                      {taste.toFixed(1)}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-black">Value</label>
+                    <div className="flex items-center gap-1">
+                      <input
+                        type="range"
+                        min="1"
+                        max="5"
+                        step="0.1"
+                        value={value}
+                        onChange={(e) => setValue(Number(e.target.value))}
+                        className="w-full h-4"
+                      />
+                      <span className="text-lg" role="img" aria-label="value rating">
+                        {getRatingEmoji(value)}
+                      </span>
+                    </div>
+                    <div className="text-center text-xs font-medium text-black">
+                      {value.toFixed(1)}
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-black mb-0.5">
+                    <span className="flex items-center gap-1">
+                      Ingredients <span className="text-lg">🧂</span>
+                    </span>
+                  </label>
+                  <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
+                    {Object.entries(ingredients).map(([key, value]) => (
+                      <label key={key} className="flex items-center gap-1">
+                        <input
+                          type="checkbox"
+                          checked={value}
+                          onChange={(e) =>
+                            setIngredients((prev) => ({
+                              ...prev,
+                              [key]: e.target.checked,
+                            }))
+                          }
+                          className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 h-3 w-3"
+                        />
+                        <span className="text-xs text-black flex items-center gap-0.5">
+                          <span className="text-lg">
+                            {key === 'hasPotatoes' && '🥔'}
+                            {key === 'hasCheese' && '🧀'}
+                            {key === 'hasBacon' && '🥓'}
+                            {key === 'hasChorizo' && '🌭'}
+                            {key === 'hasAvocado' && '🥑'}
+                            {key === 'hasVegetables' && '🥬'}
+                          </span>
+                          {key.replace('has', '')}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <label htmlFor="review" className="block text-xs font-bold text-black">
+                    Review (Optional)
+                  </label>
+                  <textarea
+                    id="review"
+                    rows={2}
+                    value={review}
+                    onChange={(e) => setReview(e.target.value)}
+                    className="block w-full px-2 py-1 text-xs text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    placeholder="Share your thoughts about this burrito..."
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Cloudflare Turnstile CAPTCHA - Full Width */}
+            <div className="mt-2 pt-2 border-t border-gray-200">
+              <label className="block text-xs font-bold text-black mb-1">
+                Verify you're human
+              </label>
+              <div className="min-h-[80px]"> {/* Fixed height container to prevent layout shifts */}
+                {turnstileError ? (
+                  <div className="bg-red-50 border border-red-200 rounded-md p-2">
+                    <p className="text-xs text-red-800">
+                      {turnstileErrorMessage}
+                    </p>
+                    <button 
+                      onClick={() => window.location.reload()} 
+                      className="mt-1 px-2 py-0.5 text-xs bg-red-100 text-red-800 rounded hover:bg-red-200"
+                    >
+                      Refresh Page
+                    </button>
+                  </div>
+                ) : isCaptchaVerified ? (
+                  <div className="p-2 bg-green-50 border border-green-200 rounded-md text-sm text-green-800">
+                    CAPTCHA verification successful ✓
+                  </div>
+                ) : (
+                  <div className="border border-gray-200 rounded-md p-1">
+                    <Turnstile 
+                      siteKey={TURNSTILE_SITE_KEY} 
+                      onVerify={handleTurnstileVerify}
+                      onError={handleTurnstileError}
+                      theme="light"
+                      size="compact"
+                    />
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      Please complete the CAPTCHA verification to submit your rating.
+                    </p>
                   </div>
                 )}
               </div>
-            </div>
-
-            <div>
-              <label htmlFor="burritoTitle" className="block text-xs font-bold text-black">
-                Burrito Name
-              </label>
-              <div className="flex items-center gap-1">
-                <input
-                  type="text"
-                  id="burritoTitle"
-                  value={burritoTitle}
-                  onChange={(e) => setBurritoTitle(e.target.value)}
-                  className="block w-full px-2 py-1 text-sm text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                />
-                {validatePassword(password) && (
-                  <span className="text-xl" role="img" aria-label="reviewer identity">
-                    {generateUserEmoji(password)}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <div>
-                <label className="block text-xs font-bold text-black">Overall Rating</label>
-                <div className="flex items-center gap-1">
-                  <input
-                    type="range"
-                    min="1"
-                    max="5"
-                    step="0.1"
-                    value={rating}
-                    onChange={(e) => setRating(Number(e.target.value))}
-                    className="w-full"
-                  />
-                  <span className="text-xl" role="img" aria-label="rating emotion">
-                    {getRatingEmoji(rating)}
-                  </span>
-                </div>
-                <div className="flex justify-between text-xs text-black leading-tight mt-0.5">
-                  <span>Poor</span>
-                  <span>Amazing</span>
-                </div>
-                <p className="text-center text-xs font-medium text-black mt-0.5">
-                  Rating: {rating.toFixed(1)}
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-black">Taste</label>
-                <div className="flex items-center gap-1">
-                  <input
-                    type="range"
-                    min="1"
-                    max="5"
-                    step="0.1"
-                    value={taste}
-                    onChange={(e) => setTaste(Number(e.target.value))}
-                    className="w-full"
-                  />
-                  <span className="text-xl" role="img" aria-label="taste rating">
-                    {getRatingEmoji(taste)}
-                  </span>
-                </div>
-                <div className="flex justify-between text-xs text-black leading-tight mt-0.5">
-                  <span>Poor</span>
-                  <span>Delicious</span>
-                </div>
-                <p className="text-center text-xs font-medium text-black mt-0.5">
-                  Taste: {taste.toFixed(1)}
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-black">Value for Money</label>
-                <div className="flex items-center gap-1">
-                  <input
-                    type="range"
-                    min="1"
-                    max="5"
-                    step="0.1"
-                    value={value}
-                    onChange={(e) => setValue(Number(e.target.value))}
-                    className="w-full"
-                  />
-                  <span className="text-xl" role="img" aria-label="value rating">
-                    {getRatingEmoji(value)}
-                  </span>
-                </div>
-                <div className="flex justify-between text-xs text-black leading-tight mt-0.5">
-                  <span>Poor</span>
-                  <span>Great Value</span>
-                </div>
-                <p className="text-center text-xs font-medium text-black mt-0.5">
-                  Value: {value.toFixed(1)}
-                </p>
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold text-black">Price ($)</label>
-                <div className="flex items-center gap-1">
-                  <input
-                    type="range"
-                    min="3"
-                    max="35"
-                    step="0.5"
-                    value={price}
-                    onChange={(e) => setPrice(Number(e.target.value))}
-                    className="w-full"
-                  />
-                  <span className="text-xl" role="img" aria-label="price reaction">
-                    {getPriceEmoji(price)}
-                  </span>
-                </div>
-                <div className="flex justify-between text-xs text-black leading-tight mt-0.5">
-                  <span>$3</span>
-                  <span>$35</span>
-                </div>
-                <p className="text-center text-sm font-bold text-black leading-tight mt-0.5">
-                  ${price.toFixed(2)}
-                </p>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-black">
-                <span className="flex items-center gap-1">
-                  Ingredients <span className="text-xl">🧂</span>
-                </span>
-              </label>
-              <div className="grid grid-cols-2 gap-1 mt-1">
-                {Object.entries(ingredients).map(([key, value]) => (
-                  <label key={key} className="flex items-center gap-1">
-                    <input
-                      type="checkbox"
-                      checked={value}
-                      onChange={(e) =>
-                        setIngredients((prev) => ({
-                          ...prev,
-                          [key]: e.target.checked,
-                        }))
-                      }
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                    <span className="text-xs text-black flex items-center gap-0.5">
-                      <span className="text-lg">
-                        {key === 'hasPotatoes' && '🥔'}
-                        {key === 'hasCheese' && '🧀'}
-                        {key === 'hasBacon' && '🥓'}
-                        {key === 'hasChorizo' && '🌭'}
-                        {key === 'hasAvocado' && '🥑'}
-                        {key === 'hasVegetables' && '🥬'}
-                      </span>
-                      {key.replace('has', '')}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="review" className="block text-xs font-bold text-black">
-                Review (Optional)
-              </label>
-              <textarea
-                id="review"
-                rows={2}
-                value={review}
-                onChange={(e) => setReview(e.target.value)}
-                className="block w-full px-2 py-1 text-sm text-black bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Share your thoughts about this burrito..."
-              />
-            </div>
-
-            {/* Cloudflare Turnstile CAPTCHA */}
-            <div className="mt-4">
-              <label className="block text-xs font-bold text-black mb-2">
-                Verify you're human
-              </label>
-              {turnstileError ? (
-                <div className="bg-red-50 border border-red-200 rounded-md p-2 mb-3">
-                  <p className="text-xs text-red-800">
-                    {turnstileErrorMessage}
-                  </p>
-                  <button 
-                    onClick={() => window.location.reload()} 
-                    className="mt-2 px-2 py-1 text-xs bg-red-100 text-red-800 rounded hover:bg-red-200"
-                  >
-                    Refresh Page
-                  </button>
-                </div>
-              ) : isCaptchaVerified ? (
-                <div className="p-2 bg-green-50 border border-green-200 rounded-md text-sm text-green-800">
-                  CAPTCHA verification successful ✓
-                </div>
-              ) : (
-                <div className="border border-gray-200 rounded-md p-2">
-                  <Turnstile 
-                    siteKey={TURNSTILE_SITE_KEY} 
-                    onVerify={handleTurnstileVerify}
-                    onError={handleTurnstileError}
-                    theme="light"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">
-                    Please complete the CAPTCHA verification to submit your rating.
-                  </p>
-                </div>
-              )}
             </div>
 
             <div className="flex justify-end gap-1 mt-2">
