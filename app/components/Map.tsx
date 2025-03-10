@@ -426,12 +426,13 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
               }}
               onCloseClick={() => setSelectedLocation(null)}
               options={{
-                maxWidth: 320
+                maxWidth: 300,
+                minWidth: 200
               }}
             >
-              <div className="p-1 pt-0 min-w-[280px]">
-                <h3 className="font-bold text-base sm:text-lg mb-2 text-gray-900 mt-0">{selectedLocation.name}</h3>
-                <p className="text-sm text-gray-700 mb-4">{selectedLocation.address}</p>
+              <div className="p-1 pt-0 w-full max-w-[280px]">
+                <h3 className="font-bold text-base text-gray-900 mt-0 truncate">{selectedLocation.name}</h3>
+                <p className="text-sm text-gray-700 mb-3 break-words">{selectedLocation.address}</p>
                 <div className="space-y-2">
                   <button
                     onClick={handleStartRating}
@@ -457,36 +458,35 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
                 setCurrentRatingIndex(0);
               }}
               options={{
-                maxWidth: 320
+                maxWidth: 300,
+                minWidth: 200
               }}
             >
-              <div className="p-1 pt-0 min-w-[280px] relative">
-                <div className="flex justify-between items-start mb-1">
-                  <div>
-                    <h3 className="font-bold text-base sm:text-lg text-gray-900 mt-0">{selectedRating.restaurantName}</h3>
-                    <p className="text-sm text-gray-600">{selectedRating.burritoTitle}</p>
-                    <div className="mt-1 flex items-center gap-1">
-                      <span className="text-xs text-gray-500 italic">by</span>
-                      <span className="text-sm font-bold text-gray-700">
-                        {selectedRating.reviewerName || 'Anonymous'}
-                      </span>
-                      {selectedRating.reviewerEmoji && (
-                        <span className="text-lg">{selectedRating.reviewerEmoji}</span>
-                      )}
+              <div className="p-1 pt-0 w-full max-w-[280px] relative">
+                <div className="flex flex-col gap-1">
+                  <div className="flex justify-between items-start gap-2">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="font-bold text-base text-gray-900 mt-0 truncate">{selectedRating.restaurantName}</h3>
+                      <p className="text-sm text-gray-600 truncate">{selectedRating.burritoTitle}</p>
+                      <div className="mt-1 flex items-center gap-1 flex-wrap">
+                        <span className="text-xs text-gray-500 italic">by</span>
+                        <span className="text-sm font-bold text-gray-700 truncate">
+                          {selectedRating.reviewerName || 'Anonymous'}
+                        </span>
+                        {selectedRating.reviewerEmoji && (
+                          <span className="text-lg">{selectedRating.reviewerEmoji}</span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex flex-col items-end">
-                    <div className="flex items-center gap-2">
-                      <div className="bg-blue-100 px-3 py-1 rounded-full flex items-center gap-1">
-                        <span className="text-lg font-bold text-blue-800">{selectedRating.rating}</span>
+                    <div className="flex-shrink-0">
+                      <div className="bg-blue-100 px-2 py-1 rounded-full flex items-center gap-1">
+                        <span className="text-base font-bold text-blue-800">{selectedRating.rating}</span>
                         <span className="text-blue-600">/5</span>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="mt-2">
-                  <div className="flex items-center gap-4 text-sm text-gray-600">
+                  <div className="flex items-center gap-3 text-sm text-gray-600 flex-wrap">
                     <div className="flex items-center gap-1">
                       <span>😋</span>
                       <span>{selectedRating.taste.toFixed(1)}</span>
@@ -500,40 +500,40 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
                       <span>${selectedRating.price.toFixed(2)}</span>
                     </div>
                   </div>
-                </div>
 
-                {selectedRating.review && (
-                  <div className="mt-2 text-sm text-gray-700">
-                    "{selectedRating.review}"
-                  </div>
-                )}
+                  {selectedRating.review && (
+                    <div className="mt-1 text-sm text-gray-700 break-words">
+                      "{selectedRating.review}"
+                    </div>
+                  )}
+                </div>
                 
                 {locationRatings.length > 1 && (
-                  <div className="flex justify-end items-center mt-3 text-gray-500">
+                  <div className="flex justify-between items-center mt-2 text-gray-500 border-t pt-2">
                     <button 
                       onClick={(e) => {
                         e.stopPropagation();
                         handlePrevRating();
                       }}
-                      className="p-1 hover:bg-gray-100 rounded-full"
+                      className="p-1.5 hover:bg-gray-100 rounded-full"
                       aria-label="Previous rating"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
                     </button>
-                    <span className="text-xs mx-1">
-                      {currentRatingIndex + 1}/{locationRatings.length}
+                    <span className="text-sm">
+                      {currentRatingIndex + 1} of {locationRatings.length}
                     </span>
                     <button 
                       onClick={(e) => {
                         e.stopPropagation();
                         handleNextRating();
                       }}
-                      className="p-1 hover:bg-gray-100 rounded-full"
+                      className="p-1.5 hover:bg-gray-100 rounded-full"
                       aria-label="Next rating"
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </button>
