@@ -7,21 +7,14 @@ export default function Home() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [mapError, setMapError] = useState<boolean>(false);
 
-  // Function to refresh the map
+  // Automatic refresh can be triggered programmatically when needed
+  // by calling setRefreshTrigger(prev => prev + 1)
   const refreshMap = () => {
     setRefreshTrigger(prev => prev + 1);
   };
 
   return (
     <main className="w-full h-screen flex flex-col">
-      <div className="flex justify-end px-4 py-2 bg-white">
-        <button 
-          onClick={refreshMap}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-        >
-          Refresh
-        </button>
-      </div>
       <div className="flex-1 w-full">
         {!mapError ? (
           <Map refreshTrigger={refreshTrigger} />

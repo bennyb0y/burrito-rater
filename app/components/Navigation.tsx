@@ -17,7 +17,7 @@ export default function Navigation() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col sm:flex-row justify-between items-center h-16">
           <div className="flex items-center">
-            <h1 className="text-xl sm:text-2xl font-extrabold text-blue-600">
+            <h1 className="text-base sm:text-lg font-bold text-blue-600">
               🌯 Benny's Breakfast Burrito Rating 🌯
             </h1>
           </div>

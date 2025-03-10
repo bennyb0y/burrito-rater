@@ -50,7 +50,7 @@ This document tracks known bugs and issues in the Burrito Rater application. Ple
 
 5. **Remove Refresh Button** - #002
    - Description: The refresh button was unnecessary and caused confusion
-   - Fix: Removed the refresh button from the Map component and implemented automatic refresh when the map view changes
+   - Fix: Removed the refresh button from the Map component and implemented automatic refresh when the map view changes. Updated the User Guide to reflect this change.
    - Fixed in version: Latest
 
 ## 📝 Reporting New Bugs

@@ -85,9 +85,9 @@ export default function UserGuidePage() {
           <div className="bg-purple-50 p-4 rounded-lg">
             <ul className="list-disc list-inside space-y-2 text-gray-700">
               <li>Click on burrito markers to see detailed ratings</li>
-              <li>Use the refresh button on the map to see new ratings</li>
               <li>Add your name and choose an emoji to personalize your ratings</li>
               <li>Some locations may have multiple ratings - use the navigation arrows to browse them</li>
+              <li>The map automatically updates when new ratings are added</li>
             </ul>
           </div>
         </section>
