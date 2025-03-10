@@ -253,6 +253,20 @@ This command will:
 2. Generate static files
 3. Deploy to Cloudflare Pages using credentials from `.env.local`
 
+#### When to Use Different Build Commands
+
+- **`npm run pages:deploy`**: 
+  - ✅ Use this for production deployments
+  - ✅ This is the recommended command for deploying to Cloudflare Pages
+  - ✅ Handles both building and deploying in one step
+  - ✅ Automatically avoids Edge Runtime errors with API routes
+
+- **`npm run pages:build`**:
+  - ✅ Use this for local testing and verification only
+  - ❌ Not recommended for production deployments
+  - ❌ May encounter Edge Runtime errors with API routes
+  - 🔍 Useful for debugging build issues before deployment
+
 The frontend deployment process follows this flow:
 
 ```
@@ -331,12 +345,15 @@ The workflow:
 5. Processes the build with @cloudflare/next-on-pages
 6. Deploys to Cloudflare Pages
 
-### Other Available Commands
+### Available Commands
 
-- `npm run build` - Build the Next.js application
-- `npm run pages:build` - Build for Cloudflare Pages
+- `npm run build` - Build the Next.js application locally
+- `npm run pages:build` - Build for Cloudflare Pages (local testing only)
+- `npm run pages:deploy` - Build and deploy to Cloudflare Pages (recommended for production)
 - `npm run pages:watch` - Watch for changes during development
 - `npm run pages:dev` - Run the application locally with Cloudflare Pages compatibility
+
+> **Note**: Always use `npm run pages:deploy` for production deployments. The `pages:build` command is intended for local testing and debugging only.
 
 ### Deployment Process
 
