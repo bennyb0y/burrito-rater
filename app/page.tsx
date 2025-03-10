@@ -14,7 +14,7 @@ export default function Home() {
   };
 
   return (
-    <main className="w-full h-screen flex flex-col">
+    <main className="w-full h-screen flex flex-col pt-16">
       <div className="flex-1 w-full">
         {!mapError ? (
           <Map refreshTrigger={refreshTrigger} />
