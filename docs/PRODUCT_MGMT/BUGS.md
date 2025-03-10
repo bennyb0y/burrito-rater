@@ -26,6 +26,13 @@ This document tracks known bugs and issues in the Burrito Rater application. Ple
    - Steps to reproduce: View areas with multiple ratings close together
    - Priority: Medium
 
+4. **Navigation Bar Visibility** - #009
+   - Description: Navigation bar can scroll out of view on some mobile and desktop browsers
+   - Affected areas: Navigation component across all pages
+   - Steps to reproduce: Scroll down slightly on the map view
+   - Impact: Minor usability issue, navigation still accessible by scrolling back up
+   - Priority: Medium
+
 ## 🔄 Recently Fixed Bugs
 
 1. **USA Location Validation** - #007
