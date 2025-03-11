@@ -1,8 +1,12 @@
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import './globals.css';
 import Navigation from './components/Navigation';
 
-export const metadata = {
-  title: 'Burrito Rater',
+const inter = Inter({ subsets: ['latin'] });
+
+export const metadata: Metadata = {
+  title: "Benny's Breakfast Burrito Rating",
   description: 'Rate and discover the best breakfast burritos',
 };
 
@@ -12,13 +16,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>
-        <div className="flex flex-col h-screen overflow-hidden">
+    <html lang="en" className="h-full">
+      <body className={`${inter.className} h-full`}>
+        <div className="flex flex-col h-full">
           <Navigation />
-          <div className="flex-1 overflow-auto">
+          <main className="flex-1 relative">
             {children}
-          </div>
+          </main>
         </div>
       </body>
     </html>

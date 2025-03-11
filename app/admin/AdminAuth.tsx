@@ -27,14 +27,6 @@ export default function AdminAuth({ children }: AdminAuthProps) {
     
     const correctPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
     
-    console.log('Environment check:', {
-      isClient: typeof window !== 'undefined',
-      hasPassword: !!correctPassword,
-      passwordLength: correctPassword?.length,
-      nodeEnv: process.env.NODE_ENV,
-      location: window.location.href
-    });
-    
     if (!correctPassword) {
       console.error('Admin password not configured. Check if NEXT_PUBLIC_ADMIN_PASSWORD is set in Cloudflare Pages environment variables.');
       setError('Admin password not configured. Please contact the administrator.');
@@ -50,12 +42,6 @@ export default function AdminAuth({ children }: AdminAuthProps) {
       console.log('Login failed - incorrect password');
       setError('Incorrect password');
     }
-  };
-
-  const handleLogout = () => {
-    setIsAuthenticated(false);
-    sessionStorage.removeItem('adminAuthenticated');
-    router.push('/');
   };
 
   if (isLoading) {
@@ -107,26 +93,7 @@ export default function AdminAuth({ children }: AdminAuthProps) {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <div className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-bold text-black">Burrito Rater Admin</h1>
-            </div>
-            <div className="flex items-center">
-              <button
-                onClick={handleLogout}
-                className="ml-4 px-3 py-2 rounded-md text-sm font-medium text-white bg-red-600 hover:bg-red-700"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {children}
-      </main>
+      {children}
     </div>
   );
 } 
