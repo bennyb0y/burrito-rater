@@ -310,7 +310,7 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
       const index = ratingsAtSameLocation.findIndex(r => r.id === rating.id);
       setCurrentRatingIndex(index >= 0 ? index : 0);
       setSelectedRating(ratingsAtSameLocation[index >= 0 ? index : 0]);
-    } else {
+      } else {
       // Only one rating at this location
       setLocationRatings([rating]);
       setCurrentRatingIndex(0);
@@ -362,8 +362,8 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
   }
 
   try {
-    return (
-      <div className="relative w-full h-full">
+  return (
+    <div className="relative w-full h-full">
         <GoogleMap
           mapContainerClassName={mapContainerClassName}
           mapContainerStyle={containerStyle}
@@ -383,17 +383,17 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
             }
           }}
         >
-          <StandaloneSearchBox
-            onLoad={onSearchBoxLoad}
-            onPlacesChanged={onPlacesChanged}
-          >
-            <input
-              type="text"
+        <StandaloneSearchBox
+          onLoad={onSearchBoxLoad}
+          onPlacesChanged={onPlacesChanged}
+        >
+          <input
+            type="text"
               placeholder="Search for a restaurant"
               className="absolute top-4 left-4 z-10"
-              style={searchBoxStyle.input}
-            />
-          </StandaloneSearchBox>
+            style={searchBoxStyle.input}
+          />
+        </StandaloneSearchBox>
 
           {ratings.map((rating) => (
             <Marker
@@ -477,7 +477,7 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
                           <span className="text-lg">{selectedRating.reviewerEmoji}</span>
                         )}
                       </div>
-                    </div>
+                  </div>
                     <div className="flex-shrink-0">
                       <div className="bg-blue-100 px-2 py-1 rounded-full flex items-center gap-1">
                         <span className="text-base font-bold text-blue-800">{selectedRating.rating}</span>
@@ -524,7 +524,7 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
                     </button>
                     <span className="text-sm">
                       {currentRatingIndex + 1} of {locationRatings.length}
-                    </span>
+                      </span>
                     <button 
                       onClick={(e) => {
                         e.stopPropagation();
@@ -545,19 +545,19 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
         </GoogleMap>
 
         {/* Rating Form Modal */}
-        {showRatingForm && selectedLocation && (
-          <RatingForm
-            position={selectedLocation}
+      {showRatingForm && selectedLocation && (
+        <RatingForm
+          position={selectedLocation}
             placeName={selectedLocation.name}
-            onSubmit={handleRatingSubmit}
-            onClose={() => {
-              setShowRatingForm(false);
-              setSelectedLocation(null);
-            }}
-          />
-        )}
-      </div>
-    );
+          onSubmit={handleRatingSubmit}
+          onClose={() => {
+            setShowRatingForm(false);
+            setSelectedLocation(null);
+          }}
+        />
+      )}
+    </div>
+  );
   } catch (error) {
     console.error('Error rendering map:', error);
     return (
