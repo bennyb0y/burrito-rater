@@ -39,6 +39,7 @@ This comprehensive guide covers all aspects of deploying, administering, and mai
   - [API Connection Issues](#api-connection-issues)
   - [Database Issues](#database-issues)
   - [Authentication Issues](#authentication-issues)
+  - [Webpack Module Error](#webpack-module-error)
 - [Best Practices](#best-practices)
 - [GitHub Integration](#github-integration)
 
@@ -822,6 +823,26 @@ The monitoring architecture for the Burrito Rater application leverages Cloudfla
 - Check Node.js version compatibility
 - Verify all dependencies are installed
 - Check for TypeScript errors
+
+#### Webpack Module Error
+
+If you encounter an error like `Cannot find module './[number].js'` in the development server:
+
+1. Stop the development server
+2. Clean the Next.js cache and temporary files:
+   ```bash
+   rm -rf .next node_modules/.cache
+   ```
+3. Reinstall dependencies:
+   ```bash
+   npm install
+   ```
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+This error typically occurs when the Next.js build cache becomes corrupted or out of sync with the current codebase.
 
 #### Deployment Failures
 - Verify Cloudflare credentials in `.env.local`
