@@ -17,6 +17,8 @@ Our Beta release focuses on core functionality and a stable user experience:
 - [x] Custom domain with SSL for secure browsing
 - [x] Admin dashboard with authentication
 - [x] Session-based admin authentication
+- [x] Rating management with delete and bulk confirm
+- [x] Unified admin interface with streamlined workflow
 
 ### Coming Soon to Beta
 - [ ] Enhanced mobile experience with improved responsiveness

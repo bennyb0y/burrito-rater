@@ -35,27 +35,33 @@ This document tracks known bugs and issues in the Burrito Rater application. Ple
 
 ## 🔄 Recently Fixed Bugs
 
-1. **USA Location Validation** - #007
+1. **Admin Rating Management** - #010
+   - Description: Delete and bulk confirm functionality was not working correctly
+   - Fix: Implemented proper DELETE endpoint and bulk confirmation endpoint in the worker.js file
+   - Impact: Admins can now efficiently manage ratings
+   - Fixed in version: Latest
+
+2. **USA Location Validation** - #007
    - Description: Ratings could be submitted for locations outside the USA
    - Fix: Implemented bounding box check in the worker.js file to validate coordinates and added error handling in the Map component to display a user-friendly message when a location is outside the USA
    - Fixed in version: Latest
 
-2. **List View Sorting** - #008
+3. **List View Sorting** - #008
    - Description: Sorting in list view was not working correctly
    - Fix: Updated the getSortedRatings function to handle undefined values and ensure proper sorting
    - Fixed in version: Latest
 
-3. **Zipcode Filter with Sorting** - #003
+4. **Zipcode Filter with Sorting** - #003
    - Description: Sorting by price/rating and high/low doesn't work correctly when using the zipcode filter
    - Fix: Modified the sorting logic in the list view to properly handle the zipcode filter by ensuring sorting is applied after filtering and handling edge cases with undefined values
    - Fixed in version: Latest
 
-4. **API Connection Errors** - #004
+5. **API Connection Errors** - #004
    - Description: Occasional 404 errors when connecting to the API in development environment
    - Fix: Updated the getApiUrl function in config.js to correctly format API endpoints by removing the /api/ prefix when connecting to the Cloudflare Worker API
    - Fixed in version: Latest
 
-5. **Remove Refresh Button** - #002
+6. **Remove Refresh Button** - #002
    - Description: The refresh button was unnecessary and caused confusion
    - Fix: Removed the refresh button from the Map component and implemented automatic refresh when the map view changes. Updated the User Guide to reflect this change.
    - Fixed in version: Latest
@@ -84,7 +90,7 @@ Submit bug reports through GitHub issues or contact the development team directl
 
 ## 📊 Bug Metrics
 
-- **Open Bugs**: 3
-- **Recently Fixed**: 5
+- **Open Bugs**: 4
+- **Recently Fixed**: 6
 - **Critical Issues**: 0
 - **Average Resolution Time**: 3 days 

@@ -105,6 +105,11 @@ This document tracks completed milestones and upcoming tasks for the internal de
 - [x] Remove standalone admin panel
 - [x] Update documentation for admin interface changes
 - [x] Deploy updated admin interface
+- [x] Implement DELETE endpoint for ratings
+- [x] Add bulk confirmation endpoint
+- [x] Update API documentation
+- [x] Deploy API changes to production
+- [x] Verify admin interface functionality
 
 ## 📚 Reference Documentation
 
