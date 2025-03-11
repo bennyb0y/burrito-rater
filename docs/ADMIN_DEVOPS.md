@@ -245,14 +245,38 @@ The Worker deployment process follows this flow:
 ### Frontend Deployment
 
 To deploy the frontend to Cloudflare Pages:
+
+#### Frontend-Only Changes
+
+If you're only making frontend changes (no API worker changes):
+
 ```bash
+# 1. Build the Next.js application
+npm run build
+
+# 2. Deploy to Cloudflare Pages
 npm run pages:deploy
 ```
 
-This command will:
-1. Build the Next.js application
-2. Generate static files
-3. Deploy to Cloudflare Pages using credentials from `.env.local`
+This process will:
+1. Generate optimized static files
+2. Upload new or changed files to Cloudflare Pages
+3. Deploy the updated site with zero downtime
+
+#### Full Stack Changes
+
+When making changes to both frontend and API:
+
+```bash
+# 1. Deploy the API worker first
+npm run deploy:worker
+
+# 2. Build the Next.js application
+npm run build
+
+# 3. Deploy frontend to Cloudflare Pages
+npm run pages:deploy
+```
 
 #### Build Commands and Edge Runtime Error
 
@@ -265,7 +289,7 @@ There are two build commands available, but only one should be used for producti
   - Uses the correct static export configuration
   - Deploys directly to Cloudflare Pages
 
-- **❌ `npm run pages:build` or `npm run build`**:
+- **❌ `npm run pages:build` or `npm run build` alone**:
   - NOT recommended for production deployments
   - Will encounter Edge Runtime errors
   - Should only be used for local testing
@@ -280,36 +304,26 @@ There are two build commands available, but only one should be used for producti
       export const runtime = 'edge';
     ```
 
-#### Why the Edge Runtime Error Occurs
+#### Deployment Best Practices
 
-The Edge Runtime error occurs because:
-1. The `pages:build` command tries to build the API routes as part of the Next.js application
-2. Our API is actually a separate Cloudflare Worker
-3. The build process expects Edge Runtime configuration for API routes
+1. **Always use the correct deployment sequence**:
+   - For frontend-only changes: `npm run build` then `npm run pages:deploy`
+   - For full stack changes: `npm run deploy:worker` first, then frontend deployment
 
-To avoid this error:
-1. Never use `npm run pages:build` for production
-2. Always use `npm run pages:deploy` instead
-3. Deploy the API worker separately using `npm run deploy:worker`
+2. **Avoid unnecessary cleanup**:
+   - ❌ Don't run `rm -rf .next .vercel/output` between deployments
+   - ❌ Don't reinstall dependencies unless there are package changes
+   - ✅ Let the build process handle file management
 
-#### Correct Deployment Order
+3. **Monitor deployments**:
+   - Watch the deployment logs for any errors
+   - Verify changes on the deployed site
+   - Check the Cloudflare Pages dashboard for deployment status
 
-Always follow this order when deploying:
-
-1. Deploy the API worker first:
-   ```bash
-   npm run deploy:worker
-   ```
-
-2. Then deploy the frontend:
-   ```bash
-   npm run pages:deploy
-   ```
-
-This ensures that:
-- The API is available when the frontend is deployed
-- Edge Runtime errors are avoided
-- The deployment process is clean and reliable
+4. **Troubleshooting**:
+   - If changes aren't visible, try a hard refresh (Ctrl/Cmd + Shift + R)
+   - Check the browser console for errors
+   - Review Cloudflare Pages logs in the dashboard
 
 ### Frontend Configuration
 
