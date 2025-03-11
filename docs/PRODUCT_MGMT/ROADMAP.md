@@ -15,6 +15,8 @@ Our Beta release focuses on core functionality and a stable user experience:
 - [x] USA-only submissions with location validation
 - [x] CAPTCHA protection to prevent spam submissions
 - [x] Custom domain with SSL for secure browsing
+- [x] Admin dashboard with authentication
+- [x] Session-based admin authentication
 
 ### Coming Soon to Beta
 - [ ] Enhanced mobile experience with improved responsiveness
@@ -48,6 +50,11 @@ Our full release will expand on the Beta with richer features:
 - [ ] Enhanced admin dashboard with audit trails
 - [ ] Multi-factor authentication for all admin actions
 - [ ] Automated security reporting and alerts
+- [ ] Advanced admin panel features
+  - Bulk rating management
+  - Advanced filtering and sorting
+  - Data export capabilities
+  - Activity logging and monitoring
 
 ### Community Features
 - [ ] Comments and discussions on restaurant profiles

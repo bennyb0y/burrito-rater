@@ -998,4 +998,48 @@ The GitHub Actions workflow automatically builds and deploys the frontend whenev
 - [Next.js Documentation](https://nextjs.org/docs)
 - [API Worker Documentation](./API_WORKER.md)
 - [Database Schema](./DATABASE_SCHEMA.md)
-- [Product Management](./PRODUCT_MGMT/) 
+- [Product Management](./PRODUCT_MGMT/)
+
+## Admin Panel Structure
+
+The admin panel is implemented as a single interface with a redirect structure:
+
+### Main Admin Interface (`app/admin/`)
+- **Purpose**: Primary admin interface for rating management
+- **Authentication**: Uses session-based authentication with environment variable password
+- **Features**: Full rating management, confirmation, and deletion capabilities
+- **URL Structure**:
+  - `/admin` - Entry point that redirects to `/admin/dashboard`
+  - `/admin/dashboard` - Main admin interface
+
+### Directory Structure
+```
+app/admin/
+├── layout.tsx    # Admin authentication wrapper
+├── page.tsx      # Redirect to dashboard
+└── dashboard/    # Dashboard implementation
+    └── page.tsx  # Main admin interface
+```
+
+### Authentication Flow
+1. User visits `/admin`
+2. Authentication check via `sessionStorage`
+3. If not authenticated, show login form
+4. After successful login, store authentication in `sessionStorage`
+5. Redirect to `/admin/dashboard`
+
+### Environment Variables
+The admin interface uses these environment variables:
+```env
+NEXT_PUBLIC_ADMIN_PASSWORD=your_secure_password
+NEXT_PUBLIC_API_BASE_URL=https://your-worker-name.your-account.workers.dev
+```
+
+### Security Considerations
+1. Password is exposed in client-side code (NEXT_PUBLIC_ prefix)
+2. Session storage used for authentication persistence
+3. No server-side session validation
+4. Suitable for basic admin access control
+5. Consider implementing Zero Trust security for production use
+
+[Rest of the document remains unchanged...] 
