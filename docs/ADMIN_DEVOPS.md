@@ -250,15 +250,16 @@ npm run pages:deploy
 
 ### Important Notes
 
-1. **Always use `npm run pages:deploy`** for production deployments
+1. **Use `npm run pages:deploy` for production deployments**
    - ✅ Handles building and deploying correctly
-   - ✅ Automatically handles Edge Runtime configuration
+   - ✅ Configured to exclude the `/api` directory from Next.js build
    - ✅ Deploys directly to Cloudflare Pages
 
-2. **Never use these commands for production**:
-   - ❌ `npm run pages:build`
-   - ❌ `npm run deploy`
-   - These will cause Edge Runtime errors
+2. **Alternative build commands**:
+   - `npm run pages:build` - Only for local testing
+   - `npm run deploy` - Only for local testing
+   - These commands will attempt to process `/api/worker.js` as a Next.js API route, causing Edge Runtime errors
+   - This happens because these commands don't exclude the `/api` directory during build
 
 3. **No cleanup needed**:
    - ✅ Let the build process handle file management

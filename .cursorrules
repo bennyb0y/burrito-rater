@@ -216,10 +216,50 @@ process.env.NEXT_PUBLIC_API_BASE_URL
 
 ## Cloudflare Integration
 
-- The application uses Cloudflare D1 as the database
-- The API is hosted on Cloudflare Workers at https://your-worker-name.your-account.workers.dev
-- The frontend connects to the API using the NEXT_PUBLIC_API_BASE_URL environment variable
-- Allways confirm changes are working on the local npm dev version before recomending publishing
-- To deploy changes to the worker, use npm run deploy:worker
-- For local development with the worker, use npm run dev:d1
-- For frontend-only development, use npm run dev 
+### Architecture
+- Cloud-native, edge-first application architecture
+- Cloudflare D1 as single source of truth for all environments
+- API hosted on Cloudflare Workers
+- Frontend deployed to Cloudflare Pages
+- Zero Trust security model for admin access
+
+### Development Workflow
+- For frontend-only development: `npm run dev`
+- For local D1 development: `npm run dev:d1`
+- Always test changes locally before deployment
+- Use TypeScript and Zod for type safety
+
+### Deployment Rules
+1. **Frontend-Only Changes**:
+   ```bash
+   npm run build
+   npm run pages:deploy
+   ```
+
+2. **Full-Stack Changes**:
+   ```bash
+   npm run deploy:worker
+   npm run build
+   npm run pages:deploy
+   ```
+
+3. **Environment Setup**:
+   - Store variables in `.env.local`
+   - Set production variables in Cloudflare dashboard
+   - Use `NEXT_PUBLIC_` prefix for client-side variables
+
+4. **Deployment Verification**:
+   - Check Cloudflare Pages dashboard
+   - Test critical functionality
+   - Verify API connectivity
+   - Test admin interface access
+
+### Best Practices
+- Follow edge-first development principles
+- Implement proper error handling for API calls
+- Use proper TypeScript types for API responses
+- Maintain clear separation between frontend and API code
+- Document all API endpoints and types
+- Follow Zero Trust security model for admin access
+- Use event-driven design patterns
+- Implement progressive enhancement 
