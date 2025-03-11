@@ -101,4 +101,34 @@ This document tracks completed milestones and upcoming tasks for the internal de
 - [Public Roadmap](./ROADMAP.md) - External-facing feature timeline
 - [Bug Tracker](./BUGS.md) - Current bugs and issues
 - [API Documentation](../API_WORKER.md) - API endpoints and usage
-- [Database Schema](../DATABASE_SCHEMA.md) - Database structure and relationships 
+- [Database Schema](../DATABASE_SCHEMA.md) - Database structure and relationships
+
+# Burrito Rater Development Tasks
+
+## High Priority
+- [ ] Zero Trust Security Implementation (Beta)
+  - [ ] Set up Cloudflare Access for admin routes
+  - [ ] Configure SSO with major identity providers
+  - [ ] Implement basic audit logging
+  - [ ] Set up geo-fencing rules
+  - [ ] Test and validate security measures
+- [ ] Update admin interface for Zero Trust compatibility
+  - [ ] Modify authentication flow
+  - [ ] Add session management
+  - [ ] Implement audit logging UI
+  - [ ] Add security status indicators
+
+## Medium Priority
+- [ ] Advanced Zero Trust Features (1.0)
+  - [ ] Role-based access control implementation
+  - [ ] Device posture checking setup
+  - [ ] Enhanced audit logging and reporting
+  - [ ] Custom access policy creation
+- [ ] Admin Dashboard Enhancements
+  - [ ] Security audit visualization
+  - [ ] Access pattern analysis
+  - [ ] Security alert configuration
+  - [ ] Compliance reporting tools
+
+## Backlog
+// ... existing backlog items ... 

@@ -74,6 +74,23 @@ We prioritize API-driven development:
 - **Content Security**: Strict CSP policies
 - **Zero Trust Model**: Trust no input, validate everything
 
+#### Zero Trust Admin Access
+- **Identity-First Security**: Every admin request requires strong identity verification
+- **Cloudflare Access Integration**: Admin routes protected by Cloudflare Access
+- **SSO Integration**: Support for enterprise identity providers (Google Workspace, Okta, etc.)
+- **Granular Permissions**: Role-based access control for different admin functions
+- **Audit Logging**: Comprehensive logging of all admin actions
+- **Session Management**: Automatic session expiration and device tracking
+- **Geo-Fencing**: Restrict admin access to specific geographic regions
+- **Device Posture**: Verify device security status before granting access
+
+Benefits of this approach:
+- Eliminates password-based authentication vulnerabilities
+- Provides enterprise-grade security for admin functions
+- Enables detailed audit trails for compliance
+- Allows for seamless integration with existing identity systems
+- Supports multi-factor authentication by default
+
 ## Design Patterns
 
 ### 1. Immutable State Management
