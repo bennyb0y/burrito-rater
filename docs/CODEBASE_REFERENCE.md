@@ -3,12 +3,146 @@
 This document provides a comprehensive reference of all custom variables and functions used throughout the Burrito Rater application.
 
 ## Table of Contents
+- [Application Structure](#application-structure)
 - [Environment Variables](#environment-variables)
 - [Types and Interfaces](#types-and-interfaces)
 - [Utility Functions](#utility-functions)
 - [Map Component Functions](#map-component-functions)
 - [Rating Form Functions](#rating-form-functions)
 - [State Variables](#state-variables)
+
+## Application Structure
+
+The application follows Next.js 13+ app directory structure with a clear separation of concerns:
+
+### Root Directory Structure
+```
+burrito-rater/
+├── app/               # Main application code (Next.js app directory)
+├── api/               # Cloudflare Worker API code
+├── docs/              # Documentation files
+├── public/            # Static assets (images, _routes.json)
+├── scripts/          # Utility scripts and tools
+└── .env.local        # Environment variables (not in git)
+```
+
+### App Directory (`app/`)
+```
+app/
+├── components/        # Reusable React components
+│   ├── Map.tsx       # Google Maps integration
+│   ├── RatingForm.tsx # Rating submission form
+│   └── ...
+├── admin/            # Admin interface pages
+│   ├── layout.tsx    # Admin authentication
+│   └── page.tsx      # Admin dashboard
+├── guide/            # User guide pages
+├── list/            # Rating list view
+├── utils/           # Utility functions and helpers
+├── layout.tsx       # Root layout with metadata
+├── page.tsx         # Homepage with map
+├── favicon.ico      # Fallback favicon
+├── icon.svg         # Primary favicon
+├── globals.css      # Global styles
+└── config.ts        # App configuration
+```
+
+### Component Organization (`app/components/`)
+- **Map Components**: Map-related components for displaying ratings
+- **Form Components**: Rating submission and editing forms
+- **UI Components**: Reusable UI elements like buttons and modals
+- **Layout Components**: Page layout and structure components
+
+### API Directory (`api/`)
+```
+api/
+├── worker.js         # Main Cloudflare Worker code
+└── schema.sql        # Database schema definitions
+```
+
+### Documentation (`docs/`)
+```
+docs/
+├── ADMIN_DEVOPS.md   # Deployment and maintenance guide
+├── API_WORKER.md     # API documentation
+├── CODEBASE_REFERENCE.md  # This file
+├── DATABASE_SCHEMA.md     # Database structure
+└── PRODUCT_MGMT/         # Product management docs
+    ├── BUGS.md          # Bug tracking
+    ├── ROADMAP.md       # Feature roadmap
+    └── TODO_CHECKLIST.md # Development tasks
+```
+
+### Public Directory (`public/`)
+```
+public/
+├── _routes.json     # Cloudflare Pages routing config
+└── images/         # Static images and assets
+```
+
+### Key Files
+- `app/layout.tsx`: Root layout, metadata, and global providers
+- `app/page.tsx`: Homepage with map component
+- `app/config.ts`: Application configuration and constants
+- `api/worker.js`: Cloudflare Worker API implementation
+- `wrangler.toml`: Cloudflare Worker configuration
+- `wrangler.worker.toml`: API Worker specific configuration
+
+### Directory Purposes
+
+#### `app/components/`
+- Reusable React components
+- Component-specific styles and logic
+- Component-level types and interfaces
+
+#### `app/utils/`
+- Helper functions
+- Utility types
+- Shared logic
+- Authentication utilities
+- API request helpers
+
+#### `app/admin/`
+- Admin interface components
+- Authentication logic
+- Rating management UI
+- Admin-specific utilities
+
+#### `app/guide/`
+- User documentation
+- Help pages
+- Usage instructions
+- FAQ content
+
+#### `app/list/`
+- Rating list view
+- Sorting and filtering logic
+- List-specific components
+
+#### `api/`
+- Cloudflare Worker code
+- API route handlers
+- Database interactions
+- Schema definitions
+
+#### `docs/`
+- Technical documentation
+- Setup instructions
+- API documentation
+- Database schemas
+- Product management docs
+
+#### `public/`
+- Static assets
+- Routing configuration
+- Public images
+- Global static files
+
+#### `scripts/`
+- Development utilities
+- Database migration scripts
+- Build tools
+- Testing utilities
 
 ## Environment Variables
 
