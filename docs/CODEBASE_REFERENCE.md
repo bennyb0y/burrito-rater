@@ -33,9 +33,14 @@ app/
 │   ├── Map.tsx       # Google Maps integration
 │   ├── RatingForm.tsx # Rating submission form
 │   └── ...
-├── admin/            # Admin interface pages
-│   ├── layout.tsx    # Admin authentication
-│   └── page.tsx      # Admin dashboard
+├── admin/            # Admin interface pages and components
+│   ├── layout.tsx    # Admin authentication wrapper
+│   ├── page.tsx      # Admin entry point
+│   ├── AdminAuth.tsx  # Admin authentication component
+│   ├── dashboard/    # Admin dashboard
+│   │   └── page.tsx  # Dashboard implementation
+│   └── ratings/      # Ratings management
+│       └── page.tsx  # Ratings interface
 ├── guide/            # User guide pages
 ├── list/            # Rating list view
 ├── utils/           # Utility functions and helpers
@@ -309,4 +314,43 @@ const defaultCenter = {
 };
 ```
 - Location: `app/components/Map.tsx`
-- Purpose: Sets initial map center (Mar Vista, CA) 
+- Purpose: Sets initial map center (Mar Vista, CA)
+
+### Directory Structure
+```
+app/
+├── admin/                    # Admin interface pages and components
+│   ├── layout.tsx           # Admin authentication wrapper
+│   ├── page.tsx            # Admin entry point
+│   ├── AdminAuth.tsx       # Admin authentication component
+│   ├── dashboard/          # Admin dashboard
+│   │   └── page.tsx       # Dashboard implementation
+│   └── ratings/           # Ratings management
+│       └── page.tsx       # Ratings interface
+├── components/              # Shared components
+├── utils/                  # Utility functions
+├── guide/                  # User guide pages
+├── list/                  # Rating list view
+├── monitoring/            # Monitoring interface
+├── layout.tsx             # Root layout with metadata
+├── page.tsx              # Homepage with map
+├── favicon.ico           # Fallback favicon
+├── icon.svg             # Primary favicon
+├── globals.css          # Global styles
+└── config.ts           # App configuration
+```
+
+### Admin Components
+The admin interface is implemented as a unified system within the main application:
+
+- `app/admin/layout.tsx`: Authentication wrapper for all admin routes
+- `app/admin/page.tsx`: Entry point that redirects to dashboard
+- `app/admin/AdminAuth.tsx`: Authentication component implementation
+- `app/admin/dashboard/page.tsx`: Main admin dashboard interface
+- `app/admin/ratings/page.tsx`: Ratings management interface
+
+### Authentication Implementation
+- Location: `app/admin/layout.tsx`
+- Purpose: Protects admin interface with password-based authentication
+- Storage: Uses sessionStorage for auth state
+- Environment Variables: Uses NEXT_PUBLIC_ADMIN_PASSWORD 

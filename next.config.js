@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export', // Required for static site generation
+  distDir: 'dist',
   images: {
     unoptimized: true, // Required for static site generation
     remotePatterns: [

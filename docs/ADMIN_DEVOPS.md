@@ -1016,23 +1016,27 @@ The GitHub Actions workflow automatically builds and deploys the frontend whenev
 
 ## Admin Panel Structure
 
-The admin panel is implemented as a single interface with a redirect structure:
+The admin panel is implemented as a unified interface within the main application:
 
-### Main Admin Interface (`app/admin/`)
+### Admin Interface (`app/admin/`)
 - **Purpose**: Primary admin interface for rating management
 - **Authentication**: Uses session-based authentication with environment variable password
 - **Features**: Full rating management, confirmation, and deletion capabilities
 - **URL Structure**:
   - `/admin` - Entry point that redirects to `/admin/dashboard`
   - `/admin/dashboard` - Main admin interface
+  - `/admin/ratings` - Rating management interface
 
 ### Directory Structure
 ```
 app/admin/
 ├── layout.tsx    # Admin authentication wrapper
 ├── page.tsx      # Redirect to dashboard
-└── dashboard/    # Dashboard implementation
-    └── page.tsx  # Main admin interface
+├── AdminAuth.tsx # Authentication component
+├── dashboard/    # Dashboard implementation
+│   └── page.tsx  # Main admin interface
+└── ratings/      # Ratings management
+    └── page.tsx  # Ratings interface
 ```
 
 ### Authentication Flow

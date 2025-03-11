@@ -1,7 +1,7 @@
 name = "burrito-rater"
 compatibility_date = "2023-09-01"
 compatibility_flags = ["nodejs_compat"]
-pages_build_output_dir = ".vercel/output/static"
+pages_build_output_dir = "dist"
 
 [[d1_databases]]
 binding = "DB"

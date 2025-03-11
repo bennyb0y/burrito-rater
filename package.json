@@ -8,9 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "pages:build": "npx @cloudflare/next-on-pages",
-    "pages:deploy": "npx wrangler pages deploy .vercel/output/static",
+    "pages:deploy": "npx wrangler pages deploy dist --commit-dirty=true",
     "pages:watch": "npx @cloudflare/next-on-pages --watch",
-    "pages:dev": "npx wrangler pages dev .vercel/output/static",
+    "pages:dev": "npx wrangler pages dev dist",
     "deploy:worker": "wrangler deploy api/worker.js --config wrangler.worker.toml"
   },
   "dependencies": {
