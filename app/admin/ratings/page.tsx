@@ -228,28 +228,28 @@ export default function RatingsPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-black">Ratings Management</h1>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2">
+      <div className="space-y-2">
+        <div className="flex justify-between items-center py-2">
+          <h1 className="text-lg font-bold text-black">Ratings Management</h1>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
               <span className="text-xs text-black">Status:</span>
               <select
                 value={filterStatus}
                 onChange={(e) => setFilterStatus(e.target.value as 'all' | 'confirmed' | 'unconfirmed')}
-                className="text-xs border border-gray-300 rounded px-2 py-1 text-black"
+                className="text-xs border border-gray-300 rounded px-1 py-0.5 text-black"
               >
                 <option value="all">All</option>
                 <option value="confirmed">Confirmed</option>
                 <option value="unconfirmed">Unconfirmed</option>
               </select>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center gap-1">
               <span className="text-xs text-black">Zip:</span>
               <select
                 value={zipcodeFilter}
                 onChange={(e) => setZipcodeFilter(e.target.value)}
-                className="text-xs border border-gray-300 rounded px-2 py-1 text-black w-24"
+                className="text-xs border border-gray-300 rounded px-1 py-0.5 text-black w-20"
               >
                 <option value="">All</option>
                 {uniqueZipcodes.map(zipcode => (
@@ -263,11 +263,11 @@ export default function RatingsPage() {
           </div>
         </div>
 
-        <div className="flex space-x-2 mb-4">
+        <div className="flex gap-1">
           <button
             onClick={handleConfirmSelected}
             disabled={selectedIds.size === 0 || isConfirming}
-            className={`px-3 py-1 text-xs rounded ${
+            className={`px-2 py-0.5 text-xs rounded ${
               selectedIds.size === 0 || isConfirming
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : 'bg-green-600 text-white hover:bg-green-700'
@@ -278,7 +278,7 @@ export default function RatingsPage() {
           <button
             onClick={handleDeleteSelected}
             disabled={selectedIds.size === 0 || isDeleting}
-            className={`px-3 py-1 text-xs rounded ${
+            className={`px-2 py-0.5 text-xs rounded ${
               selectedIds.size === 0 || isDeleting
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : 'bg-red-600 text-white hover:bg-red-700'
@@ -288,91 +288,92 @@ export default function RatingsPage() {
           </button>
         </div>
 
-        <Card>
-          <Title className="text-black text-sm">All Ratings</Title>
-          <Table className="mt-4">
-            <TableHead>
-              <TableRow className="text-black text-xs">
-                <TableHeaderCell className="w-4">
-                  <input
-                    type="checkbox"
-                    checked={selectedIds.size > 0 && selectedIds.size === filteredRatings.length}
-                    onChange={handleSelectAll}
-                    className="h-3 w-3"
-                  />
-                </TableHeaderCell>
-                <TableHeaderCell className="text-black text-xs">ID</TableHeaderCell>
-                <TableHeaderCell className="text-black text-xs">Restaurant</TableHeaderCell>
-                <TableHeaderCell className="text-black text-xs">Burrito</TableHeaderCell>
-                <TableHeaderCell className="text-black text-xs">Rating</TableHeaderCell>
-                <TableHeaderCell className="text-black text-xs">Price</TableHeaderCell>
-                <TableHeaderCell className="text-black text-xs">Reviewer</TableHeaderCell>
-                <TableHeaderCell className="text-black text-xs">Status</TableHeaderCell>
-                <TableHeaderCell className="text-black text-xs">Date</TableHeaderCell>
-                <TableHeaderCell className="text-black text-xs">Actions</TableHeaderCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {filteredRatings.map((rating) => (
-                <TableRow key={rating.id} className="text-black text-xs">
-                  <TableCell className="w-4">
+        <Card className="overflow-hidden">
+          <div className="overflow-x-auto">
+            <Table className="w-full">
+              <TableHead>
+                <TableRow className="text-black text-xs bg-gray-50">
+                  <TableHeaderCell className="w-4 py-1">
                     <input
                       type="checkbox"
-                      checked={selectedIds.has(rating.id)}
-                      onChange={() => handleToggleSelect(rating.id)}
+                      checked={selectedIds.size > 0 && selectedIds.size === filteredRatings.length}
+                      onChange={handleSelectAll}
                       className="h-3 w-3"
                     />
-                  </TableCell>
-                  <TableCell className="text-black text-xs">{rating.id}</TableCell>
-                  <TableCell className="text-black text-xs">{rating.restaurantName}</TableCell>
-                  <TableCell className="text-black text-xs">{rating.burritoTitle}</TableCell>
-                  <TableCell className="text-black text-xs">
-                    {rating.rating.toFixed(1)} ({rating.taste.toFixed(1)}/{rating.value.toFixed(1)})
-                  </TableCell>
-                  <TableCell className="text-black text-xs">${rating.price.toFixed(2)}</TableCell>
-                  <TableCell className="text-black text-xs">
-                    {rating.reviewerEmoji} {rating.reviewerName || 'Anonymous'}
-                  </TableCell>
-                  <TableCell>
-                    <span
-                      className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium ${
-                        rating.confirmed
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}
-                    >
-                      {rating.confirmed ? 'Confirmed' : 'Pending'}
-                    </span>
-                  </TableCell>
-                  <TableCell className="text-black text-xs">{new Date(rating.createdAt).toLocaleDateString()}</TableCell>
-                  <TableCell>
-                    <div className="flex space-x-2 text-xs">
-                      <button
-                        onClick={() => setSelectedRating(rating)}
-                        className="text-blue-600 hover:text-blue-900"
-                      >
-                        View
-                      </button>
-                      {!rating.confirmed && (
-                        <button
-                          onClick={() => handleConfirm(rating.id)}
-                          className="text-green-600 hover:text-green-900"
-                        >
-                          Confirm
-                        </button>
-                      )}
-                      <button
-                        onClick={() => handleDelete(rating.id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </TableCell>
+                  </TableHeaderCell>
+                  <TableHeaderCell className="text-black text-xs py-1">ID</TableHeaderCell>
+                  <TableHeaderCell className="text-black text-xs py-1">Restaurant</TableHeaderCell>
+                  <TableHeaderCell className="text-black text-xs py-1">Burrito</TableHeaderCell>
+                  <TableHeaderCell className="text-black text-xs py-1">Rating</TableHeaderCell>
+                  <TableHeaderCell className="text-black text-xs py-1">Price</TableHeaderCell>
+                  <TableHeaderCell className="text-black text-xs py-1">Reviewer</TableHeaderCell>
+                  <TableHeaderCell className="text-black text-xs py-1">Status</TableHeaderCell>
+                  <TableHeaderCell className="text-black text-xs py-1">Date</TableHeaderCell>
+                  <TableHeaderCell className="text-black text-xs py-1">Actions</TableHeaderCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHead>
+              <TableBody>
+                {filteredRatings.map((rating) => (
+                  <TableRow key={rating.id} className="text-black text-xs hover:bg-gray-50">
+                    <TableCell className="w-4 py-1">
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.has(rating.id)}
+                        onChange={() => handleToggleSelect(rating.id)}
+                        className="h-3 w-3"
+                      />
+                    </TableCell>
+                    <TableCell className="text-black text-xs py-1">{rating.id}</TableCell>
+                    <TableCell className="text-black text-xs py-1">{rating.restaurantName}</TableCell>
+                    <TableCell className="text-black text-xs py-1">{rating.burritoTitle}</TableCell>
+                    <TableCell className="text-black text-xs py-1">
+                      {rating.rating.toFixed(1)} ({rating.taste.toFixed(1)}/{rating.value.toFixed(1)})
+                    </TableCell>
+                    <TableCell className="text-black text-xs py-1">${rating.price.toFixed(2)}</TableCell>
+                    <TableCell className="text-black text-xs py-1">
+                      {rating.reviewerEmoji} {rating.reviewerName || 'Anonymous'}
+                    </TableCell>
+                    <TableCell className="py-1">
+                      <span
+                        className={`inline-flex items-center px-1 py-0.5 rounded-full text-[10px] font-medium ${
+                          rating.confirmed
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}
+                      >
+                        {rating.confirmed ? 'Confirmed' : 'Pending'}
+                      </span>
+                    </TableCell>
+                    <TableCell className="text-black text-xs py-1">{new Date(rating.createdAt).toLocaleDateString()}</TableCell>
+                    <TableCell className="py-1">
+                      <div className="flex gap-1 text-[10px]">
+                        <button
+                          onClick={() => setSelectedRating(rating)}
+                          className="text-blue-600 hover:text-blue-900"
+                        >
+                          View
+                        </button>
+                        {!rating.confirmed && (
+                          <button
+                            onClick={() => handleConfirm(rating.id)}
+                            className="text-green-600 hover:text-green-900"
+                          >
+                            Confirm
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleDelete(rating.id)}
+                          className="text-red-600 hover:text-red-900"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </Card>
 
         {/* Rating Details Modal */}
