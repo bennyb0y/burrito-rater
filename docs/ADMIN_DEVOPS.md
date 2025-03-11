@@ -301,6 +301,47 @@ const nextConfig: NextConfig = {
 };
 ```
 
+#### Favicon Configuration
+
+The application uses a burrito emoji (🌯) as its favicon. The setup follows Next.js 13+ app directory conventions:
+
+1. **File Locations**:
+   - Place favicon files in the `app` directory (not `public`)
+   - Required files:
+     - `app/favicon.ico` - Fallback favicon
+     - `app/icon.svg` - Primary icon with burrito emoji
+
+2. **SVG Icon Configuration**:
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="24px">🌯</text>
+</svg>
+```
+
+3. **Metadata Configuration** (`app/layout.tsx`):
+```typescript
+export const metadata = {
+  title: 'Burrito Rater',
+  description: 'Rate and discover the best breakfast burritos',
+  // No manual icon configuration needed - Next.js will automatically use
+  // app/favicon.ico and app/icon.svg
+};
+```
+
+4. **Important Notes**:
+   - Do not place favicon files in the `public` directory
+   - Do not manually configure icons in metadata
+   - Let Next.js handle favicon routing automatically
+   - The app directory favicon takes precedence over public directory
+
+5. **Troubleshooting**:
+   - If you see 404/500 errors for favicon requests, check for:
+     - Conflicting files in `public` directory
+     - Manual icon configurations in metadata
+     - Files not being in the `app` directory
+   - Clear `.next` directory and restart dev server if changes don't appear
+
 #### _routes.json
 
 The `public/_routes.json` file configures Cloudflare Pages routing:
