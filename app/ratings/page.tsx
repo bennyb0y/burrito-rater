@@ -83,13 +83,20 @@ export default function RatingsPage() {
       if (!response.ok) {
         throw new Error('Failed to confirm rating');
       }
-      setRatings(prevRatings =>
-        prevRatings.map(rating =>
-          rating.id === id ? { ...rating, confirmed: 1 } : rating
-        )
-      );
+      
+      // Verify the update was successful
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to confirm rating');
+      }
+
+      // Refetch ratings to ensure UI matches database state
+      await fetchRatings();
     } catch (err) {
       console.error('Error confirming rating:', err);
+      setError(err instanceof Error ? err.message : 'Failed to confirm rating');
+      // Show error for 3 seconds
+      setTimeout(() => setError(null), 3000);
     }
   };
 
@@ -105,7 +112,17 @@ export default function RatingsPage() {
       if (!response.ok) {
         throw new Error('Failed to delete rating');
       }
-      setRatings(prevRatings => prevRatings.filter(rating => rating.id !== id));
+
+      // Verify the deletion was successful
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to delete rating');
+      }
+
+      // Refetch ratings to ensure UI matches database state
+      await fetchRatings();
+      
+      // Clear selection if it was selected
       setSelectedIds(prev => {
         const next = new Set(prev);
         next.delete(id);
@@ -113,6 +130,9 @@ export default function RatingsPage() {
       });
     } catch (err) {
       console.error('Error deleting rating:', err);
+      setError(err instanceof Error ? err.message : 'Failed to delete rating');
+      // Show error for 3 seconds
+      setTimeout(() => setError(null), 3000);
     }
   };
 
@@ -136,14 +156,20 @@ export default function RatingsPage() {
         throw new Error('Failed to confirm ratings');
       }
       
-      setRatings(prevRatings => 
-        prevRatings.map(rating => 
-          selectedIds.has(rating.id) ? { ...rating, confirmed: 1 } : rating
-        )
-      );
+      // Verify the bulk update was successful
+      const result = await response.json();
+      if (!result.success) {
+        throw new Error(result.message || 'Failed to confirm ratings');
+      }
+
+      // Refetch ratings to ensure UI matches database state
+      await fetchRatings();
       setSelectedIds(new Set());
     } catch (err) {
       console.error('Error confirming ratings:', err);
+      setError(err instanceof Error ? err.message : 'Failed to confirm ratings');
+      // Show error for 3 seconds
+      setTimeout(() => setError(null), 3000);
     } finally {
       setIsConfirming(false);
     }
@@ -164,14 +190,28 @@ export default function RatingsPage() {
       const deletePromises = Array.from(selectedIds).map(id =>
         fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/ratings/${id}`, {
           method: 'DELETE',
+        }).then(async (response) => {
+          if (!response.ok) {
+            throw new Error(`Failed to delete rating ${id}`);
+          }
+          const result = await response.json();
+          if (!result.success) {
+            throw new Error(result.message || `Failed to delete rating ${id}`);
+          }
+          return id;
         })
       );
 
       await Promise.all(deletePromises);
-      setRatings(prevRatings => prevRatings.filter(rating => !selectedIds.has(rating.id)));
+      
+      // Refetch ratings to ensure UI matches database state
+      await fetchRatings();
       setSelectedIds(new Set());
     } catch (err) {
       console.error('Error deleting ratings:', err);
+      setError(err instanceof Error ? err.message : 'Failed to delete ratings');
+      // Show error for 3 seconds
+      setTimeout(() => setError(null), 3000);
     } finally {
       setIsDeleting(false);
     }

@@ -177,6 +177,68 @@ export default {
         }
       }
       
+      // Handle individual rating endpoints (ratings/:id)
+      const ratingMatch = path.match(/^ratings\/(\d+)(\/\w+)?$/);
+      if (ratingMatch) {
+        const id = parseInt(ratingMatch[1]);
+        const action = ratingMatch[2]?.replace('/', '') || '';
+        
+        // Verify the rating exists
+        const rating = await env.DB.prepare('SELECT * FROM Rating WHERE id = ?')
+          .bind(id)
+          .first();
+          
+        if (!rating) {
+          return errorResponse('Rating not found', 404);
+        }
+
+        // Handle DELETE request
+        if (request.method === 'DELETE' && !action) {
+          const result = await env.DB.prepare('DELETE FROM Rating WHERE id = ?')
+            .bind(id)
+            .run();
+            
+          if (result.success) {
+            return jsonResponse({ success: true, message: 'Rating deleted successfully' });
+          } else {
+            return errorResponse('Failed to delete rating', 500);
+          }
+        }
+
+        // Handle confirmation
+        if (request.method === 'PUT' && action === 'confirm') {
+          const result = await env.DB.prepare('UPDATE Rating SET confirmed = 1 WHERE id = ?')
+            .bind(id)
+            .run();
+            
+          if (result.success) {
+            return jsonResponse({ success: true, message: 'Rating confirmed successfully' });
+          } else {
+            return errorResponse('Failed to confirm rating', 500);
+          }
+        }
+      }
+      
+      // Handle bulk confirmation
+      if (path === 'ratings/confirm-bulk' && request.method === 'POST') {
+        const { ids } = await request.json();
+        
+        if (!Array.isArray(ids) || ids.length === 0) {
+          return errorResponse('Invalid or empty ID list', 400);
+        }
+        
+        const placeholders = ids.map(() => '?').join(',');
+        const result = await env.DB.prepare(`UPDATE Rating SET confirmed = 1 WHERE id IN (${placeholders})`)
+          .bind(...ids)
+          .run();
+          
+        if (result.success) {
+          return jsonResponse({ success: true, message: 'Ratings confirmed successfully' });
+        } else {
+          return errorResponse('Failed to confirm ratings', 500);
+        }
+      }
+      
       return errorResponse('Method not allowed', 405);
     } catch (error) {
       console.error('API Error:', error);

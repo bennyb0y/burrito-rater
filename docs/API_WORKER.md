@@ -17,28 +17,52 @@ The worker exposes the following endpoints:
 
 ### Ratings
 
-- **GET `/api/ratings`**: Get all ratings
-  - Query parameters:
-    - `limit`: Maximum number of ratings to return
-    - `zipcode`: Filter by zipcode
-    - `confirmed`: Filter by confirmation status (0 or 1)
-  
-- **GET `/api/ratings/:id`**: Get a specific rating by ID
+#### GET `/ratings`
+- Returns all ratings ordered by creation date (descending)
+- No query parameters required
+- Response: Array of Rating objects
 
-- **POST `/api/ratings`**: Create a new rating
-  - Requires a JSON body with rating details
-  - Requires a valid Turnstile CAPTCHA token
+#### POST `/ratings`
+- Creates a new rating
+- Requires JSON body with rating details
+- Requires Turnstile CAPTCHA token
+- Response: `{ "message": "Rating submitted successfully" }`
 
-- **PUT `/api/ratings/:id`**: Update a rating
-  - Requires a JSON body with updated rating details
+#### DELETE `/ratings/:id`
+- Deletes a specific rating
+- Verifies rating exists before deletion
+- Response: `{ "success": true, "message": "Rating deleted successfully" }`
+- Error: 404 if rating not found
 
-- **DELETE `/api/ratings/:id`**: Delete a rating
+#### PUT `/ratings/:id/confirm`
+- Confirms a specific rating
+- Sets `confirmed = 1` in database
+- Verifies rating exists before confirmation
+- Response: `{ "success": true, "message": "Rating confirmed successfully" }`
+- Error: 404 if rating not found
 
-- **PUT `/api/ratings/:id/confirm`**: Confirm a specific rating
-  - Marks the rating as confirmed (sets `confirmed = 1`)
+#### POST `/ratings/confirm-bulk`
+- Confirms multiple ratings at once
+- Request body: `{ "ids": number[] }`
+- Updates all specified ratings to confirmed status
+- Response: `{ "success": true, "message": "Ratings confirmed successfully" }`
+- Error: 400 if IDs array is invalid or empty
 
-- **POST `/api/ratings/confirm`**: Bulk confirm ratings
-  - Requires a JSON body with an array of rating IDs to confirm
+### Error Responses
+
+All error responses follow the format:
+```json
+{
+  "error": "Error message"
+}
+```
+
+Common status codes:
+- 200: Success
+- 400: Bad Request (invalid input)
+- 404: Not Found
+- 405: Method Not Allowed
+- 500: Internal Server Error
 
 ### Migration
 
@@ -164,7 +188,22 @@ All errors are returned as JSON responses with appropriate HTTP status codes.
 
 ## CORS Configuration
 
-The worker is configured to allow cross-origin requests from any origin, which is necessary for the frontend to communicate with the API.
+The worker implements CORS headers for all responses:
+
+```javascript
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+```
+
+All responses include these CORS headers to allow:
+- Cross-origin requests from any domain
+- All required HTTP methods (GET, POST, PUT, DELETE, OPTIONS)
+- Content-Type and Authorization headers
+
+The worker also handles OPTIONS (preflight) requests automatically with a 204 status code.
 
 ## Security
 
