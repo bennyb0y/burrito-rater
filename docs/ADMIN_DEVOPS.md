@@ -337,7 +337,8 @@ const nextConfig: NextConfig = {
 The application uses a burrito emoji (🌯) as its favicon. The setup follows Next.js 13+ app directory conventions:
 
 1. **File Locations**:
-   - Place favicon files in the `app` directory (not `public`)
+   - Files MUST be placed in the `app` directory ONLY
+   - NEVER place favicon files in the `public` directory (this will cause conflicts)
    - Required files:
      - `app/favicon.ico` - Fallback favicon
      - `app/icon.svg` - Primary icon with burrito emoji
@@ -360,18 +361,26 @@ export const metadata = {
 };
 ```
 
-4. **Important Notes**:
-   - Do not place favicon files in the `public` directory
-   - Do not manually configure icons in metadata
-   - Let Next.js handle favicon routing automatically
-   - The app directory favicon takes precedence over public directory
+4. **Important Rules**:
+   - ✅ Place favicon files ONLY in the `app` directory
+   - ❌ NEVER place favicon files in the `public` directory
+   - ✅ Let Next.js handle favicon routing automatically
+   - ❌ Do not manually configure icons in metadata
+   - ✅ Use both `favicon.ico` and `icon.svg` for best browser support
 
 5. **Troubleshooting**:
-   - If you see 404/500 errors for favicon requests, check for:
-     - Conflicting files in `public` directory
-     - Manual icon configurations in metadata
-     - Files not being in the `app` directory
-   - Clear `.next` directory and restart dev server if changes don't appear
+   If you see errors like:
+   ```
+   ⨯ A conflicting public file and page file was found for path /icon.svg
+   ```
+   Fix by:
+   1. Remove any favicon files from the `public` directory
+   2. Ensure favicon files exist only in the `app` directory
+   3. Clear `.next` directory and restart dev server:
+      ```bash
+      rm -rf .next
+      npm run dev
+      ```
 
 #### _routes.json
 
