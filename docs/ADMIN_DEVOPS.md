@@ -253,32 +253,62 @@ This command will:
 2. Generate static files
 3. Deploy to Cloudflare Pages using credentials from `.env.local`
 
-#### When to Use Different Build Commands
+#### Build Commands and Edge Runtime Error
 
-- **`npm run pages:deploy`**: 
-  - ✅ Use this for production deployments
-  - ✅ This is the recommended command for deploying to Cloudflare Pages
-  - ✅ Handles both building and deploying in one step
-  - ✅ Automatically avoids Edge Runtime errors with API routes
+There are two build commands available, but only one should be used for production:
 
-- **`npm run pages:build`**:
-  - ✅ Use this for local testing and verification only
-  - ❌ Not recommended for production deployments
-  - ❌ May encounter Edge Runtime errors with API routes
-  - 🔍 Useful for debugging build issues before deployment
+- **✅ `npm run pages:deploy`**: 
+  - The RECOMMENDED command for production deployments
+  - Handles building and deploying in one step
+  - Automatically avoids Edge Runtime errors
+  - Uses the correct static export configuration
+  - Deploys directly to Cloudflare Pages
 
-The frontend deployment process follows this flow:
+- **❌ `npm run pages:build` or `npm run build`**:
+  - NOT recommended for production deployments
+  - Will encounter Edge Runtime errors
+  - Should only be used for local testing
+  - May show the following error:
+    ```
+    ERROR: Failed to produce a Cloudflare Pages build from the project.
+    
+    The following routes were not configured to run with the Edge Runtime:
+      - /api/worker
+    
+    Please make sure that all your non-static routes export the following edge runtime route segment config:
+      export const runtime = 'edge';
+    ```
 
-```
-┌──────────┐     ┌───────────────┐     ┌───────────────┐     ┌──────────────┐
-│          │     │               │     │               │     │              │
-│  Local   │────►│  GitHub       │────►│  Cloudflare   │────►│  Cloudflare  │
-│  Dev     │     │  Repository   │     │  Pages CI/CD  │     │  Pages       │
-│          │     │               │     │               │     │              │
-└──────────┘     └───────────────┘     └───────────────┘     └──────────────┘
-```
+#### Why the Edge Runtime Error Occurs
 
-> **IMPORTANT**: Do not use `npm run deploy` as it may cause Edge Runtime errors (see [Edge Runtime Error](#edge-runtime-error) section below).
+The Edge Runtime error occurs because:
+1. The `pages:build` command tries to build the API routes as part of the Next.js application
+2. Our API is actually a separate Cloudflare Worker
+3. The build process expects Edge Runtime configuration for API routes
+
+To avoid this error:
+1. Never use `npm run pages:build` for production
+2. Always use `npm run pages:deploy` instead
+3. Deploy the API worker separately using `npm run deploy:worker`
+
+#### Correct Deployment Order
+
+Always follow this order when deploying:
+
+1. Deploy the API worker first:
+   ```bash
+   npm run deploy:worker
+   ```
+
+2. Then deploy the frontend:
+   ```bash
+   npm run pages:deploy
+   ```
+
+This ensures that:
+- The API is available when the frontend is deployed
+- Edge Runtime errors are avoided
+- The deployment process is clean and reliable
 
 ### Frontend Configuration
 

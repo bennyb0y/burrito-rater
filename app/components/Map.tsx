@@ -479,9 +479,9 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
                       </div>
                   </div>
                     <div className="flex-shrink-0">
-                      <div className="bg-blue-100 px-2 py-1 rounded-full flex items-center gap-1">
-                        <span className="text-base font-bold text-blue-800">{selectedRating.rating}</span>
-                        <span className="text-blue-600">/5</span>
+                      <div className="bg-blue-100 px-3 py-1.5 rounded-full flex items-center gap-1">
+                        <span className="text-xl font-bold text-blue-800">{selectedRating.rating}</span>
+                        <span className="text-sm text-blue-600">/5</span>
                       </div>
                     </div>
                   </div>
