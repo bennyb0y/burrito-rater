@@ -213,42 +213,18 @@ For Cloudflare Pages deployment, ensure:
 
 ## Deployment
 
-### Development
-
-For local development:
+### Local Development
 ```bash
 npm run dev
 ```
+This starts the Next.js app on http://localhost:3000.
 
-This starts the Next.js app on http://localhost:3000, which connects to the Cloudflare Worker API hosted in the cloud.
+### Production Deployment
 
-### API Deployment
-
-To deploy the API worker:
-```bash
-npm run deploy:worker
-```
-
-This command deploys the `api/worker.js` file to Cloudflare Workers using the configuration in `wrangler.worker.toml`.
-
-The Worker deployment process follows this flow:
-
-```
-┌──────────┐     ┌───────────────┐     ┌───────────────┐
-│          │     │               │     │               │
-│  Local   │────►│  Wrangler     │────►│  Cloudflare   │
-│  Dev     │     │  CLI          │     │  Workers      │
-│          │     │               │     │               │
-└──────────┘     └───────────────┘     └───────────────┘
-```
-
-### Frontend Deployment
-
-To deploy the frontend to Cloudflare Pages:
+There are two types of deployments: frontend-only changes and full-stack changes.
 
 #### Frontend-Only Changes
-
-If you're only making frontend changes (no API worker changes):
+When you've only modified files in the `app/` directory:
 
 ```bash
 # 1. Build the Next.js application
@@ -258,14 +234,8 @@ npm run build
 npm run pages:deploy
 ```
 
-This process will:
-1. Generate optimized static files
-2. Upload new or changed files to Cloudflare Pages
-3. Deploy the updated site with zero downtime
-
-#### Full Stack Changes
-
-When making changes to both frontend and API:
+#### Full-Stack Changes
+When you've modified both frontend (`app/`) and API (`api/`) files:
 
 ```bash
 # 1. Deploy the API worker first
@@ -278,191 +248,58 @@ npm run build
 npm run pages:deploy
 ```
 
-#### Build Commands and Edge Runtime Error
+### Important Notes
 
-There are two build commands available, but only one should be used for production:
+1. **Always use `npm run pages:deploy`** for production deployments
+   - ✅ Handles building and deploying correctly
+   - ✅ Automatically handles Edge Runtime configuration
+   - ✅ Deploys directly to Cloudflare Pages
 
-- **✅ `npm run pages:deploy`**: 
-  - The RECOMMENDED command for production deployments
-  - Handles building and deploying in one step
-  - Automatically avoids Edge Runtime errors
-  - Uses the correct static export configuration
-  - Deploys directly to Cloudflare Pages
+2. **Never use these commands for production**:
+   - ❌ `npm run pages:build`
+   - ❌ `npm run deploy`
+   - These will cause Edge Runtime errors
 
-- **❌ `npm run pages:build` or `npm run build` alone**:
-  - NOT recommended for production deployments
-  - Will encounter Edge Runtime errors
-  - Should only be used for local testing
-  - May show the following error:
-    ```
-    ERROR: Failed to produce a Cloudflare Pages build from the project.
-    
-    The following routes were not configured to run with the Edge Runtime:
-      - /api/worker
-    
-    Please make sure that all your non-static routes export the following edge runtime route segment config:
-      export const runtime = 'edge';
-    ```
-
-#### Deployment Best Practices
-
-1. **Always use the correct deployment sequence**:
-   - For frontend-only changes: `npm run build` then `npm run pages:deploy`
-   - For full stack changes: `npm run deploy:worker` first, then frontend deployment
-
-2. **Avoid unnecessary cleanup**:
-   - ❌ Don't run `rm -rf .next .vercel/output` between deployments
-   - ❌ Don't reinstall dependencies unless there are package changes
+3. **No cleanup needed**:
    - ✅ Let the build process handle file management
+   - ❌ Don't manually delete `.next` or `dist` directories
+   - ❌ Don't reinstall dependencies between deployments
 
-3. **Monitor deployments**:
-   - Watch the deployment logs for any errors
-   - Verify changes on the deployed site
-   - Check the Cloudflare Pages dashboard for deployment status
+4. **Deployment Directory**:
+   - The build output goes to the `dist` directory
+   - This is configured in `wrangler.toml` and `next.config.js`
+   - No manual intervention needed
 
-4. **Troubleshooting**:
-   - If changes aren't visible, try a hard refresh (Ctrl/Cmd + Shift + R)
-   - Check the browser console for errors
-   - Review Cloudflare Pages logs in the dashboard
+### Verifying Deployment
 
-### Frontend Configuration
+After deployment:
+1. Check the Cloudflare Pages dashboard for deployment status
+2. Visit the deployed URL provided in the command output
+3. Test critical functionality:
+   - Map loading
+   - Rating submission
+   - Admin interface access
+4. If changes aren't visible, hard refresh (Ctrl/Cmd + Shift + R)
 
-#### next.config.ts
+### Troubleshooting
 
-The Next.js configuration has been updated to be compatible with Cloudflare Pages:
+If deployment fails:
 
-```typescript
-const nextConfig: NextConfig = {
-  output: 'export', // Required for static site generation
-  images: {
-    unoptimized: true, // Required for static site generation
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-    ],
-  },
-};
-```
-
-#### Favicon Configuration
-
-The application uses a burrito emoji (🌯) as its favicon. The setup follows Next.js 13+ app directory conventions:
-
-1. **File Locations**:
-   - Files MUST be placed in the `app` directory ONLY
-   - NEVER place favicon files in the `public` directory (this will cause conflicts)
-   - Required files:
-     - `app/favicon.ico` - Fallback favicon
-     - `app/icon.svg` - Primary icon with burrito emoji
-
-2. **SVG Icon Configuration**:
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
-    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="24px">🌯</text>
-</svg>
-```
-
-3. **Metadata Configuration** (`app/layout.tsx`):
-```typescript
-export const metadata = {
-  title: 'Burrito Rater',
-  description: 'Rate and discover the best breakfast burritos',
-  // No manual icon configuration needed - Next.js will automatically use
-  // app/favicon.ico and app/icon.svg
-};
-```
-
-4. **Important Rules**:
-   - ✅ Place favicon files ONLY in the `app` directory
-   - ❌ NEVER place favicon files in the `public` directory
-   - ✅ Let Next.js handle favicon routing automatically
-   - ❌ Do not manually configure icons in metadata
-   - ✅ Use both `favicon.ico` and `icon.svg` for best browser support
-
-5. **Troubleshooting**:
-   If you see errors like:
+1. **Edge Runtime Error**:
    ```
-   ⨯ A conflicting public file and page file was found for path /icon.svg
+   ERROR: Failed to produce a Cloudflare Pages build
    ```
-   Fix by:
-   1. Remove any favicon files from the `public` directory
-   2. Ensure favicon files exist only in the `app` directory
-   3. Clear `.next` directory and restart dev server:
-      ```bash
-      rm -rf .next
-      npm run dev
-      ```
+   ✅ Solution: Use `npm run pages:deploy` instead of other commands
 
-#### _routes.json
+2. **Build Failures**:
+   - Verify Node.js version (v18+)
+   - Check for TypeScript errors
+   - Verify all dependencies are installed
 
-The `public/_routes.json` file configures Cloudflare Pages routing:
-
-```json
-{
-  "version": 1,
-  "include": ["/*"],
-  "exclude": [
-    "/_next/*",
-    "/api/*",
-    "/_vercel/insights/*"
-  ]
-}
-```
-
-### Full Stack Deployment
-
-When making changes to both the frontend and API, deploy in this order:
-
-1. Deploy the API worker first:
-   ```bash
-   npm run deploy:worker
-   ```
-
-2. Then deploy the frontend:
-   ```bash
-   npm run pages:deploy
-   ```
-
-This ensures that any API changes are available when the new frontend is deployed.
-
-### Automatic Deployment (GitHub Integration)
-
-The frontend is automatically deployed to Cloudflare Pages when you push to the main branch of your GitHub repository. This is handled by the GitHub Actions workflow defined in `.github/workflows/cloudflare-pages.yml`.
-
-The workflow:
-1. Checks out the code
-2. Sets up Node.js
-3. Installs dependencies
-4. Builds the Next.js application
-5. Processes the build with @cloudflare/next-on-pages
-6. Deploys to Cloudflare Pages
-
-### Available Commands
-
-- `npm run build` - Build the Next.js application locally
-- `npm run pages:build` - Build for Cloudflare Pages (local testing only)
-- `npm run pages:deploy` - Build and deploy to Cloudflare Pages (recommended for production)
-- `npm run pages:watch` - Watch for changes during development
-- `npm run pages:dev` - Run the application locally with Cloudflare Pages compatibility
-
-> **Note**: Always use `npm run pages:deploy` for production deployments. The `pages:build` command is intended for local testing and debugging only.
-
-### Deployment Process
-
-1. The build process:
-   - Compiles Next.js application
-   - Generates static pages
-   - Optimizes assets
-   - Creates Cloudflare Pages worker
-
-2. The deployment process:
-   - Uploads static files
-   - Configures routing
-   - Sets up caching headers
-   - Deploys worker
+3. **API Connection Issues**:
+   - Check `.env.local` for correct API URL
+   - Verify Cloudflare Worker is deployed
+   - Check browser console for CORS errors
 
 ## Admin Interface
 
