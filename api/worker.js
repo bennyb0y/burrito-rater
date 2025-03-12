@@ -65,6 +65,16 @@ async function validateTurnstileToken(token, ip, env) {
   }
 }
 
+// Helper function to validate API key
+function validateApiKey(request, env) {
+  const authHeader = request.headers.get('Authorization');
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return false;
+  }
+  const apiKey = authHeader.split(' ')[1];
+  return apiKey === env.R2_API_TOKEN;
+}
+
 // CORS headers for all responses
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -160,6 +170,11 @@ const workerHandler = {
     try {
       // Handle image upload endpoint
       if (path === 'images/upload' && request.method === 'POST') {
+        // Check API key authentication
+        if (!validateApiKey(request, env)) {
+          return errorResponse('Unauthorized - Invalid or missing API key', 401);
+        }
+
         const formData = await request.formData();
         const file = formData.get('image');
         
@@ -173,24 +188,28 @@ const workerHandler = {
           return errorResponse('Invalid file type. Only images are allowed.', 400);
         }
         
-        // Generate a unique filename
-        const timestamp = Date.now();
-        const originalName = file.name;
-        const ext = originalName.split('.').pop().toLowerCase();
-        const filename = `${timestamp}-${Math.random().toString(36).substring(2)}.${ext}`;
-        
-        // Upload to R2
-        await env.BUCKET.put(filename, file.stream(), {
-          httpMetadata: {
-            contentType: contentType
-          }
-        });
-        
-        return jsonResponse({
-          success: true,
-          filename: filename,
-          url: `/images/${filename}`
-        });
+        try {
+          // Generate unique filename and store in R2
+          const timestamp = Date.now();
+          const originalName = file.name;
+          const ext = originalName.split('.').pop().toLowerCase();
+          const filename = `${timestamp}-${Math.random().toString(36).substring(2)}.${ext}`;
+          
+          await env.BUCKET.put(filename, file.stream(), {
+            httpMetadata: {
+              contentType: contentType
+            }
+          });
+          
+          return jsonResponse({
+            success: true,
+            filename: filename,
+            url: `/images/${filename}`
+          });
+        } catch (error) {
+          console.error('Upload error:', error);
+          return errorResponse('Failed to upload image', 500);
+        }
       }
       
       // Handle image retrieval endpoint
@@ -202,18 +221,17 @@ const workerHandler = {
           return errorResponse('Image not found', 404);
         }
 
-        // Serve original image
-        const headers = new Headers();
-        object.writeHttpMetadata(headers);
-        headers.set('etag', object.httpEtag);
-        headers.set('Access-Control-Allow-Origin', '*');
-        headers.set('Cache-Control', 'public, max-age=31536000'); // Cache for 1 year
-        
-        return new Response(object.body, {
-          headers
+        // Get the image data and return with appropriate headers
+        const imageData = await object.arrayBuffer();
+        return new Response(imageData, {
+          headers: {
+            'Content-Type': object.httpMetadata.contentType,
+            'Access-Control-Allow-Origin': '*',
+            'Cache-Control': 'public, max-age=31536000',
+          }
         });
       }
-      
+
       // Handle existing ratings endpoints
       if (path.startsWith('ratings')) {
         // Handle ratings endpoint
