@@ -1,11 +1,31 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Map from './components/Map';
 
 export default function Home() {
-  const [refreshTrigger] = useState(0);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [mapError, setMapError] = useState<boolean>(false);
+  
+  useEffect(() => {
+    // Set up periodic refresh (every 30 seconds)
+    const intervalId = setInterval(() => {
+      setRefreshTrigger(prev => prev + 1);
+    }, 30000);
+
+    // Listen for admin actions
+    const handleAdminAction = () => {
+      setRefreshTrigger(prev => prev + 1);
+    };
+
+    // Subscribe to admin actions
+    window.addEventListener('burrito-rating-updated', handleAdminAction);
+
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener('burrito-rating-updated', handleAdminAction);
+    };
+  }, []);
 
   return (
     <div className="flex-1 w-full h-[calc(100vh-4rem)]">

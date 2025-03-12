@@ -37,6 +37,32 @@ export default function RatingsPage() {
   const [uniqueZipcodes, setUniqueZipcodes] = useState<string[]>([]);
   const [isConfirming, setIsConfirming] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  // Add periodic refresh
+  useEffect(() => {
+    // Set up periodic refresh (every 30 seconds)
+    const intervalId = setInterval(() => {
+      setRefreshTrigger(prev => prev + 1);
+    }, 30000);
+
+    // Listen for rating submissions
+    const handleNewRating = () => {
+      setRefreshTrigger(prev => prev + 1);
+    };
+
+    // Subscribe to rating submissions
+    window.addEventListener('burrito-rating-submitted', handleNewRating);
+
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener('burrito-rating-submitted', handleNewRating);
+    };
+  }, []);
+
+  const notifyRatingUpdate = () => {
+    window.dispatchEvent(new Event('burrito-rating-updated'));
+  };
 
   const fetchRatings = useCallback(async () => {
     try {
@@ -73,7 +99,7 @@ export default function RatingsPage() {
 
   useEffect(() => {
     fetchRatings();
-  }, [fetchRatings]);
+  }, [fetchRatings, refreshTrigger]);
 
   const handleConfirm = async (id: number) => {
     try {
@@ -88,6 +114,8 @@ export default function RatingsPage() {
           rating.id === id ? { ...rating, confirmed: 1 } : rating
         )
       );
+      setRefreshTrigger(prev => prev + 1);
+      notifyRatingUpdate();
     } catch (err) {
       console.error('Error confirming rating:', err);
     }
@@ -111,6 +139,8 @@ export default function RatingsPage() {
         next.delete(id);
         return next;
       });
+      setRefreshTrigger(prev => prev + 1);
+      notifyRatingUpdate();
     } catch (err) {
       console.error('Error deleting rating:', err);
     }
@@ -142,6 +172,8 @@ export default function RatingsPage() {
         )
       );
       setSelectedIds(new Set());
+      setRefreshTrigger(prev => prev + 1);
+      notifyRatingUpdate();
     } catch (err) {
       console.error('Error confirming ratings:', err);
     } finally {
@@ -170,6 +202,8 @@ export default function RatingsPage() {
       await Promise.all(deletePromises);
       setRatings(prevRatings => prevRatings.filter(rating => !selectedIds.has(rating.id)));
       setSelectedIds(new Set());
+      setRefreshTrigger(prev => prev + 1);
+      notifyRatingUpdate();
     } catch (err) {
       console.error('Error deleting ratings:', err);
     } finally {

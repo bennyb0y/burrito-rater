@@ -443,6 +443,26 @@ The admin interface displays a table of all ratings with the following informati
 - Zipcode
 - Actions (View, Delete, Confirm)
 
+#### Real-time Updates
+
+The admin interface implements two mechanisms for keeping the ratings list up to date:
+
+1. **Periodic Refresh**
+   - Automatically refreshes the ratings list every 30 seconds
+   - Ensures admins see new submissions without manual refresh
+   - Implemented with proper cleanup on component unmount
+
+2. **Event-driven Updates**
+   - Listens for `'burrito-rating-submitted'` events
+   - Immediately refreshes when new ratings are submitted
+   - Maintains real-time synchronization with user submissions
+
+These update mechanisms ensure that:
+- Admins see new ratings promptly
+- The list stays current without manual intervention
+- Changes from other admin actions are reflected immediately
+- System resources are properly managed with cleanup
+
 #### Filtering
 
 The admin interface provides two filtering options:
@@ -564,7 +584,8 @@ This starts the Next.js app on http://localhost:3000, which connects to the Clou
 | `npm run deploy` | Deploy both frontend and API | Full-stack changes |
 | `npm run deploy:app` | Deploy only frontend | Frontend-only changes |
 | `npm run deploy:worker` | Deploy only API worker | API-only changes |
-| `npm run lint` | Run code linting | Code quality checks |
+| `npm run lint` | Run ESLint to check code quality | Before commits, during CI/CD |
+| `npm run analyze` | Analyze bundle sizes | When optimizing bundle size |
 
 **Note**: Unlike traditional Next.js applications, we don't need a local production server because:
 - Development is handled by `npm run dev`

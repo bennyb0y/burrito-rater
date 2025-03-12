@@ -99,6 +99,27 @@ A web application for rating and discovering burritos, built with Next.js and de
    npm run dev
    ```
 
+### Code Quality
+
+The project uses ESLint to maintain code quality and consistency. To check your code:
+
+```bash
+# Run ESLint to check code quality
+npm run lint
+```
+
+ESLint will:
+- Check for code style and potential issues
+- Report any problems it finds
+- Not modify any files (manual fixes required)
+- Ignore build and generated directories
+
+Run the lint command:
+- Before committing changes
+- During code review
+- As part of CI/CD processes
+- When checking for code quality issues
+
 ### Development Tools
 
 #### Bundle Analysis

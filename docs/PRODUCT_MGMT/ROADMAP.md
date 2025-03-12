@@ -19,6 +19,7 @@ Our Beta release focuses on core functionality and a stable user experience:
 - [x] Session-based admin authentication
 - [x] Rating management with delete and bulk confirm
 - [x] Unified admin interface with streamlined workflow
+- [x] Real-time rating updates with periodic refresh
 
 ### Coming Soon to Beta
 - [ ] Enhanced mobile experience with improved responsiveness
