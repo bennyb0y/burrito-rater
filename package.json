@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "lint": "next lint",
+    "lint": "eslint . --ignore-pattern '.next/**' --ignore-pattern 'dist/**' --ignore-pattern 'out/**' --ignore-pattern 'deploy/**' --ignore-pattern '.vercel/**' --ignore-pattern '.wrangler/**'",
     "build": "next build",
     "deploy": "npm run deploy:worker && npm run deploy:app",
     "deploy:app": "npm run build && npx wrangler pages deploy dist --commit-dirty=true",
