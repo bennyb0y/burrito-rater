@@ -69,15 +69,57 @@ Common status codes:
 - **POST `/api/migrate/add-confirmed-column`**: Add the confirmed column to the Rating table
   - Used for database migrations
 
+## Development
+
+Following our cloud-native philosophy, all API development is done directly in the cloud:
+
+1. Edit the `api/worker.js` file
+2. Deploy using:
+   ```bash
+   npm run deploy:worker
+   ```
+3. Test the deployed endpoints
+
+### Development Best Practices
+
+- **Testing Changes**:
+  - Create a staging worker for critical changes
+  - Use feature flags for controlled rollout
+  - Implement comprehensive error handling
+  - Log extensively during testing
+
+- **Deployment Strategy**:
+  - Deploy small, atomic changes
+  - Test each endpoint after deployment
+  - Monitor worker logs for errors
+  - Have a rollback plan ready
+
+### Why Cloud-Native Development?
+
+- **Consistency**: Development matches production environment
+- **Simplicity**: No local setup required
+- **Reliability**: Tests run against actual cloud infrastructure
+- **Speed**: Immediate deployment and testing
+
 ## Deployment
 
 To deploy the worker:
 
 ```bash
+# Deploy only the API worker
 npm run deploy:worker
+
+# Or, deploy both API and frontend
+npm run deploy
 ```
 
-This command uses Wrangler to deploy the `api/worker.js` file to Cloudflare Workers with the configuration specified in `wrangler.worker.toml`.
+### Deployment Verification
+
+After deploying:
+1. Check the worker status in Cloudflare dashboard
+2. Verify D1 database binding is correct
+3. Test all affected endpoints
+4. Monitor worker logs for any errors
 
 ## Configuration
 

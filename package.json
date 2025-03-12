@@ -4,14 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "pages:build": "npx @cloudflare/next-on-pages",
-    "pages:deploy": "npx wrangler pages deploy dist --commit-dirty=true",
-    "pages:watch": "npx @cloudflare/next-on-pages --watch",
-    "pages:dev": "npx wrangler pages dev dist",
-    "deploy:worker": "wrangler deploy api/worker.js --config wrangler.worker.toml"
+    "build": "next build",
+    "deploy": "npm run deploy:worker && npm run deploy:app",
+    "deploy:app": "npm run build && npx wrangler pages deploy dist --commit-dirty=true",
+    "deploy:worker": "wrangler deploy --config wrangler.worker.toml"
   },
   "dependencies": {
     "@heroicons/react": "^2.1.1",

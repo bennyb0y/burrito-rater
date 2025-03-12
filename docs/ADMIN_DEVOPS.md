@@ -215,92 +215,90 @@ For Cloudflare Pages deployment, ensure:
 
 ### Local Development
 ```bash
+# Start Next.js development server
 npm run dev
+
+# Start Worker development server
+npm run dev:worker
 ```
-This starts the Next.js app on http://localhost:3000.
 
 ### Production Deployment
 
-There are two types of deployments: frontend-only changes and full-stack changes.
+The application can be deployed in three ways depending on the changes made:
 
-#### Frontend-Only Changes
-When you've only modified files in the `app/` directory:
-
+#### 1. Full-Stack Deployment
+For changes to both frontend and API:
 ```bash
-# 1. Build the Next.js application
-npm run build
-
-# 2. Deploy to Cloudflare Pages
-npm run pages:deploy
+npm run deploy
 ```
+This command:
+1. Deploys the API worker to Cloudflare Workers
+2. Builds the Next.js application
+3. Deploys the frontend to Cloudflare Pages
 
-#### Full-Stack Changes
-When you've modified both frontend (`app/`) and API (`api/`) files:
-
+#### 2. Frontend-Only Deployment
+For changes only to the frontend (`app/` directory):
 ```bash
-# 1. Deploy the API worker first
+npm run deploy:app
+```
+This command:
+1. Builds the Next.js application
+2. Deploys to Cloudflare Pages
+
+#### 3. API-Only Deployment
+For changes only to the API worker:
+```bash
 npm run deploy:worker
-
-# 2. Build the Next.js application
-npm run build
-
-# 3. Deploy frontend to Cloudflare Pages
-npm run pages:deploy
 ```
+This command deploys the worker to Cloudflare Workers.
 
-### Important Notes
+### Deployment Commands Reference
 
-1. **Use `npm run pages:deploy` for production deployments**
-   - ✅ Handles building and deploying correctly
-   - ✅ Configured to exclude the `/api` directory from Next.js build
-   - ✅ Deploys directly to Cloudflare Pages
-
-2. **Alternative build commands**:
-   - `npm run pages:build` - Only for local testing
-   - `npm run deploy` - Only for local testing
-   - These commands will attempt to process `/api/worker.js` as a Next.js API route, causing Edge Runtime errors
-   - This happens because these commands don't exclude the `/api` directory during build
-
-3. **No cleanup needed**:
-   - ✅ Let the build process handle file management
-   - ❌ Don't manually delete `.next` or `dist` directories
-   - ❌ Don't reinstall dependencies between deployments
-
-4. **Deployment Directory**:
-   - The build output goes to the `dist` directory
-   - This is configured in `wrangler.toml` and `next.config.js`
-   - No manual intervention needed
+| Command | Description |
+|---------|-------------|
+| `npm run deploy` | Deploy both frontend and API |
+| `npm run deploy:app` | Deploy only frontend |
+| `npm run deploy:worker` | Deploy only API worker |
+| `npm run build` | Build Next.js application |
+| `npm run dev` | Start Next.js development server |
 
 ### Verifying Deployment
 
 After deployment:
-1. Check the Cloudflare Pages dashboard for deployment status
-2. Visit the deployed URL provided in the command output
-3. Test critical functionality:
+1. Check the Cloudflare Pages dashboard for frontend deployment status
+2. Check the Cloudflare Workers dashboard for API deployment status
+3. Visit the deployed URLs to verify:
+   - Frontend: https://your-project.pages.dev
+   - API: https://your-worker.workers.dev
+4. Test critical functionality:
    - Map loading
    - Rating submission
    - Admin interface access
-4. If changes aren't visible, hard refresh (Ctrl/Cmd + Shift + R)
+5. If changes aren't visible, hard refresh (Ctrl/Cmd + Shift + R)
 
-### Troubleshooting
+### Troubleshooting Deployment
 
 If deployment fails:
 
-1. **Edge Runtime Error**:
-   ```
-   ERROR: Failed to produce a Cloudflare Pages build
-   ```
-   ✅ Solution: Use `npm run pages:deploy` instead of other commands
-
-2. **Build Failures**:
+1. **Build Failures**:
    - Verify Node.js version (v18+)
    - Check for TypeScript errors
    - Verify all dependencies are installed
 
-3. **API Connection Issues**:
+2. **API Connection Issues**:
    - Check `.env.local` for correct API URL
    - Verify Cloudflare Worker is deployed
    - Check browser console for CORS errors
+
+3. **Worker Deployment Issues**:
+   - Ensure `api/worker.js` exists and is correctly formatted
+   - Check that `wrangler.worker.toml` has the correct configuration
+   - Verify D1 database bindings are correct
+
+4. **Frontend Deployment Issues**:
+   - Check build output for errors
+   - Verify Cloudflare Pages project settings
+   - Check environment variables in Cloudflare dashboard
 
 ## Admin Interface
 
@@ -483,11 +481,11 @@ This starts the Next.js app on http://localhost:3000, which connects to the Clou
 - You're working with real data from the cloud database
 - API calls go to the production Cloudflare Worker
 - Changes to the frontend are immediately visible locally
-- No need to set up a local database
+- No local development environment needed for API or database
 
 ### API Development
 
-When making changes to the API:
+Following our cloud-native, edge-first philosophy, we develop and test the API directly in the cloud:
 
 1. Edit the `api/worker.js` file
 2. Deploy the changes to Cloudflare:
@@ -495,43 +493,99 @@ When making changes to the API:
    npm run deploy:worker
    ```
 
-The `deploy:worker` script uses the `wrangler deploy` command to upload your Worker to Cloudflare with the required `nodejs_compat` compatibility flag.
-
 **Key points:**
-- API changes are deployed directly to production
-- The Worker connects to the Cloudflare D1 database
-- No local API development environment is needed
+- Changes are deployed directly to the cloud
+- Testing is done against the deployed worker
+- For critical changes, consider:
+  - Creating a staging worker for testing
+  - Using feature flags for controlled rollout
+  - Implementing proper error handling and fallbacks
 
-### Testing Workflow
+**Why Cloud-Native Development?**
+- Ensures consistency between development and production
+- Eliminates environment-specific bugs
+- Reduces setup complexity
+- Follows our edge-first architecture principles
 
-#### Testing Frontend Changes
+## Deployment
 
-To test frontend changes before deployment:
+### Production Deployment Commands
 
-1. Build the Next.js application:
-   ```bash
-   npm run build
-   ```
+The application can be deployed in three ways depending on the changes made:
 
-2. Process the build with @cloudflare/next-on-pages:
-   ```bash
-   npm run pages:build
-   ```
+#### 1. Full-Stack Deployment
+For changes to both frontend and API:
+```bash
+npm run deploy
+```
+This command:
+1. Deploys the API worker to Cloudflare Workers
+2. Builds the Next.js application
+3. Deploys the frontend to Cloudflare Pages
 
-3. Start a local server to test the Pages build:
-   ```bash
-   npm run pages:dev
-   ```
+#### 2. Frontend-Only Deployment
+For changes only to the frontend (`app/` directory):
+```bash
+npm run deploy:app
+```
+This command:
+1. Builds the Next.js application
+2. Deploys to Cloudflare Pages
 
-This will start a local server at http://localhost:8788 that simulates the Cloudflare Pages environment. Note that this is just for testing the build - the application still connects to the Cloudflare Worker API and D1 database in the cloud.
+#### 3. API-Only Deployment
+For changes only to the API worker:
+```bash
+npm run deploy:worker
+```
+This command deploys the worker to Cloudflare Workers.
 
-#### Testing API Changes
+### Deployment Commands Reference
 
-Since we use a cloud-first approach, API changes are deployed directly to production. For critical changes, consider:
+| Command | Description |
+|---------|-------------|
+| `npm run deploy` | Deploy both frontend and API |
+| `npm run deploy:app` | Deploy only frontend |
+| `npm run deploy:worker` | Deploy only API worker |
+| `npm run build` | Build Next.js application |
+| `npm run dev` | Start Next.js development server |
 
-1. Creating a separate Worker for testing
-2. Using feature flags to control rollout
-3. Implementing proper error handling and fallbacks
+### Verifying Deployment
+
+After deployment:
+1. Check the Cloudflare Pages dashboard for frontend deployment status
+2. Check the Cloudflare Workers dashboard for API deployment status
+3. Visit the deployed URLs to verify:
+   - Frontend: https://your-project.pages.dev
+   - API: https://your-worker.workers.dev
+4. Test critical functionality:
+   - Map loading
+   - Rating submission
+   - Admin interface access
+5. If changes aren't visible, hard refresh (Ctrl/Cmd + Shift + R)
+
+### Troubleshooting Deployment
+
+If deployment fails:
+
+1. **Build Failures**:
+   - Verify Node.js version (v18+)
+   - Check for TypeScript errors
+   - Verify all dependencies are installed
+
+2. **API Connection Issues**:
+   - Check `.env.local` for correct API URL
+   - Verify Cloudflare Worker is deployed
+   - Check browser console for CORS errors
+
+3. **Worker Deployment Issues**:
+   - Ensure `api/worker.js` exists and is correctly formatted
+   - Check that `wrangler.worker.toml` has the correct configuration
+   - Verify D1 database bindings are correct
+
+4. **Frontend Deployment Issues**:
+   - Check build output for errors
+   - Verify Cloudflare Pages project settings
+   - Check environment variables in Cloudflare dashboard
 
 ## Component Interaction
 

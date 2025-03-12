@@ -14,6 +14,10 @@ We've embraced a fully cloud-native architecture with zero self-hosted component
 - **Zero Infrastructure Management**: No servers, containers, or databases to maintain
 - **Auto-scaling Built-in**: Infrastructure scales automatically with demand
 - **Pay-per-use Economics**: Cost scales directly with actual usage
+- **Cloud-Native Development**: Development is done directly against cloud resources
+  - No local worker development
+  - Direct deployment to edge environment
+  - Real-time testing in production-like conditions
 
 ### 2. Edge-First Architecture
 
