@@ -5,24 +5,33 @@ A web application for rating and discovering burritos, built with Next.js and de
 ## 🚀 Features
 
 - **🗺️ Interactive Map**: View burrito ratings on a Google Map
-- **⭐ Rating Submission**: Submit ratings for burritos with details like price, taste, and comments
+- **⭐ Rating Submission**: Submit ratings for burritos with details like price, taste, and ingredients
 - **📋 Rating List**: Browse all submitted ratings in a sortable list
-- **🔐 Admin Interface**: Manage and confirm ratings through an admin portal
+- **🔐 Admin Interface**: 
+  - Manage and confirm ratings through an admin portal
+  - Real-time updates with 30-second refresh
+  - Event-driven updates for new submissions
+  - Bulk actions for rating management
 - **📱 Responsive Design**: Works on desktop and mobile devices
-- **🔄 Real-time Updates**: Updates are reflected instantly
+- **🔒 Security Features**:
+  - USA-only submissions with location validation
+  - CAPTCHA protection for submissions
+  - Session-based admin authentication
 
 ## 💻 Tech Stack
 
 - **Frontend**:
-  - Next.js
+  - Next.js 15.2+
   - React
   - TypeScript
   - Tailwind CSS
   - Google Maps API
+  - Tremor UI Components
 
 - **Backend**:
   - Cloudflare Workers
   - Cloudflare D1 (Edge Database)
+  - Cloudflare Pages for hosting
 
 ## 🏁 Getting Started
 
@@ -31,7 +40,7 @@ A web application for rating and discovering burritos, built with Next.js and de
 - Node.js (v18 or later)
 - npm (v10 or later)
 - Google Maps API key
-- Cloudflare account
+- Cloudflare account with Workers and D1 enabled
 
 ### Installation
 
@@ -79,83 +88,19 @@ A web application for rating and discovering burritos, built with Next.js and de
 
 ### Development
 
-### Prerequisites
+Start the development server:
+```bash
+npm run dev
+```
 
-- Node.js 18.x or later
-- npm 9.x or later
-- Cloudflare account with Workers and D1 enabled
-- Google Maps API key
-
-### Getting Started
-
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Copy `.env.example` to `.env.local` and fill in required values
-4. Start the development server:
-   ```bash
-   npm run dev
-   ```
+The application will be available at http://localhost:3000.
 
 ### Code Quality
 
-The project uses ESLint to maintain code quality and consistency. To check your code:
-
+Run ESLint to maintain code quality:
 ```bash
-# Run ESLint to check code quality
 npm run lint
 ```
-
-ESLint will:
-- Check for code style and potential issues
-- Report any problems it finds
-- Not modify any files (manual fixes required)
-- Ignore build and generated directories
-
-Run the lint command:
-- Before committing changes
-- During code review
-- As part of CI/CD processes
-- When checking for code quality issues
-
-### Development Tools
-
-#### Bundle Analysis
-The project includes bundle analysis tools to help optimize performance:
-
-```bash
-# Run bundle analyzer
-npm run analyze
-```
-
-This will generate an interactive visualization of the bundle composition at:
-- `dist/analyze/client.html` - Client-side bundles
-- `dist/analyze/edge.html` - Edge runtime bundles
-- `dist/analyze/nodejs.html` - Server-side bundles
-
-#### Code Splitting
-The application uses Next.js dynamic imports and webpack optimizations to manage bundle sizes:
-
-- Large components (like maps) are loaded dynamically
-- Vendor code is split into separate chunks
-- CSS is optimized using `critters`
-
-### Available Scripts
-
-```bash
-# Development
-npm run dev          # Start Next.js development server
-npm run dev:worker   # Start local worker development
-npm run analyze      # Analyze bundle sizes
-
-# Deployment
-npm run deploy:app   # Deploy to Cloudflare Pages
-npm run deploy:worker # Deploy worker
-```
-
-The application connects directly to the Cloudflare Worker API, which uses Cloudflare D1 as the database. This ensures that all environments (development and production) use the same data source.
 
 ### Deployment
 
@@ -163,55 +108,50 @@ For detailed deployment instructions, see the [Administration and DevOps Guide](
 
 Quick deployment commands:
 ```bash
-# Deploy API worker
-npm run deploy:worker
+# Deploy frontend only (recommended for frontend changes)
+npm run deploy:app
 
-# Deploy frontend
-npm run pages:deploy
+# Deploy API worker only (for API changes)
+npm run deploy:worker
 ```
 
-> **Note**: Always deploy the API worker and frontend separately to avoid Edge Runtime errors. See the [Administration and DevOps Guide](./docs/ADMIN_DEVOPS.md#edge-runtime-error) for more details.
+> **Note**: Always deploy the API worker and frontend separately to avoid Edge Runtime errors.
 
 ## 📁 Project Structure
 
 ```
 burrito-rater/
 ├── app/                  # Next.js app directory
-│   ├── admin/            # Admin interface
-│   ├── api/              # API routes
-│   ├── components/       # React components
-│   ├── list/             # Rating list page
-│   └── page.tsx          # Home page (map view)
-├── public/               # Static assets
-├── docs/                 # Documentation
-├── worker/               # Cloudflare Worker code
-├── next.config.ts        # Next.js configuration
-└── package.json          # Project dependencies
+│   ├── admin/           # Admin interface
+│   ├── components/      # React components
+│   ├── list/           # Rating list page
+│   └── page.tsx        # Home page (map view)
+├── api/                 # Cloudflare Worker code
+├── public/             # Static assets
+├── docs/               # Documentation
+│   ├── ADMIN_DEVOPS.md # Deployment and admin guide
+│   ├── API_WORKER.md   # API documentation
+│   └── PRODUCT_MGMT/   # Product management docs
+└── package.json        # Project dependencies
 ```
 
 ## 📚 Documentation
 
-For detailed documentation, please refer to the [Documentation Index](./docs/README.md).
-
-The documentation covers:
-- Deployment guides
-- Admin interface usage
-- Database schema
-- Development workflows
-- DevOps processes
-- Product management
-  - [Project Roadmap](./docs/PRODUCT_MGMT/ROADMAP.md)
-  - [Project Checklist](./docs/PRODUCT_MGMT/TODO_CHECKLIST.md)
-  - [Bug Tracking](./docs/PRODUCT_MGMT/BUGS.md)
-- And more
+For detailed documentation, please refer to:
+- [Administration and DevOps Guide](./docs/ADMIN_DEVOPS.md)
+- [API Documentation](./docs/API_WORKER.md)
+- [Project Roadmap](./docs/PRODUCT_MGMT/ROADMAP.md)
+- [Development Tasks](./docs/PRODUCT_MGMT/TODO_CHECKLIST.md)
+- [Bug Tracking](./docs/PRODUCT_MGMT/BUGS.md)
 
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+3. Run lint checks (`npm run lint`)
+4. Commit your changes (`git commit -m 'Add some amazing feature'`)
+5. Push to the branch (`git push origin feature/amazing-feature`)
+6. Open a Pull Request
 
 ## 📄 License
 
@@ -223,3 +163,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - [Cloudflare Workers](https://workers.cloudflare.com/)
 - [Google Maps API](https://developers.google.com/maps)
 - [Tailwind CSS](https://tailwindcss.com/)
+- [Tremor](https://www.tremor.so/)
