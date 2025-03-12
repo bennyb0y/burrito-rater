@@ -79,12 +79,60 @@ A web application for rating and discovering burritos, built with Next.js and de
 
 ### Development
 
-1. Start the development server:
+### Prerequisites
+
+- Node.js 18.x or later
+- npm 9.x or later
+- Cloudflare account with Workers and D1 enabled
+- Google Maps API key
+
+### Getting Started
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Copy `.env.example` to `.env.local` and fill in required values
+4. Start the development server:
    ```bash
    npm run dev
    ```
 
-2. Open [http://localhost:3000](http://localhost:3000) in your browser.
+### Development Tools
+
+#### Bundle Analysis
+The project includes bundle analysis tools to help optimize performance:
+
+```bash
+# Run bundle analyzer
+npm run analyze
+```
+
+This will generate an interactive visualization of the bundle composition at:
+- `dist/analyze/client.html` - Client-side bundles
+- `dist/analyze/edge.html` - Edge runtime bundles
+- `dist/analyze/nodejs.html` - Server-side bundles
+
+#### Code Splitting
+The application uses Next.js dynamic imports and webpack optimizations to manage bundle sizes:
+
+- Large components (like maps) are loaded dynamically
+- Vendor code is split into separate chunks
+- CSS is optimized using `critters`
+
+### Available Scripts
+
+```bash
+# Development
+npm run dev          # Start Next.js development server
+npm run dev:worker   # Start local worker development
+npm run analyze      # Analyze bundle sizes
+
+# Deployment
+npm run deploy:app   # Deploy to Cloudflare Pages
+npm run deploy:worker # Deploy worker
+```
 
 The application connects directly to the Cloudflare Worker API, which uses Cloudflare D1 as the database. This ensures that all environments (development and production) use the same data source.
 

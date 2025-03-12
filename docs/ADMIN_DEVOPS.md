@@ -13,6 +13,7 @@ This comprehensive guide covers all aspects of deploying, administering, and mai
   - [Frontend Deployment](#frontend-deployment)
   - [Full Stack Deployment](#full-stack-deployment)
   - [Deployment Process](#deployment-process)
+  - [Bundle Optimization and Code Splitting](#bundle-optimization-and-code-splitting)
 - [Admin Interface](#admin-interface)
   - [Admin Setup](#admin-setup)
   - [Access and Authentication](#access-and-authentication)
@@ -213,10 +214,70 @@ For Cloudflare Pages deployment, ensure:
 
 ## Deployment
 
+### Bundle Optimization and Code Splitting
+
+The application uses advanced bundle optimization techniques to ensure optimal performance and stay within Cloudflare Pages' size limits:
+
+#### Code Splitting Strategy
+
+1. **Dynamic Imports**
+   - Map components are dynamically imported using `next/dynamic`
+   - Loading states are shown during component loading
+   - SSR is disabled for map components to reduce initial bundle size
+
+2. **Webpack Optimization**
+   The webpack configuration in `next.config.js` implements aggressive code splitting:
+
+   ```javascript
+   splitChunks: {
+     chunks: 'all',
+     maxInitialRequests: 25,
+     minSize: 20000,
+     cacheGroups: {
+       framework: {
+         // React and Google Maps framework code
+         test: /[\\/]node_modules[\\/](react|react-dom|@react-google-maps)[\\/]/,
+         priority: 40
+       },
+       lib: {
+         // Large libraries
+         test: module => module.size() > 160000,
+         priority: 30,
+         maxSize: 24 * 1024 * 1024
+       },
+       commons: {
+         // Shared code between pages
+         minChunks: 2,
+         priority: 20
+       }
+     }
+   }
+   ```
+
+3. **CSS Optimization**
+   - Uses `critters` for CSS optimization
+   - Inlines critical CSS
+   - Defers non-critical CSS loading
+
+4. **Bundle Analysis**
+   - Bundle analyzer available via `npm run analyze`
+   - Helps identify large dependencies
+   - Useful for debugging size issues
+
+#### Size Limits and Considerations
+
+- Cloudflare Pages has a 25MB limit per file
+- Use dynamic imports for large components
+- Monitor bundle sizes during development
+- Run bundle analyzer before deploying major changes
+
 ### Local Development
 ```bash
 # Start Next.js development server
 npm run dev
+
+# Analyze bundle sizes
+npm run analyze
 
 # Start Worker development server
 npm run dev:worker
@@ -535,6 +596,75 @@ Following our cloud-native, edge-first philosophy, we develop and test the API d
 - Follows our edge-first architecture principles
 
 ## Deployment
+
+### Bundle Optimization and Code Splitting
+
+The application uses advanced bundle optimization techniques to ensure optimal performance and stay within Cloudflare Pages' size limits:
+
+#### Code Splitting Strategy
+
+1. **Dynamic Imports**
+   - Map components are dynamically imported using `next/dynamic`
+   - Loading states are shown during component loading
+   - SSR is disabled for map components to reduce initial bundle size
+
+2. **Webpack Optimization**
+   The webpack configuration in `next.config.js` implements aggressive code splitting:
+
+   ```javascript
+   splitChunks: {
+     chunks: 'all',
+     maxInitialRequests: 25,
+     minSize: 20000,
+     cacheGroups: {
+       framework: {
+         // React and Google Maps framework code
+         test: /[\\/]node_modules[\\/](react|react-dom|@react-google-maps)[\\/]/,
+         priority: 40
+       },
+       lib: {
+         // Large libraries
+         test: module => module.size() > 160000,
+         priority: 30,
+         maxSize: 24 * 1024 * 1024
+       },
+       commons: {
+         // Shared code between pages
+         minChunks: 2,
+         priority: 20
+       }
+     }
+   }
+   ```
+
+3. **CSS Optimization**
+   - Uses `critters` for CSS optimization
+   - Inlines critical CSS
+   - Defers non-critical CSS loading
+
+4. **Bundle Analysis**
+   - Bundle analyzer available via `npm run analyze`
+   - Helps identify large dependencies
+   - Useful for debugging size issues
+
+#### Size Limits and Considerations
+
+- Cloudflare Pages has a 25MB limit per file
+- Use dynamic imports for large components
+- Monitor bundle sizes during development
+- Run bundle analyzer before deploying major changes
+
+### Local Development
+```bash
+# Start Next.js development server
+npm run dev
+
+# Analyze bundle sizes
+npm run analyze
+
+# Start Worker development server
+npm run dev:worker
+```
 
 ### Production Deployment Commands
 
@@ -888,6 +1018,32 @@ If you're having trouble with admin authentication:
 2. Check for any whitespace in the password value
 3. Ensure the environment variable is available in the client-side code
 4. Try clearing your browser's sessionStorage and cache
+
+### Bundle Size Issues
+
+If you encounter bundle size issues during deployment:
+
+1. **Analyze the Bundle**
+   ```bash
+   npm run analyze
+   ```
+   This will generate a report showing bundle composition and sizes.
+
+2. **Common Solutions**
+   - Use dynamic imports for large components
+   - Split vendor chunks appropriately
+   - Optimize image and media assets
+   - Remove unused dependencies
+
+3. **Webpack Configuration**
+   - Check `next.config.js` for optimization settings
+   - Verify chunk splitting configuration
+   - Ensure proper cache group setup
+
+4. **Dependencies**
+   - Review and remove unused dependencies
+   - Use smaller alternatives when possible
+   - Consider code splitting for large libraries
 
 ## Best Practices
 
