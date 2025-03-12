@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 
 interface AdminAuthProps {
   children: React.ReactNode;
@@ -12,7 +11,6 @@ export default function AdminAuth({ children }: AdminAuthProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const authStatus = sessionStorage.getItem('adminAuthenticated');
