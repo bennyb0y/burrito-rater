@@ -4,23 +4,24 @@ This document tracks completed milestones and upcoming tasks for the internal de
 
 ## 🔥 Current Sprint Priorities
 
-1. **Fix Mobile Responsiveness Issues** (Frontend Team)
-   - Fix layout issues on small screens
+1. **Implement Zero Trust Security** (DevOps Team)
+   - Set up Cloudflare Access for admin routes
+   - Configure SSO with major identity providers
+   - Implement audit logging
+   - Set up geo-fencing rules
+   - Test and validate security measures
+
+2. **Fix Mobile Responsiveness Issues** (Frontend Team)
+   - Fix layout issues on small screens (#001)
    - Ensure map controls are usable on touch devices
    - Optimize form inputs for mobile
    - Test on various device sizes
 
-2. **Set up CI/CD Automation** (DevOps Team)
+3. **Set up CI/CD Automation** (DevOps Team)
    - Configure GitHub Actions workflow for automated builds
    - Set up automatic deployment to Cloudflare Pages on merge to main
    - Implement deployment previews for pull requests
    - Add automated testing before deployment
-
-3. **Implement Basic Monitoring** (DevOps Team)
-   - Set up Cloudflare Analytics
-   - Configure error logging and alerting
-   - Implement uptime monitoring
-   - Create dashboard for key metrics
 
 4. **Create Backup Strategy** (Backend Team)
    - Implement automated D1 database backups
@@ -33,12 +34,14 @@ This document tracks completed milestones and upcoming tasks for the internal de
 ### Frontend Team
 
 #### High Priority
-- [x] Implement admin dashboard with authentication
-- [x] Add admin authentication with session storage
-- [x] Set up admin dashboard redirect functionality
 - [ ] Fix mobile responsiveness issues (#001)
 - [ ] Implement map marker clustering for areas with many ratings (#006)
 - [ ] Improve rating form validation with clear error messages (#005)
+- [ ] Update admin interface for Zero Trust compatibility
+  - [ ] Modify authentication flow
+  - [ ] Add session management
+  - [ ] Implement audit logging UI
+  - [ ] Add security status indicators
 
 #### Medium Priority
 - [ ] Add image upload for burritos
@@ -88,6 +91,11 @@ This document tracks completed milestones and upcoming tasks for the internal de
 
 ## ✅ Recently Completed Tasks
 
+- [x] Reorganize admin interface under unified `/app/admin` directory
+  - [x] Move monitoring to `/app/admin/monitoring`
+  - [x] Move ratings management to `/app/admin/ratings`
+  - [x] Update import paths and documentation
+  - [x] Deploy reorganized admin interface
 - [x] Implement real-time updates in admin interface
   - [x] Add 30-second periodic refresh
   - [x] Add event-driven updates for new submissions

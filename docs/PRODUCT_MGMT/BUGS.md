@@ -11,22 +11,26 @@ This document tracks known bugs and issues in the Burrito Rater application. Ple
    - Affected areas: Map view, rating form, navigation
    - Steps to reproduce: Access the site on mobile devices or use responsive design mode in browser dev tools
    - Priority: High
+   - Impact: Major usability issue for mobile users
+   - Status: In progress, assigned to Frontend Team
 
 ### Medium Priority
 
-2. **Rating Form Validation** - #005
+1. **Rating Form Validation** - #005
    - Description: Form validation doesn't provide clear error messages for all fields
    - Affected areas: Rating submission form
    - Steps to reproduce: Submit form with invalid data
    - Priority: Medium
+   - Impact: User confusion during submission process
 
-3. **Map Marker Clustering** - #006
+2. **Map Marker Clustering** - #006
    - Description: Map markers overlap in areas with many ratings
    - Affected areas: Map view
    - Steps to reproduce: View areas with multiple ratings close together
    - Priority: Medium
+   - Impact: Difficulty selecting specific ratings in dense areas
 
-4. **Navigation Bar Visibility** - #009
+3. **Navigation Bar Visibility** - #009
    - Description: Navigation bar can scroll out of view on some mobile and desktop browsers
    - Affected areas: Navigation component across all pages
    - Steps to reproduce: Scroll down slightly on the map view
@@ -35,35 +39,40 @@ This document tracks known bugs and issues in the Burrito Rater application. Ple
 
 ## 🔄 Recently Fixed Bugs
 
-1. **Admin Rating Management** - #010
+1. **Admin Directory Structure** - #011
+   - Description: Admin interface components were scattered across multiple directories
+   - Fix: Reorganized admin interface under unified `/app/admin` directory
+   - Impact: Improved code organization and maintainability
+   - Fixed in version: Latest
+
+2. **Admin Real-time Updates** - #012
+   - Description: Admin interface required manual refresh to see new ratings
+   - Fix: Implemented automatic 30-second refresh and event-driven updates
+   - Impact: Admins now see new ratings in real-time
+   - Fixed in version: Latest
+
+3. **Admin Rating Management** - #010
    - Description: Delete and bulk confirm functionality was not working correctly
    - Fix: Implemented proper DELETE endpoint and bulk confirmation endpoint in the worker.js file
    - Impact: Admins can now efficiently manage ratings
    - Fixed in version: Latest
 
-2. **USA Location Validation** - #007
+4. **USA Location Validation** - #007
    - Description: Ratings could be submitted for locations outside the USA
-   - Fix: Implemented bounding box check in the worker.js file to validate coordinates and added error handling in the Map component to display a user-friendly message when a location is outside the USA
+   - Fix: Implemented bounding box check in the worker.js file
+   - Impact: Only USA locations can be submitted
    - Fixed in version: Latest
 
-3. **List View Sorting** - #008
+5. **List View Sorting** - #008
    - Description: Sorting in list view was not working correctly
-   - Fix: Updated the getSortedRatings function to handle undefined values and ensure proper sorting
+   - Fix: Updated the getSortedRatings function
+   - Impact: Proper sorting functionality restored
    - Fixed in version: Latest
 
-4. **Zipcode Filter with Sorting** - #003
-   - Description: Sorting by price/rating and high/low doesn't work correctly when using the zipcode filter
-   - Fix: Modified the sorting logic in the list view to properly handle the zipcode filter by ensuring sorting is applied after filtering and handling edge cases with undefined values
-   - Fixed in version: Latest
-
-5. **API Connection Errors** - #004
-   - Description: Occasional 404 errors when connecting to the API in development environment
-   - Fix: Updated the getApiUrl function in config.js to correctly format API endpoints by removing the /api/ prefix when connecting to the Cloudflare Worker API
-   - Fixed in version: Latest
-
-6. **Remove Refresh Button** - #002
-   - Description: The refresh button was unnecessary and caused confusion
-   - Fix: Removed the refresh button from the Map component and implemented automatic refresh when the map view changes. Updated the User Guide to reflect this change.
+6. **Zipcode Filter** - #003
+   - Description: Sorting by price/rating didn't work with zipcode filter
+   - Fix: Modified sorting logic to handle zipcode filter
+   - Impact: Proper filtering and sorting functionality
    - Fixed in version: Latest
 
 ## 📝 Reporting New Bugs
