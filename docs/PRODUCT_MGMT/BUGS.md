@@ -4,16 +4,6 @@ This document tracks known bugs and issues in the Burrito Rater application. Ple
 
 ## 🐛 Active Bugs
 
-### High Priority
-
-1. **Mobile Responsiveness Issues** - #001
-   - Description: Various UI elements don't display correctly on mobile devices
-   - Affected areas: Map view, rating form, navigation
-   - Steps to reproduce: Access the site on mobile devices or use responsive design mode in browser dev tools
-   - Priority: High
-   - Impact: Major usability issue for mobile users
-   - Status: In progress, assigned to Frontend Team
-
 ### Medium Priority
 
 1. **Rating Form Validation** - #005
@@ -39,37 +29,43 @@ This document tracks known bugs and issues in the Burrito Rater application. Ple
 
 ## 🔄 Recently Fixed Bugs
 
-1. **Admin Directory Structure** - #011
+1. **Mobile Responsiveness Issues** - #001
+   - Description: Various UI elements didn't display correctly on mobile devices
+   - Fix: Implemented responsive design fixes across all components
+   - Impact: Improved usability on mobile devices
+   - Fixed in version: Latest
+
+2. **Admin Directory Structure** - #011
    - Description: Admin interface components were scattered across multiple directories
    - Fix: Reorganized admin interface under unified `/app/admin` directory
    - Impact: Improved code organization and maintainability
    - Fixed in version: Latest
 
-2. **Admin Real-time Updates** - #012
+3. **Admin Real-time Updates** - #012
    - Description: Admin interface required manual refresh to see new ratings
    - Fix: Implemented automatic 30-second refresh and event-driven updates
    - Impact: Admins now see new ratings in real-time
    - Fixed in version: Latest
 
-3. **Admin Rating Management** - #010
+4. **Admin Rating Management** - #010
    - Description: Delete and bulk confirm functionality was not working correctly
    - Fix: Implemented proper DELETE endpoint and bulk confirmation endpoint in the worker.js file
    - Impact: Admins can now efficiently manage ratings
    - Fixed in version: Latest
 
-4. **USA Location Validation** - #007
+5. **USA Location Validation** - #007
    - Description: Ratings could be submitted for locations outside the USA
    - Fix: Implemented bounding box check in the worker.js file
    - Impact: Only USA locations can be submitted
    - Fixed in version: Latest
 
-5. **List View Sorting** - #008
+6. **List View Sorting** - #008
    - Description: Sorting in list view was not working correctly
    - Fix: Updated the getSortedRatings function
    - Impact: Proper sorting functionality restored
    - Fixed in version: Latest
 
-6. **Zipcode Filter** - #003
+7. **Zipcode Filter** - #003
    - Description: Sorting by price/rating didn't work with zipcode filter
    - Fix: Modified sorting logic to handle zipcode filter
    - Impact: Proper filtering and sorting functionality
