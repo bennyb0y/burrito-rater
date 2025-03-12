@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useState, useEffect } from 'react';
-import { GoogleMap, useJsApiLoader, Marker, StandaloneSearchBox, InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, Marker, StandaloneSearchBox, InfoWindow, Libraries } from '@react-google-maps/api';
 import RatingForm from './RatingForm';
 import { getApiUrl } from '../config.js';
 
@@ -80,11 +80,32 @@ interface MapProps {
   refreshTrigger?: number;
 }
 
+interface RatingFormData {
+  latitude: number;
+  longitude: number;
+  restaurantName: string;
+  burritoTitle: string;
+  rating: number;
+  taste: number;
+  value: number;
+  price: number;
+  review?: string;
+  reviewerName?: string;
+  reviewerEmoji?: string;
+  hasPotatoes: boolean;
+  hasCheese: boolean;
+  hasBacon: boolean;
+  hasChorizo: boolean;
+  hasAvocado: boolean;
+  hasVegetables: boolean;
+  turnstileToken?: string;
+}
+
 const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
-    libraries: libraries as any
+    libraries: libraries as Libraries
   });
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
@@ -200,7 +221,7 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
     }
   };
 
-  const handleRatingSubmit = async (ratingData: any) => {
+  const handleRatingSubmit = async (ratingData: RatingFormData) => {
     try {
       console.log('Submitting rating to API with data:', {
         ...ratingData,
@@ -489,7 +510,7 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
 
                   {selectedRating.review && (
                     <div className="mt-1 text-sm text-gray-700 break-words">
-                      "{selectedRating.review}"
+                      &ldquo;{selectedRating.review}&rdquo;
                     </div>
                   )}
                 </div>

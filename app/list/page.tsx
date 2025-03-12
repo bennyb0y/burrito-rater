@@ -252,7 +252,7 @@ export default function ListPage() {
 
                   {rating.review && (
                     <div className="mt-2 text-xs text-gray-700 line-clamp-2">
-                      "{rating.review}"
+                      &ldquo;{rating.review}&rdquo;
                     </div>
                   )}
 

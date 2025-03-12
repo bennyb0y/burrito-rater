@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import DashboardLayout from '../components/DashboardLayout';
 import { Card, Title, Table, TableRow, TableCell, TableHead, TableHeaderCell, TableBody } from '@tremor/react';
 
@@ -38,11 +38,7 @@ export default function RatingsPage() {
   const [isConfirming, setIsConfirming] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  useEffect(() => {
-    fetchRatings();
-  }, [filterStatus]);
-
-  const fetchRatings = async () => {
+  const fetchRatings = useCallback(async () => {
     try {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/ratings`);
       if (!response.ok) {
@@ -73,7 +69,11 @@ export default function RatingsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [filterStatus]);
+
+  useEffect(() => {
+    fetchRatings();
+  }, [fetchRatings]);
 
   const handleConfirm = async (id: number) => {
     try {

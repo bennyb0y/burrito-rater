@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 interface TurnstileProps {
   siteKey: string;
@@ -74,6 +74,26 @@ const ERROR_CODES: Record<string, string> = {
   '110259': 'Invalid m. Please check your m is configured correctly.',
 };
 
+// Add TypeScript declaration for Turnstile
+declare global {
+  interface Window {
+    turnstile?: {
+      render: (
+        container: HTMLElement,
+        options: {
+          sitekey: string;
+          callback: (token: string) => void;
+          'error-callback'?: (error?: string) => void;
+          theme?: 'light' | 'dark' | 'auto';
+          size?: 'normal' | 'compact';
+        }
+      ) => string;
+      reset: (widgetId: string) => void;
+      remove: (widgetId: string) => void;
+    };
+  }
+}
+
 export default function Turnstile({ siteKey, onVerify, onError, theme = 'light', size = 'normal' }: TurnstileProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetIdRef = useRef<string | null>(null);
@@ -110,7 +130,7 @@ export default function Turnstile({ siteKey, onVerify, onError, theme = 'light',
   }, [siteKey]);
 
   // Function to load the Turnstile script
-  const loadTurnstileScript = () => {
+  const loadTurnstileScript = useCallback(() => {
     if (window.turnstile || document.querySelector('script[src*="turnstile"]')) {
       console.log('Turnstile script already loaded or loading');
       setScriptLoaded(true);
@@ -138,7 +158,7 @@ export default function Turnstile({ siteKey, onVerify, onError, theme = 'light',
     };
     
     document.head.appendChild(script);
-  };
+  }, [onError, siteKey]);
 
   // Load the script on component mount
   useEffect(() => {
@@ -147,7 +167,7 @@ export default function Turnstile({ siteKey, onVerify, onError, theme = 'light',
     return () => {
       // Cleanup is handled in the other useEffect
     };
-  }, []);
+  }, [loadTurnstileScript]);
 
   // Render the widget when the script is loaded
   useEffect(() => {
@@ -280,24 +300,4 @@ export default function Turnstile({ siteKey, onVerify, onError, theme = 'light',
       )}
     </div>
   );
-}
-
-// Add TypeScript declaration for Turnstile
-declare global {
-  interface Window {
-    turnstile?: {
-      render: (
-        container: HTMLElement,
-        options: {
-          sitekey: string;
-          callback: (token: string) => void;
-          'error-callback'?: (error?: any) => void;
-          theme?: 'light' | 'dark' | 'auto';
-          size?: 'normal' | 'compact';
-        }
-      ) => string;
-      reset: (widgetId: string) => void;
-      remove: (widgetId: string) => void;
-    };
-  }
 } 

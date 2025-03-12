@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, Marker, Libraries } from '@react-google-maps/api';
 
 const containerStyle = {
   width: '100%',
@@ -25,7 +25,7 @@ const MiniMap: React.FC<MiniMapProps> = ({ latitude, longitude, rating, restaura
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '',
-    libraries: libraries as any
+    libraries: libraries as Libraries
   });
 
   const getRatingColor = (rating: number, isStroke = false) => {

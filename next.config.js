@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export', // Required for static site generation
+  // Remove static export since we need server-side functionality
   distDir: 'dist',
   images: {
-    unoptimized: true, // Required for static site generation
+    domains: ['*'], // Allow images from all domains
     remotePatterns: [
       {
         protocol: 'https',
@@ -11,8 +11,6 @@ const nextConfig = {
       },
     ],
   },
-  // Ensure trailing slashes for proper static file serving
-  trailingSlash: true,
   // Disable ESLint during build
   eslint: {
     ignoreDuringBuilds: true,

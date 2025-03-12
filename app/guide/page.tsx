@@ -36,9 +36,9 @@ export default function UserGuidePage() {
               <h3 className="text-lg font-medium text-blue-800 mb-2">Adding a Rating</h3>
               <ol className="list-decimal list-inside space-y-2 text-gray-700">
                 <li>Search for a restaurant or click on the map</li>
-                <li>Click the "Rate a Burrito Here" button</li>
+                <li>Click the &ldquo;Rate a Burrito Here&rdquo; button</li>
                 <li>Fill out the rating form with your experience</li>
-                <li>Click "Submit Rating" to share your review</li>
+                <li>Click &ldquo;Submit Rating&rdquo; to share your review</li>
               </ol>
             </div>
           </section>
@@ -51,7 +51,7 @@ export default function UserGuidePage() {
               <ul className="list-disc list-inside space-y-2 text-gray-700">
                 <li>View all ratings in a convenient list format</li>
                 <li>Each entry shows the restaurant, burrito name, and rating</li>
-                <li>Click "View on Map" to see the location on the map</li>
+                <li>Click &ldquo;View on Map&rdquo; to see the location on the map</li>
               </ul>
             </div>
             
@@ -75,7 +75,7 @@ export default function UserGuidePage() {
                 <li><strong>Taste:</strong> How delicious the burrito is</li>
                 <li><strong>Value:</strong> Quality relative to price</li>
                 <li><strong>Price:</strong> Actual cost in dollars</li>
-                <li><strong>Ingredients:</strong> What's inside the burrito (potatoes, cheese, etc.)</li>
+                <li><strong>Ingredients:</strong> What&apos;s inside the burrito (potatoes, cheese, etc.)</li>
               </ul>
             </div>
           </section>

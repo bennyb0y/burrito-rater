@@ -18,7 +18,7 @@ export default function Navigation() {
         <div className="flex flex-col sm:flex-row justify-between items-center h-16">
           <div className="flex items-center">
             <h1 className="text-base sm:text-lg font-bold text-blue-600">
-              🌯 Benny's Breakfast Burrito Rating 🌯
+              🌯 Benny&apos;s Breakfast Burrito Rating 🌯
             </h1>
           </div>
           <div className="flex items-center space-x-4 mt-2 sm:mt-0">

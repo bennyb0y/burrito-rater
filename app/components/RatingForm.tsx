@@ -11,9 +11,32 @@ interface Position {
   address: string;
 }
 
+interface RatingFormData {
+  latitude: number;
+  longitude: number;
+  burritoTitle: string;
+  rating: number;
+  taste: number;
+  value: number;
+  price: number;
+  restaurantName: string;
+  review: string;
+  reviewerName: string;
+  identityPassword?: string;
+  reviewerEmoji?: string;
+  zipcode: string | null | undefined;
+  turnstileToken: string;
+  hasPotatoes: boolean;
+  hasCheese: boolean;
+  hasBacon: boolean;
+  hasChorizo: boolean;
+  hasAvocado: boolean;
+  hasVegetables: boolean;
+}
+
 interface Props {
   position: Position;
-  onSubmit: (data: any) => void;
+  onSubmit: (data: RatingFormData) => void;
   onClose: () => void;
 }
 
@@ -130,7 +153,7 @@ export default function RatingForm({ position, onSubmit, onClose }: Props) {
     // Extract zipcode from address
     const zipcode = extractZipcode(position.address);
     
-    const ratingData = {
+    const ratingData: RatingFormData = {
       latitude: position.lat,
       longitude: position.lng,
       burritoTitle,
@@ -144,8 +167,13 @@ export default function RatingForm({ position, onSubmit, onClose }: Props) {
       identityPassword: password.length >= 4 ? password : undefined,
       reviewerEmoji,
       zipcode,
-      turnstileToken, // Include the CAPTCHA token
-      ...ingredients,
+      turnstileToken,
+      hasPotatoes: ingredients.hasPotatoes,
+      hasCheese: ingredients.hasCheese,
+      hasBacon: ingredients.hasBacon,
+      hasChorizo: ingredients.hasChorizo,
+      hasAvocado: ingredients.hasAvocado,
+      hasVegetables: ingredients.hasVegetables,
     };
 
     try {
@@ -173,7 +201,7 @@ export default function RatingForm({ position, onSubmit, onClose }: Props) {
 
           {/* USA-only notice */}
           <div className="bg-blue-50 border border-blue-200 rounded-md p-1 mb-2 text-xs text-blue-800">
-            <span className="font-bold">Note:</span> During our beta phase, we're only accepting ratings for restaurants in the United States. 🇺🇸
+            <span className="font-bold">Note:</span> During our beta phase, we&apos;re only accepting ratings for restaurants in the United States. 🇺🇸
           </div>
 
           {error && (
@@ -398,7 +426,7 @@ export default function RatingForm({ position, onSubmit, onClose }: Props) {
             {/* Cloudflare Turnstile CAPTCHA - Full Width */}
             <div className="mt-2 pt-2 border-t border-gray-200">
               <label className="block text-xs font-bold text-black mb-1">
-                Verify you're human
+                Verify you&apos;re human
               </label>
               <div className="min-h-[80px]"> {/* Fixed height container to prevent layout shifts */}
                 {turnstileError ? (

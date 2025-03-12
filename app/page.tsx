@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Map from './components/Map';
 
 export default function Home() {
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [refreshTrigger] = useState(0);
   const [mapError, setMapError] = useState<boolean>(false);
 
   return (
