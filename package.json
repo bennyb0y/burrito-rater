@@ -4,7 +4,6 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "start": "next start",
     "lint": "next lint",
     "build": "next build",
     "deploy": "npm run deploy:worker && npm run deploy:app",

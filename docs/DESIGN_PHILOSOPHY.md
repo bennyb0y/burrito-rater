@@ -15,11 +15,35 @@ We've embraced a fully cloud-native architecture with zero self-hosted component
 - **Auto-scaling Built-in**: Infrastructure scales automatically with demand
 - **Pay-per-use Economics**: Cost scales directly with actual usage
 - **Cloud-Native Development**: Development is done directly against cloud resources
-  - No local worker development
-  - Direct deployment to edge environment
+  - Frontend development runs locally but connects to cloud services
+  - API changes are deployed directly to the edge
+  - Database operations always use cloud D1
+  - No local API or database development environment
   - Real-time testing in production-like conditions
 
-### 2. Edge-First Architecture
+### 2. Development Philosophy
+
+Our development approach emphasizes simplicity and consistency:
+
+- **Frontend Development**:
+  - Local Next.js development server only
+  - Direct connection to cloud API and database
+  - Hot reloading for rapid iteration
+  - No need for local API or database setup
+
+- **API Development**:
+  - Direct deployment to Cloudflare Workers
+  - No local worker development environment
+  - Immediate testing in cloud environment
+  - Version control for rollback capability
+
+- **Database Operations**:
+  - Single source of truth in Cloudflare D1
+  - No local database instances
+  - All environments use cloud database
+  - Consistent data across all stages
+
+### 3. Edge-First Architecture
 
 Our application is designed to run at the edge:
 
@@ -28,7 +52,29 @@ Our application is designed to run at the edge:
 - **Reduced Origin Load**: Edge caching and computation reduce backend load
 - **Enhanced Security**: Edge-level DDoS protection and request filtering
 
-### 3. Event-Driven Design
+### 4. Deployment Strategy
+
+Our deployment strategy maintains cloud-native principles:
+
+- **Frontend Deployment**:
+  - Build locally for validation (`npm run build`)
+  - Deploy directly to Cloudflare Pages (`npm run deploy:app`)
+  - No traditional server setup needed
+  - Edge-optimized static assets
+
+- **API Deployment**:
+  - Direct worker deployment to edge (`npm run deploy:worker`)
+  - No build step required
+  - Immediate global availability
+  - Built-in rollback capability
+
+- **Combined Deployment**:
+  - Single command for full deployment (`npm run deploy`)
+  - Proper sequencing (API first, then frontend)
+  - Consistent deployment process
+  - No downtime during updates
+
+### 5. Event-Driven Design
 
 The application follows event-driven principles:
 
@@ -37,7 +83,7 @@ The application follows event-driven principles:
 - **Optimistic Updates**: UI updates before backend confirmation for better UX
 - **Resilient Design**: Components handle failures gracefully
 
-### 4. API-First Development
+### 6. API-First Development
 
 We prioritize API-driven development:
 

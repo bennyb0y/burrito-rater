@@ -262,6 +262,16 @@ This command deploys the worker to Cloudflare Workers.
 | `npm run build` | Build Next.js application |
 | `npm run dev` | Start Next.js development server |
 
+**Note**: Unlike traditional Next.js applications, we don't use `npm run start` because:
+- Development is handled by `npm run dev`
+- Production is served directly by Cloudflare Pages
+- No need for a local production server
+
+This aligns with our cloud-native philosophy where:
+- Development is done against the cloud worker
+- Production runs entirely on Cloudflare's edge network
+- No self-hosted components are required
+
 ### Verifying Deployment
 
 After deployment:
@@ -482,6 +492,23 @@ This starts the Next.js app on http://localhost:3000, which connects to the Clou
 - API calls go to the production Cloudflare Worker
 - Changes to the frontend are immediately visible locally
 - No local development environment needed for API or database
+- No need for a production server (handled by Cloudflare Pages)
+
+### Available Commands
+
+| Command | Description | When to Use |
+|---------|-------------|-------------|
+| `npm run dev` | Start Next.js development server | Local frontend development |
+| `npm run build` | Build Next.js application | Part of deployment process |
+| `npm run deploy` | Deploy both frontend and API | Full-stack changes |
+| `npm run deploy:app` | Deploy only frontend | Frontend-only changes |
+| `npm run deploy:worker` | Deploy only API worker | API-only changes |
+| `npm run lint` | Run code linting | Code quality checks |
+
+**Note**: Unlike traditional Next.js applications, we don't need a local production server because:
+- Development is handled by `npm run dev`
+- Production is served directly by Cloudflare Pages
+- Our cloud-native architecture eliminates the need for self-hosted components
 
 ### API Development
 
@@ -548,6 +575,16 @@ This command deploys the worker to Cloudflare Workers.
 | `npm run deploy:worker` | Deploy only API worker |
 | `npm run build` | Build Next.js application |
 | `npm run dev` | Start Next.js development server |
+
+**Note**: Unlike traditional Next.js applications, we don't use `npm run start` because:
+- Development is handled by `npm run dev`
+- Production is served directly by Cloudflare Pages
+- No need for a local production server
+
+This aligns with our cloud-native philosophy where:
+- Development is done against the cloud worker
+- Production runs entirely on Cloudflare's edge network
+- No self-hosted components are required
 
 ### Verifying Deployment
 
