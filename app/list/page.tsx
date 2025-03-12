@@ -34,13 +34,11 @@ export default function ListPage() {
   const [sortBy, setSortBy] = useState<'rating' | 'price'>('rating');
   const [sortOrder, setSortOrder] = useState<'high' | 'low'>('high');
   const [zipcode, setZipcode] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [mapError, setMapError] = useState<boolean>(false);
+  const mapError = false;
 
   useEffect(() => {
     const fetchRatings = async () => {
       try {
-        setIsLoading(true);
         console.log('Fetching ratings from API');
         
         // Fetch all ratings from the API
@@ -70,8 +68,6 @@ export default function ListPage() {
         setRatings(confirmedRatings);
       } catch (error) {
         console.error('Error fetching ratings:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
 

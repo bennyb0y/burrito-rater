@@ -13,7 +13,6 @@ interface Position {
 
 interface Props {
   position: Position;
-  placeName: string;
   onSubmit: (data: any) => void;
   onClose: () => void;
 }
@@ -57,7 +56,7 @@ const TURNSTILE_SITE_KEY = process.env.NODE_ENV === 'production'
   ? (process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY || '0x4AAAAAAA_9y3MwYADqg0-_')
   : '1x00000000000000000000AA'; // Always passes in development
 
-export default function RatingForm({ position, placeName, onSubmit, onClose }: Props) {
+export default function RatingForm({ position, onSubmit, onClose }: Props) {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [burritoTitle, setBurritoTitle] = useState('Breakfast Burrito');

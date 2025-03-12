@@ -89,7 +89,6 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
 
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [searchBox, setSearchBox] = useState<google.maps.places.SearchBox | null>(null);
-  const [nearbyRestaurants, setNearbyRestaurants] = useState<google.maps.places.PlaceResult[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<{
     lat: number;
     lng: number;
@@ -99,13 +98,7 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
   const [showRatingForm, setShowRatingForm] = useState(false);
   const [ratings, setRatings] = useState<Rating[]>([]);
   const [selectedRating, setSelectedRating] = useState<Rating | null>(null);
-  const [mapBounds, setMapBounds] = useState<{
-    north: number;
-    south: number;
-    east: number;
-    west: number;
-  } | null>(null);
-  const [mapCenter, setMapCenter] = useState(defaultCenter);
+  const [mapCenter] = useState(defaultCenter);
   const [locationRatings, setLocationRatings] = useState<Rating[]>([]);
   const [currentRatingIndex, setCurrentRatingIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -198,13 +191,6 @@ const Map: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
       });
 
       map.fitBounds(bounds);
-      setNearbyRestaurants(newRestaurants);
-      setMapBounds({
-        north: bounds.getNorthEast().lat(),
-        south: bounds.getSouthWest().lat(),
-        east: bounds.getNorthEast().lng(),
-        west: bounds.getSouthWest().lng(),
-      });
     }
   }, [searchBox, map]);
 

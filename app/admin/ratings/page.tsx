@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
-import { Card, Title, Table, TableRow, TableCell, TableHead, TableHeaderCell, TableBody } from '@tremor/react';
+import { Card, Table, TableRow, TableCell, TableHead, TableHeaderCell, TableBody } from '@tremor/react';
 
 interface Rating {
   id: number;

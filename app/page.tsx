@@ -1,17 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Map from './components/Map';
 
 export default function Home() {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [mapError, setMapError] = useState<boolean>(false);
-
-  // Automatic refresh can be triggered programmatically when needed
-  // by calling setRefreshTrigger(prev => prev + 1)
-  const refreshMap = () => {
-    setRefreshTrigger(prev => prev + 1);
-  };
 
   return (
     <div className="flex-1 w-full h-[calc(100vh-4rem)]">
