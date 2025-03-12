@@ -73,7 +73,7 @@ const corsHeaders = {
 };
 
 // Helper function to handle CORS preflight requests
-function handleOptions(request) {
+function handleOptions() {
   return new Response(null, {
     headers: corsHeaders,
     status: 204,
@@ -97,11 +97,11 @@ function errorResponse(message, status = 400) {
 }
 
 // Main worker event handler
-export default {
-  async fetch(request, env, ctx) {
+const workerHandler = {
+  async fetch(request, env) {
     // Handle CORS preflight requests
     if (request.method === 'OPTIONS') {
-      return handleOptions(request);
+      return handleOptions();
     }
     
     const url = new URL(request.url);
@@ -246,3 +246,5 @@ export default {
     }
   }
 };
+
+export default workerHandler;

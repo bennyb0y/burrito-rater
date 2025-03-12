@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const crypto = require('crypto');
 
 /** @type {import('next').NextConfig} */
