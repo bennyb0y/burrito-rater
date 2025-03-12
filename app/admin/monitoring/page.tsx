@@ -1,6 +1,6 @@
 'use client';
 
-import DashboardLayout from '../components/DashboardLayout';
+import DashboardLayout from '../../components/DashboardLayout';
 import { Card, Title, AreaChart } from '@tremor/react';
 
 const chartdata = [

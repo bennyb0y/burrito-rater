@@ -195,6 +195,32 @@ Benefits of this approach:
 - ❌ No complex deployment dependencies
 - ❌ No shared state management
 
+## Architectural Decisions
+
+### Admin Interface Organization
+
+The admin interface follows a centralized organization pattern under `/app/admin/` to provide:
+
+1. **Unified Security Model**
+   - Single authentication layer via `layout.tsx`
+   - Consistent access control across all admin routes
+   - Zero Trust security model integration
+
+2. **Logical Feature Grouping**
+   - `/admin/dashboard` - System overview and key metrics
+   - `/admin/monitoring` - Real-time system health monitoring
+   - `/admin/ratings` - Rating management and moderation
+
+3. **Real-time Updates**
+   - Event-driven updates for immediate reflection of changes
+   - 30-second fallback polling for reliability
+   - Cross-component communication via browser events
+
+4. **Modular Design**
+   - Each admin feature is self-contained
+   - Shared components for consistent UI/UX
+   - Clear separation of concerns
+
 ## Conclusion
 
 Our design philosophy emphasizes modern, cloud-native architecture that leverages the best of serverless and edge computing. By avoiding traditional infrastructure management and embracing event-driven design, we've created a scalable, maintainable, and cost-effective application that can grow with our needs. 

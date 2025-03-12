@@ -373,61 +373,27 @@ If deployment fails:
 
 ## Admin Interface
 
-The admin interface allows authorized users to manage burrito ratings, including viewing, confirming, and deleting ratings.
+The admin interface is implemented as a unified system within the main application, with all admin-related functionality centralized under the `/app/admin/` directory:
 
-### Admin Setup
-
-The admin section of the Burrito Rater application is protected by a simple password mechanism. This password is stored as an environment variable.
-
-#### Local Development Setup
-
-For local development, the admin password is stored in the `.env.local` file:
-
+#### Directory Structure
 ```
-NEXT_PUBLIC_ADMIN_PASSWORD=your_secure_password
+app/admin/
+├── layout.tsx       # Admin authentication wrapper
+├── page.tsx        # Admin entry point
+├── dashboard/      # Admin dashboard interface
+├── monitoring/     # System monitoring and health checks
+└── ratings/        # Rating management interface
 ```
 
-#### Production Setup
+#### Route Organization
+- `/admin`: Entry point and authentication
+- `/admin/dashboard`: Overview and key metrics
+- `/admin/monitoring`: System health and performance monitoring
+- `/admin/ratings`: Rating management and moderation
 
-For production deployment on Cloudflare Pages, you need to set up the admin password as an environment variable:
+All admin routes are protected by the authentication wrapper in `layout.tsx`, ensuring consistent security across all admin functionality.
 
-1. Go to the Cloudflare Pages dashboard
-2. Select your Burrito Rater project
-3. Navigate to the "Settings" tab
-4. Click on "Environment variables"
-5. Add a new variable:
-   - Variable name: `NEXT_PUBLIC_ADMIN_PASSWORD`
-   - Value: Your secure password
-6. Save the changes
-7. Trigger a new deployment for the changes to take effect
-
-#### Security Considerations
-
-Please note the following security considerations:
-
-1. The `NEXT_PUBLIC_` prefix means this variable is exposed to the browser. This is necessary for client-side authentication but means the password is not completely secure.
-2. This simple password protection is suitable for basic admin access control but is not appropriate for highly sensitive data.
-3. For higher security requirements, consider implementing:
-   - Server-side authentication
-   - OAuth integration
-   - Multi-factor authentication
-
-### Access and Authentication
-
-#### URL
-
-Access the admin interface at:
-- Local development: http://localhost:3000/admin
-- Production: https://your-domain.com/admin
-
-#### Authentication Process
-
-1. When you visit the admin page, you'll be prompted to enter a password.
-2. Enter the password set in the `NEXT_PUBLIC_ADMIN_PASSWORD` environment variable.
-3. If the password is correct, you'll be granted access to the admin interface.
-4. Your session will remain active until you log out or close the browser.
-
-### Features
+#### Features
 
 #### Rating Management
 

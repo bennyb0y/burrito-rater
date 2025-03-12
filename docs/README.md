@@ -6,7 +6,11 @@ This directory contains documentation for the Burrito Rater application.
 
 ### Administration and Development
 
-- [Administration and DevOps Guide](./ADMIN_DEVOPS.md) - Comprehensive guide for deploying, administering, and maintaining the application, including admin setup and DevOps workflows
+- [Administration and DevOps Guide](./ADMIN_DEVOPS.md) - Comprehensive guide for deploying, administering, and maintaining the application, including:
+  - Centralized admin interface under `/app/admin/`
+  - Authentication and security setup
+  - Monitoring and system health
+  - Rating management and moderation
 - [Database Schema](./DATABASE_SCHEMA.md) - Details about the database schema and structure
 - [Cloudflare Migration Guide](./CLOUDFLARE_MIGRATION.md) - Details about the migration from SQLite to Cloudflare D1
 - [Custom Domain Setup Guide](./CUSTOM_DOMAIN.md) - Step-by-step guide for configuring a custom domain

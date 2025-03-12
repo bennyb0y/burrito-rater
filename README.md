@@ -123,8 +123,11 @@ npm run deploy:worker
 burrito-rater/
 ├── app/                  # Next.js app directory
 │   ├── admin/           # Admin interface
+│   │   ├── dashboard/   # Admin dashboard
+│   │   ├── monitoring/  # System monitoring
+│   │   └── ratings/     # Ratings management
 │   ├── components/      # React components
-│   ├── list/           # Rating list page
+│   ├── list/           # Public rating list page
 │   └── page.tsx        # Home page (map view)
 ├── api/                 # Cloudflare Worker code
 ├── public/             # Static assets
