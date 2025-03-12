@@ -4,27 +4,17 @@
 // Helper function to validate Turnstile token
 async function validateTurnstileToken(token, ip, env) {
   try {
-    // Accept test tokens that start with "test_verification_token_"
+    // For development environment, accept test tokens
     if (token && token.startsWith('test_verification_token_')) {
-      console.log('Accepting test verification token');
       return {
         success: true,
         message: 'Test token accepted'
       };
     }
-    
-    // For development environment, accept any token that starts with "0."
-    if (token && token.startsWith('0.') && !env.PRODUCTION) {
-      console.log('Development mode: Accepting token without validation');
-      return {
-        success: true,
-        message: 'Development token accepted'
-      };
-    }
 
     // For production environment, validate the token with Cloudflare
     const formData = new FormData();
-    formData.append('secret', env.TURNSTILE_SECRET_KEY || 'dummy_secret_for_dev');
+    formData.append('secret', env.TURNSTILE_SECRET_KEY);
     formData.append('response', token);
     
     if (ip) {
@@ -37,26 +27,12 @@ async function validateTurnstileToken(token, ip, env) {
     });
 
     const outcome = await result.json();
-    console.log('Turnstile validation result:', outcome);
-    
     return {
       success: outcome.success,
       errorCodes: outcome.error_codes || [],
       message: outcome.success ? 'Validation successful' : 'CAPTCHA validation failed'
     };
   } catch (error) {
-    console.error('Error validating Turnstile token:', error);
-    
-    // In development, allow the request to proceed even if validation fails
-    if (!env.PRODUCTION) {
-      console.log('Development mode: Accepting request despite validation error');
-      return {
-        success: true,
-        errorCodes: ['validation_error_ignored_in_dev'],
-        message: 'Error validating CAPTCHA, but accepted in development mode'
-      };
-    }
-    
     return {
       success: false,
       errorCodes: ['validation_error'],
@@ -71,6 +47,7 @@ function validateApiKey(request, env) {
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return false;
   }
+  
   const apiKey = authHeader.split(' ')[1];
   return apiKey === env.R2_API_TOKEN;
 }
@@ -207,7 +184,6 @@ const workerHandler = {
             url: `/images/${filename}`
           });
         } catch (error) {
-          console.error('Upload error:', error);
           return errorResponse('Failed to upload image', 500);
         }
       }
@@ -232,7 +208,7 @@ const workerHandler = {
         });
       }
 
-      // Handle existing ratings endpoints
+      // Handle ratings endpoints
       if (path.startsWith('ratings')) {
         // Handle ratings endpoint
         if (path === 'ratings') {
@@ -363,7 +339,6 @@ const workerHandler = {
       
       return errorResponse('Method not allowed', 405);
     } catch (error) {
-      console.error('API Error:', error);
       return errorResponse('Internal server error', 500);
     }
   }
