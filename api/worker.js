@@ -45,10 +45,15 @@ async function validateTurnstileToken(token, ip, env) {
 function validateApiKey(request, env) {
   const authHeader = request.headers.get('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    console.log('No valid Authorization header found');
     return false;
   }
   
   const apiKey = authHeader.split(' ')[1];
+  console.log('Received API key:', apiKey);
+  console.log('Expected API key:', env.R2_API_TOKEN);
+  console.log('Keys match:', apiKey === env.R2_API_TOKEN);
+  
   return apiKey === env.R2_API_TOKEN;
 }
 
