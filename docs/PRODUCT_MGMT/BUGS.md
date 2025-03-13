@@ -4,6 +4,22 @@ This document tracks known bugs and issues in the Burrito Rater application. Ple
 
 ## 🐛 Active Bugs
 
+### High Priority
+
+1. **Search Bar Overlap** - #013
+   - Description: Search bar overlaps with rating submission form on mobile devices
+   - Affected areas: Rating submission form
+   - Steps to reproduce: Open rating submission form on mobile device
+   - Priority: High
+   - Impact: Poor user experience, potential data entry issues
+
+2. **Navigation Persistence** - #014
+   - Description: Navigation bar disappears in map and list views
+   - Affected areas: Navigation component across map and list views
+   - Steps to reproduce: Scroll in map or list view
+   - Priority: High
+   - Impact: Poor navigation experience, inconsistent UI behavior
+
 ### Medium Priority
 
 1. **Rating Form Validation** - #005
@@ -95,7 +111,7 @@ Submit bug reports through GitHub issues or contact the development team directl
 
 ## 📊 Bug Metrics
 
-- **Open Bugs**: 4
+- **Open Bugs**: 6
 - **Recently Fixed**: 6
-- **Critical Issues**: 0
+- **Critical Issues**: 2
 - **Average Resolution Time**: 3 days 

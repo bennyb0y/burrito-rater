@@ -4,30 +4,41 @@ This document tracks completed milestones and upcoming tasks for the internal de
 
 ## 🔥 Current Sprint Priorities
 
-1. **Implement Zero Trust Security** (DevOps Team)
+1. **Fix High Priority UI Issues** (Frontend Team)
+   - Fix search bar overlap in rating submission form (#013)
+   - Implement persistent navigation across all views (#014)
+   - Add proper mobile responsiveness for all components
+   - Test and validate UI changes across devices
+
+2. **Implement Zero Trust Security** (DevOps Team)
    - Set up Cloudflare Access for admin routes
    - Configure SSO with major identity providers
    - Implement audit logging
    - Set up geo-fencing rules
    - Test and validate security measures
 
-2. **Set up CI/CD Automation** (DevOps Team)
+3. **Set up CI/CD Automation** (DevOps Team)
    - Configure GitHub Actions workflow for automated builds
    - Set up automatic deployment to Cloudflare Pages on merge to main
    - Implement deployment previews for pull requests
    - Add automated testing before deployment
-
-3. **Create Backup Strategy** (Backend Team)
-   - Implement automated D1 database backups
-   - Document restore procedures
-   - Test backup and restore process
-   - Set up scheduled backup jobs
 
 ## 📋 Team-Specific Tasks
 
 ### Frontend Team
 
 #### High Priority
+- [ ] Fix search bar overlap in rating submission form (#013)
+- [ ] Implement persistent navigation across all views (#014)
+- [ ] Add image support to list view and preview popups
+  - [ ] Update list view to display burrito images
+  - [ ] Add image preview in rating details modal
+  - [ ] Implement proper image loading states
+  - [ ] Add fallback for missing images
+- [ ] Enhance list view sorting
+  - [ ] Add sort by date (newest/oldest)
+  - [ ] Display submission date in list items
+  - [ ] Update sorting UI to include date options
 - [ ] Implement map marker clustering for areas with many ratings (#006)
 - [ ] Improve rating form validation with clear error messages (#005)
 - [ ] Update admin interface for Zero Trust compatibility
@@ -37,7 +48,6 @@ This document tracks completed milestones and upcoming tasks for the internal de
   - [ ] Add security status indicators
 
 #### Medium Priority
-- [ ] Add image upload for burritos
 - [ ] Create restaurant profile UI components
 - [ ] Implement social sharing functionality
 - [ ] Add advanced filtering and search UI
