@@ -24,6 +24,7 @@ interface Rating {
   hasChorizo: boolean;
   hasAvocado: boolean;
   hasVegetables: boolean;
+  image?: string;
 }
 
 export default function RatingsPage() {
@@ -426,11 +427,13 @@ export default function RatingsPage() {
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
-                  <div>
-                    <h3 className="text-lg font-semibold text-black mb-2">{selectedRating.restaurantName}</h3>
-                    <p className="text-black">{selectedRating.burritoTitle}</p>
+                  <div className="space-y-4">
+                    <div>
+                      <h3 className="text-lg font-semibold text-black mb-2">{selectedRating.restaurantName}</h3>
+                      <p className="text-black">{selectedRating.burritoTitle}</p>
+                    </div>
                     
-                    <div className="mt-4">
+                    <div>
                       <div className="flex items-center mb-2">
                         <span className="font-semibold text-black mr-2">Overall:</span>
                         <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
@@ -450,10 +453,8 @@ export default function RatingsPage() {
                         <span className="text-black">${selectedRating.price.toFixed(2)}</span>
                       </div>
                     </div>
-                  </div>
-                  
-                  <div>
-                    <div className="mb-4">
+
+                    <div>
                       <span className="font-semibold text-black block mb-1">Reviewer:</span>
                       <div className="flex items-center">
                         <span className="text-black">{selectedRating.reviewerName || 'Anonymous'}</span>
@@ -463,12 +464,12 @@ export default function RatingsPage() {
                       </div>
                     </div>
                     
-                    <div className="mb-4">
+                    <div>
                       <span className="font-semibold text-black block mb-1">Date:</span>
                       <span className="text-black">{new Date(selectedRating.createdAt).toLocaleString()}</span>
                     </div>
                     
-                    <div className="mb-4">
+                    <div>
                       <span className="font-semibold text-black block mb-1">Status:</span>
                       <span
                         className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -480,6 +481,22 @@ export default function RatingsPage() {
                         {selectedRating.confirmed ? 'Confirmed' : 'Unconfirmed'}
                       </span>
                     </div>
+                  </div>
+                  
+                  <div>
+                    {selectedRating.image && (
+                      <div>
+                        <span className="font-semibold text-black block mb-1">Burrito Photo:</span>
+                        <div className="relative w-full aspect-[4/3] rounded-lg shadow-md overflow-hidden">
+                          <img 
+                            src={selectedRating.image}
+                            alt={`${selectedRating.burritoTitle} at ${selectedRating.restaurantName}`}
+                            className="absolute inset-0 w-full h-full object-contain bg-gray-50"
+                            loading="lazy"
+                          />
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
                 

@@ -186,7 +186,8 @@ const workerHandler = {
           return jsonResponse({
             success: true,
             filename: filename,
-            url: `/images/${filename}`
+            url: `/images/${filename}`,
+            cdnUrl: `https://images.benny.com/cdn-cgi/image/width=800,height=600,fit=cover/${filename}`
           });
         } catch (error) {
           return errorResponse('Failed to upload image', 500);
@@ -241,40 +242,79 @@ const workerHandler = {
             
             // Insert the rating
             const now = new Date().toISOString();
-            const { success } = await env.DB.prepare(`
-              INSERT INTO Rating (
-                createdAt, updatedAt,
-                latitude, longitude, burritoTitle, rating, taste, value, price,
-                restaurantName, review, reviewerName, reviewerEmoji,
-                hasPotatoes, hasCheese, hasBacon, hasChorizo, hasAvocado, hasVegetables,
-                confirmed
-              ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            `).bind(
-              now, now,
-              data.latitude,
-              data.longitude,
-              data.burritoTitle,
-              data.rating,
-              data.taste,
-              data.value,
-              data.price,
-              data.restaurantName,
-              data.review || null,
-              data.reviewerName || 'Anonymous',
-              data.reviewerEmoji || null,
-              data.hasPotatoes ? 1 : 0,
-              data.hasCheese ? 1 : 0,
-              data.hasBacon ? 1 : 0,
-              data.hasChorizo ? 1 : 0,
-              data.hasAvocado ? 1 : 0,
-              data.hasVegetables ? 1 : 0,
-              0 // Default to unconfirmed
-            ).run();
+            console.log('Attempting to insert rating with data:', {
+              ...data,
+              image: data.image || null
+            });
             
-            if (success) {
-              return jsonResponse({ message: 'Rating submitted successfully' });
-            } else {
-              return errorResponse('Failed to submit rating', 500);
+            try {
+              console.log('Preparing SQL query with data:', {
+                latitude: data.latitude,
+                longitude: data.longitude,
+                burritoTitle: data.burritoTitle,
+                rating: data.rating,
+                taste: data.taste,
+                value: data.value,
+                price: data.price,
+                restaurantName: data.restaurantName,
+                review: data.review,
+                reviewerName: data.reviewerName,
+                reviewerEmoji: data.reviewerEmoji,
+                hasPotatoes: data.hasPotatoes,
+                hasCheese: data.hasCheese,
+                hasBacon: data.hasBacon,
+                hasChorizo: data.hasChorizo,
+                hasAvocado: data.hasAvocado,
+                hasVegetables: data.hasVegetables,
+                image: data.image
+              });
+
+              const { success } = await env.DB.prepare(`
+                INSERT INTO Rating (
+                  createdAt, updatedAt,
+                  latitude, longitude, burritoTitle, rating, taste, value, price,
+                  restaurantName, review, reviewerName, reviewerEmoji,
+                  hasPotatoes, hasCheese, hasBacon, hasChorizo, hasAvocado, hasVegetables,
+                  confirmed, image
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+              `).bind(
+                now, now,
+                data.latitude,
+                data.longitude,
+                data.burritoTitle,
+                data.rating,
+                data.taste,
+                data.value,
+                data.price,
+                data.restaurantName,
+                data.review || null,
+                data.reviewerName || 'Anonymous',
+                data.reviewerEmoji || null,
+                data.hasPotatoes ? 1 : 0,
+                data.hasCheese ? 1 : 0,
+                data.hasBacon ? 1 : 0,
+                data.hasChorizo ? 1 : 0,
+                data.hasAvocado ? 1 : 0,
+                data.hasVegetables ? 1 : 0,
+                0, // Default to unconfirmed
+                data.image || null // Add the image URL
+              ).run();
+              
+              console.log('Insert result:', { success });
+              
+              if (success) {
+                return jsonResponse({ message: 'Rating submitted successfully' });
+              } else {
+                console.error('Failed to insert rating - no success returned');
+                return errorResponse('Failed to submit rating', 500);
+              }
+            } catch (error) {
+              console.error('Error inserting rating:', {
+                message: error.message,
+                stack: error.stack,
+                cause: error.cause
+              });
+              return errorResponse(`Failed to submit rating: ${error.message}`, 500);
             }
           }
         }

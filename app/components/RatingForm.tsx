@@ -32,6 +32,7 @@ interface RatingFormData {
   hasChorizo: boolean;
   hasAvocado: boolean;
   hasVegetables: boolean;
+  image?: string;
 }
 
 interface Props {
@@ -102,6 +103,10 @@ export default function RatingForm({ position, onSubmit, onClose }: Props) {
   const [isCaptchaVerified, setIsCaptchaVerified] = useState(false);
   const [turnstileError, setTurnstileError] = useState<boolean>(false);
   const [turnstileErrorMessage, setTurnstileErrorMessage] = useState<string>('There was an error loading the CAPTCHA. Please refresh the page and try again.');
+  const [image, setImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   // Log the site key being used when the component mounts
   useEffect(() => {
@@ -133,6 +138,104 @@ export default function RatingForm({ position, onSubmit, onClose }: Props) {
     }
   };
 
+  // Helper function to compress image
+  const compressImage = async (file: File): Promise<Blob> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          
+          // Calculate new dimensions while maintaining aspect ratio
+          let width = img.width;
+          let height = img.height;
+          const maxWidth = 800; // Target width for upload
+          
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+          
+          canvas.width = width;
+          canvas.height = height;
+          
+          // Draw and compress
+          ctx?.drawImage(img, 0, 0, width, height);
+          
+          // Convert to Blob with quality adjustment
+          canvas.toBlob(
+            (blob) => {
+              if (blob) {
+                resolve(blob);
+              } else {
+                reject(new Error('Failed to compress image'));
+              }
+            },
+            'image/jpeg',
+            0.8 // Quality setting (0.8 = 80% quality)
+          );
+        };
+        img.onerror = reject;
+        img.src = e.target?.result as string;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Handle image selection with compression
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      setUploadError('Please select an image file');
+      return;
+    }
+
+    // Validate file size (5MB limit)
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError('Image must be less than 5MB');
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      setUploadError(null);
+
+      // Compress image
+      const compressedBlob = await compressImage(file);
+      const compressedFile = new File([compressedBlob], file.name, { type: 'image/jpeg' });
+
+      // Create preview URL
+      const previewUrl = URL.createObjectURL(compressedFile);
+
+      // Log compression results
+      console.log('Original size:', Math.round(file.size / 1024), 'KB');
+      console.log('Compressed size:', Math.round(compressedFile.size / 1024), 'KB');
+
+      setImage(compressedFile);
+      setImagePreview(previewUrl);
+    } catch (err) {
+      console.error('Error processing image:', err);
+      setUploadError('Failed to process image. Please try again.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  // Clean up preview URL on unmount
+  useEffect(() => {
+    return () => {
+      if (imagePreview) {
+        URL.revokeObjectURL(imagePreview);
+      }
+    };
+  }, [imagePreview]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -152,6 +255,27 @@ export default function RatingForm({ position, onSubmit, onClose }: Props) {
     
     // Extract zipcode from address
     const zipcode = extractZipcode(position.address);
+    
+    let imageFilename: string | undefined;
+
+    // Upload image if one was selected
+    if (image) {
+      const formData = new FormData();
+      formData.append('image', image);
+
+      const uploadResponse = await fetch('/api/images/upload', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!uploadResponse.ok) {
+        const errorData = await uploadResponse.json();
+        throw new Error(errorData.error || 'Failed to upload image');
+      }
+
+      const uploadResult = await uploadResponse.json();
+      imageFilename = uploadResult.cdnUrl; // Store the CDN URL instead of just the filename
+    }
     
     const ratingData: RatingFormData = {
       latitude: position.lat,
@@ -174,6 +298,7 @@ export default function RatingForm({ position, onSubmit, onClose }: Props) {
       hasChorizo: ingredients.hasChorizo,
       hasAvocado: ingredients.hasAvocado,
       hasVegetables: ingredients.hasVegetables,
+      image: imageFilename,
     };
 
     try {
@@ -254,6 +379,54 @@ export default function RatingForm({ position, onSubmit, onClose }: Props) {
                   )}
                   {!validatePassword(password) && (
                     <div className="min-h-[30px]"></div>
+                  )}
+                </div>
+
+                {/* Image Upload Section */}
+                <div>
+                  <label htmlFor="image" className="block text-xs font-bold text-black">
+                    Burrito Photo (Optional) 📸
+                  </label>
+                  <div className="mt-1">
+                    <input
+                      type="file"
+                      id="image"
+                      accept="image/*"
+                      onChange={handleImageSelect}
+                      className="hidden"
+                      disabled={isUploading}
+                    />
+                    <label
+                      htmlFor="image"
+                      className={`block w-full px-2 py-1 text-xs text-black bg-white border border-gray-300 rounded-md shadow-sm cursor-pointer hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 ${
+                        isUploading ? 'opacity-50 cursor-not-allowed' : ''
+                      }`}
+                    >
+                      {isUploading ? 'Processing...' : 'Choose Photo'}
+                    </label>
+                  </div>
+                  {uploadError && (
+                    <p className="text-xs text-red-600 mt-1">{uploadError}</p>
+                  )}
+                  {imagePreview && (
+                    <div className="mt-2 relative">
+                      <img
+                        src={imagePreview}
+                        alt="Burrito preview"
+                        className="w-full h-32 object-cover rounded-md"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setImage(null);
+                          setImagePreview(null);
+                          setUploadError(null);
+                        }}
+                        className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600"
+                      >
+                        ×
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>

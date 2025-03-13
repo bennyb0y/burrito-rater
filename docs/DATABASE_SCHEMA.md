@@ -39,7 +39,8 @@ CREATE TABLE Rating (
   identityPassword TEXT,
   generatedEmoji TEXT,
   reviewerEmoji TEXT,
-  confirmed INTEGER NOT NULL DEFAULT 0
+  confirmed INTEGER NOT NULL DEFAULT 0,
+  image TEXT
 );
 ```
 
@@ -71,6 +72,7 @@ CREATE TABLE Rating (
 | generatedEmoji  | TEXT      | Emoji generated for anonymous reviewers          |
 | reviewerEmoji   | TEXT      | Emoji chosen by the reviewer                     |
 | confirmed       | INTEGER   | Whether the rating has been confirmed by an admin (1=confirmed, 0=unconfirmed) |
+| image           | TEXT      | Filename of the uploaded image                   |
 
 ## Indexes
 
@@ -142,7 +144,8 @@ CREATE TABLE Rating (
   identityPassword TEXT,
   generatedEmoji TEXT,
   reviewerEmoji TEXT,
-  confirmed INTEGER NOT NULL DEFAULT 0
+  confirmed INTEGER NOT NULL DEFAULT 0,
+  image TEXT
 );
 
 -- Create index for location-based queries
