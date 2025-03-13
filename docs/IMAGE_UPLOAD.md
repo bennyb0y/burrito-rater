@@ -16,7 +16,7 @@ The Burrito Rater application uses Cloudflare Workers and R2 storage for image h
 
 ### Image Upload
 ```
-POST /images/upload
+POST ${API_BASE_URL}/images/upload
 Authorization: Bearer ${R2_API_TOKEN}
 Content-Type: multipart/form-data
 
@@ -33,14 +33,14 @@ Response:
 
 ### Image Retrieval
 ```
-GET /images/{filename}
+GET ${API_BASE_URL}/images/{filename}
 ```
 
 ## Image Transformations
 
 Images can be transformed using Cloudflare's Image Transformation service. The base URL for transformed images is:
 ```
-https://images.benny.com/cdn-cgi/image/{transformations}/{filename}
+${CDN_URL}/cdn-cgi/image/{transformations}/{filename}
 ```
 
 ### Available Transformations
@@ -66,24 +66,26 @@ https://images.benny.com/cdn-cgi/image/{transformations}/{filename}
 
 1. **Basic Resize**
    ```
-   /cdn-cgi/image/width=400,height=300,fit=cover/image.jpg
+   https://images.benny.com/cdn-cgi/image/width=400,height=300,fit=cover/image.jpg
    ```
 
 2. **WebP Conversion with Quality**
    ```
-   /cdn-cgi/image/width=800,height=600,format=webp,quality=80/image.jpg
+   https://images.benny.com/cdn-cgi/image/width=800,height=600,format=webp,quality=80/image.jpg
    ```
 
 3. **Multiple Transformations**
    ```
-   /cdn-cgi/image/width=400,height=400,fit=cover,format=jpeg,quality=90,blur=5/image.jpg
+   https://images.benny.com/cdn-cgi/image/width=400,height=400,fit=cover,format=jpeg,quality=90,blur=5/image.jpg
    ```
 
 ## Implementation Notes
 
 ### Environment Variables
 Required environment variables:
-- `R2_API_TOKEN`: API token for authentication
+- `NEXT_PUBLIC_API_BASE_URL`: Base URL for the API (e.g., https://burrito-rater.bennyfischer.workers.dev)
+- `NEXT_PUBLIC_CDN_URL`: Base URL for the CDN (e.g., https://images.benny.com)
+- `R2_API_TOKEN`: API token for authentication (set as a secret in Cloudflare)
 - `TURNSTILE_SECRET_KEY`: For CAPTCHA validation
 
 ### Security Considerations
@@ -106,7 +108,7 @@ async function uploadImage(file: File) {
   const formData = new FormData();
   formData.append('image', file);
 
-  const response = await fetch('/api/images/upload', {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/images/upload`, {
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${process.env.NEXT_PUBLIC_R2_API_TOKEN}`
