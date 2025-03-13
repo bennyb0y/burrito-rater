@@ -21,16 +21,8 @@ Our Beta release focuses on core functionality and a stable user experience:
 - [x] Event-driven updates for immediate data reflection
 - [x] Optimized bundle size and code splitting
 - [x] Mobile-responsive design with optimized touch interactions
-- [x] Image upload and storage system
-- [x] Admin image preview and management
 
 ### Current Beta Focus
-- [ ] UI/UX Improvements
-  - [ ] Fix search bar overlap in rating submission form
-  - [ ] Implement persistent navigation across all views
-  - [ ] Add image support to list view and preview popups
-  - [ ] Enhance list view with date-based sorting
-  - [ ] Improve mobile responsiveness
 - [ ] Zero Trust Security Implementation
   - [ ] Cloudflare Access integration for admin routes
   - [ ] SSO support with major identity providers
@@ -59,11 +51,7 @@ Our full release will expand on the Beta with richer features:
   - [ ] Security alert configuration
 
 ### User Experience
-- [ ] Enhanced image support
-  - [ ] Image optimization and compression
-  - [ ] Progressive image loading
-  - [ ] Image transformation capabilities
-  - [ ] Responsive image handling
+- [ ] Image uploads for burrito photos
 - [ ] Restaurant profiles with aggregated ratings
 - [ ] Social sharing functionality
 - [ ] User profiles with rating history

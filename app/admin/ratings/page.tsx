@@ -42,10 +42,10 @@ export default function RatingsPage() {
 
   // Add periodic refresh
   useEffect(() => {
-    // Set up periodic refresh (every 30 seconds)
+    // Set up periodic refresh (every 5 minutes)
     const intervalId = setInterval(() => {
       setRefreshTrigger(prev => prev + 1);
-    }, 30000);
+    }, 300000);
 
     // Listen for rating submissions
     const handleNewRating = () => {

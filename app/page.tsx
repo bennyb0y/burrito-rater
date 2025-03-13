@@ -8,10 +8,10 @@ export default function Home() {
   const [mapError, setMapError] = useState<boolean>(false);
   
   useEffect(() => {
-    // Set up periodic refresh (every 30 seconds)
+    // Set up periodic refresh (every 5 minutes)
     const intervalId = setInterval(() => {
       setRefreshTrigger(prev => prev + 1);
-    }, 30000);
+    }, 300000);
 
     // Listen for admin actions
     const handleAdminAction = () => {

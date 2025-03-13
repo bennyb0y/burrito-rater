@@ -6,14 +6,22 @@ This document tracks known bugs and issues in the Burrito Rater application. Ple
 
 ### High Priority
 
-1. **Search Bar Overlap** - #013
+1. **Console Logging of Unconfirmed Ratings** - #015
+   - Description: Console logs expose unconfirmed rating information to end users
+   - Affected areas: MapComponent.tsx
+   - Steps to reproduce: Open browser console while viewing the map
+   - Priority: High
+   - Impact: Security concern - exposes unconfirmed rating data to end users
+   - Additional Info: Logs show both confirmed and unconfirmed ratings with their IDs, restaurant names, and confirmation status
+
+2. **Search Bar Overlap** - #013
    - Description: Search bar overlaps with rating submission form on mobile devices
    - Affected areas: Rating submission form
    - Steps to reproduce: Open rating submission form on mobile device
    - Priority: High
    - Impact: Poor user experience, potential data entry issues
 
-2. **Navigation Persistence** - #014
+3. **Navigation Persistence** - #014
    - Description: Navigation bar disappears in map and list views
    - Affected areas: Navigation component across map and list views
    - Steps to reproduce: Scroll in map or list view
