@@ -489,7 +489,7 @@ export default function RatingsPage() {
                         <span className="font-semibold text-black block mb-1">Burrito Photo:</span>
                         <div className="relative w-full aspect-[4/3] rounded-lg shadow-md overflow-hidden">
                           <img 
-                            src={selectedRating.image}
+                            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${selectedRating.image}`}
                             alt={`${selectedRating.burritoTitle} at ${selectedRating.restaurantName}`}
                             className="absolute inset-0 w-full h-full object-contain bg-gray-50"
                             loading="lazy"

@@ -263,8 +263,11 @@ export default function RatingForm({ position, onSubmit, onClose }: Props) {
       const formData = new FormData();
       formData.append('image', image);
 
-      const uploadResponse = await fetch('/api/images/upload', {
+      const uploadResponse = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/images/upload`, {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_R2_API_TOKEN}`
+        },
         body: formData
       });
 
@@ -274,7 +277,7 @@ export default function RatingForm({ position, onSubmit, onClose }: Props) {
       }
 
       const uploadResult = await uploadResponse.json();
-      imageFilename = uploadResult.cdnUrl; // Store the CDN URL instead of just the filename
+      imageFilename = uploadResult.url; // Store the URL from the worker response
     }
     
     const ratingData: RatingFormData = {

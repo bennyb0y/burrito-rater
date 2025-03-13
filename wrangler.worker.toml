@@ -12,7 +12,4 @@ database_id = "0e87da0b-9043-44f4-8782-3ee0c9fd6553"
 binding = "BUCKET"
 bucket_name = "burrito-rater-bucket"
 
-[vars]
-TURNSTILE_SECRET_KEY = "${TURNSTILE_SECRET_KEY}"
-
-# R2_API_TOKEN is set as a secret in the Cloudflare dashboard
+# Both R2_API_TOKEN and TURNSTILE_SECRET_KEY are set as secrets in the Cloudflare dashboard

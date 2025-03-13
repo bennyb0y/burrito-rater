@@ -31,6 +31,10 @@ This comprehensive guide covers all aspects of deploying, administering, and mai
 - [Database Operations](#database-operations)
   - [Database Schema Management](#database-schema-management)
   - [Database Backup Process](#database-backup-process)
+- [Image Handling](#image-handling)
+  - [Upload System](#upload-system)
+  - [Storage and Delivery](#storage-and-delivery)
+  - [Admin Panel Integration](#admin-panel-integration)
 - [Monitoring and Maintenance](#monitoring-and-maintenance)
   - [Monitoring Architecture](#monitoring-architecture)
   - [Key Metrics to Monitor](#key-metrics-to-monitor)
@@ -41,6 +45,7 @@ This comprehensive guide covers all aspects of deploying, administering, and mai
   - [Database Issues](#database-issues)
   - [Authentication Issues](#authentication-issues)
   - [Webpack Module Error](#webpack-module-error)
+  - [Image Upload Issues](#image-upload-issues)
 - [Best Practices](#best-practices)
 - [GitHub Integration](#github-integration)
 
@@ -1131,5 +1136,70 @@ NEXT_PUBLIC_API_BASE_URL=https://your-worker-name.your-account.workers.dev
 3. No server-side session validation
 4. Suitable for basic admin access control
 5. Consider implementing Zero Trust security for production use
+
+## Image Handling
+
+The Burrito Rater application uses Cloudflare Workers and R2 storage for image handling. For detailed documentation on the image upload system, see [Image Upload Documentation](./IMAGE_UPLOAD.md).
+
+### Upload System
+
+The image upload system is implemented with the following features:
+
+1. **Client-Side Processing**:
+   - Image compression before upload
+   - File type validation
+   - Size limits enforcement
+   - CAPTCHA validation
+
+2. **Server-Side Handling**:
+   - Secure storage in R2
+   - Unique filename generation
+   - CORS configuration
+   - Authentication checks
+
+### Storage and Delivery
+
+Images are stored and delivered through:
+
+1. **R2 Storage**:
+   - Original images preserved
+   - Unique filenames
+   - Access control via API tokens
+
+2. **Cloudflare CDN**:
+   - Global distribution
+   - Edge caching
+   - HTTPS delivery
+
+### Admin Panel Integration
+
+The admin panel provides:
+
+1. **Image Preview**:
+   - Aspect ratio preservation
+   - Lazy loading
+   - Loading states
+   - Error handling
+
+2. **Image Management**:
+   - View full-size images
+   - Delete images
+   - Monitor upload status
+
+### Troubleshooting Image Issues
+
+Common image-related issues and solutions:
+
+1. **Upload Failures**:
+   - Check CAPTCHA configuration
+   - Verify API token permissions
+   - Validate file size limits
+   - Check file type restrictions
+
+2. **Display Issues**:
+   - Verify API base URL configuration
+   - Check image URL construction
+   - Validate CORS settings
+   - Monitor R2 bucket access
 
 [Rest of the document remains unchanged...] 

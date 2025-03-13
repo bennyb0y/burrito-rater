@@ -2,15 +2,15 @@
 
 ## Overview
 
-The Burrito Rater application uses Cloudflare Workers and R2 storage for image handling, with Cloudflare's Image Transformation service for on-the-fly image optimization. This document outlines the implementation details and usage guidelines.
+The Burrito Rater application uses Cloudflare Workers and R2 storage for image handling. This document outlines the implementation details and usage guidelines.
 
 ## Architecture
 
 ### Components
 1. **Cloudflare Worker**: Handles image uploads and serves images
 2. **R2 Storage**: Stores original images
-3. **Cloudflare Image Transformation**: Provides on-the-fly image optimization
-4. **API Authentication**: Secures upload endpoints
+3. **API Authentication**: Secures upload endpoints
+4. **Turnstile CAPTCHA**: Prevents abuse
 
 ## API Endpoints
 
@@ -22,6 +22,7 @@ Content-Type: multipart/form-data
 
 Parameters:
 - image: File (required) - The image file to upload
+- cf-turnstile-response: string (required) - CAPTCHA token
 
 Response:
 {
@@ -79,26 +80,27 @@ ${CDN_URL}/cdn-cgi/image/{transformations}/{filename}
    https://images.benny.com/cdn-cgi/image/width=400,height=400,fit=cover,format=jpeg,quality=90,blur=5/image.jpg
    ```
 
-## Implementation Notes
+## Implementation Details
 
 ### Environment Variables
 Required environment variables:
 - `NEXT_PUBLIC_API_BASE_URL`: Base URL for the API (e.g., https://burrito-rater.bennyfischer.workers.dev)
 - `NEXT_PUBLIC_CDN_URL`: Base URL for the CDN (e.g., https://images.benny.com)
 - `R2_API_TOKEN`: API token for authentication (set as a secret in Cloudflare)
-- `TURNSTILE_SECRET_KEY`: For CAPTCHA validation
+- `TURNSTILE_SECRET_KEY`: For CAPTCHA validation (set as a secret in Cloudflare)
 
 ### Security Considerations
 1. All upload endpoints require authentication
 2. File type validation is performed
 3. Unique filenames are generated to prevent collisions
 4. CORS is properly configured
+5. CAPTCHA validation is required for uploads
 
 ### Performance Optimization
 1. Images are served through Cloudflare's global CDN
-2. Transformations are cached at the edge
-3. WebP format is supported for modern browsers
-4. Original images are preserved in R2 storage
+2. Original images are preserved in R2 storage
+3. Images are compressed before upload
+4. Lazy loading is implemented in the UI
 
 ## Usage in Frontend
 
@@ -122,12 +124,58 @@ async function uploadImage(file: File) {
 
 ### Display Example
 ```typescript
-// Original image
-<img src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/images/${filename}`} />
-
-// Transformed image
-<img src={`${process.env.NEXT_PUBLIC_CDN_URL}/cdn-cgi/image/width=400,height=300,fit=cover/${filename}`} />
+// In components
+<img 
+  src={`${process.env.NEXT_PUBLIC_API_BASE_URL}/images/${filename}`}
+  alt="Burrito photo"
+  loading="lazy"
+  className="object-contain"
+/>
 ```
+
+## Admin Panel Integration
+
+The admin panel displays images in two contexts:
+
+1. **Rating Details Modal**: Shows the full-size image in a modal when viewing rating details
+2. **Image Preview**: Displays images with proper aspect ratio and loading optimization
+
+Example from the admin panel:
+```typescript
+<div className="relative w-full aspect-[4/3] rounded-lg shadow-md overflow-hidden">
+  <img 
+    src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${imageUrl}`}
+    alt={`${burritoTitle} at ${restaurantName}`}
+    className="absolute inset-0 w-full h-full object-contain bg-gray-50"
+    loading="lazy"
+  />
+</div>
+```
+
+## Error Handling
+
+The system handles various error cases:
+
+1. **Upload Failures**:
+   - Invalid file type
+   - File size limits
+   - CAPTCHA validation failure
+   - Authentication errors
+
+2. **Display Failures**:
+   - 404 errors for missing images
+   - Loading states for image display
+   - Fallback UI for failed loads
+
+## Future Improvements
+1. Add support for more image formats
+2. Implement image compression options
+3. Add support for animated GIFs
+4. Implement progressive image loading
+5. Add support for responsive images
+6. Implement image optimization on upload
+7. Add image transformation capabilities
+8. Implement image caching strategies
 
 ## Testing
 
@@ -141,12 +189,4 @@ Run the test script:
 ```bash
 cd test-images
 ./test-image-flow.sh
-```
-
-## Future Improvements
-1. Add support for more image formats
-2. Implement image compression options
-3. Add support for animated GIFs
-4. Implement progressive image loading
-5. Add support for responsive images
-6. Implement image optimization on upload 
+``` 

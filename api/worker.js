@@ -59,9 +59,10 @@ function validateApiKey(request, env) {
 
 // CORS headers for all responses
 const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': '*', // Allow all origins in development
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Max-Age': '86400',
 };
 
 // Helper function to handle CORS preflight requests
@@ -78,6 +79,7 @@ function jsonResponse(data, status = 200) {
     headers: {
       ...corsHeaders,
       'Content-Type': 'application/json',
+      'Cache-Control': 'no-store, no-cache, must-revalidate',
     },
     status,
   });
@@ -85,7 +87,12 @@ function jsonResponse(data, status = 200) {
 
 // Helper function to create an error response
 function errorResponse(message, status = 400) {
-  return jsonResponse({ error: message }, status);
+  console.error(`Error ${status}: ${message}`);
+  return jsonResponse({ 
+    error: message,
+    status,
+    timestamp: new Date().toISOString()
+  }, status);
 }
 
 // Helper function to get content type from filename
