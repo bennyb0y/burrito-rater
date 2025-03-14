@@ -20,7 +20,7 @@ export default function RootLayout({
       <body className={`${inter.className} h-full`}>
         <div className="flex flex-col h-full">
           <NavigationWrapper />
-          <main className="flex-1 relative">
+          <main className="flex-1 relative pt-16">
             {children}
           </main>
         </div>

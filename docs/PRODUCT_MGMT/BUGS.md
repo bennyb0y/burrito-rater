@@ -14,20 +14,6 @@ This document tracks known bugs and issues in the Burrito Rater application. Ple
    - Impact: Security concern - exposes unconfirmed rating data to end users
    - Additional Info: Logs show both confirmed and unconfirmed ratings with their IDs, restaurant names, and confirmation status
 
-2. **Search Bar Overlap** - #013
-   - Description: Search bar overlaps with rating submission form on mobile devices
-   - Affected areas: Rating submission form
-   - Steps to reproduce: Open rating submission form on mobile device
-   - Priority: High
-   - Impact: Poor user experience, potential data entry issues
-
-3. **Navigation Persistence** - #014
-   - Description: Navigation bar disappears in map and list views
-   - Affected areas: Navigation component across map and list views
-   - Steps to reproduce: Scroll in map or list view
-   - Priority: High
-   - Impact: Poor navigation experience, inconsistent UI behavior
-
 ### Medium Priority
 
 1. **Rating Form Validation** - #005
@@ -44,52 +30,57 @@ This document tracks known bugs and issues in the Burrito Rater application. Ple
    - Priority: Medium
    - Impact: Difficulty selecting specific ratings in dense areas
 
-3. **Navigation Bar Visibility** - #009
-   - Description: Navigation bar can scroll out of view on some mobile and desktop browsers
-   - Affected areas: Navigation component across all pages
-   - Steps to reproduce: Scroll down slightly on the map view
-   - Impact: Minor usability issue, navigation still accessible by scrolling back up
-   - Priority: Medium
-
 ## 🔄 Recently Fixed Bugs
 
-1. **Mobile Responsiveness Issues** - #001
+1. **Search Bar Overlap** - #013
+   - Description: Search bar overlapped with rating submission form on mobile devices
+   - Fix: Implemented dynamic visibility control and proper z-index management
+   - Impact: Improved mobile user experience with smooth transitions
+   - Fixed in version: Latest
+
+2. **Navigation Persistence** - #014
+   - Description: Navigation bar disappeared in map and list views
+   - Fix: Implemented fixed positioning and proper content padding
+   - Impact: Consistent navigation experience across all views
+   - Fixed in version: Latest
+
+3. **Mobile Responsiveness Issues** - #001
    - Description: Various UI elements didn't display correctly on mobile devices
    - Fix: Implemented responsive design fixes across all components
    - Impact: Improved usability on mobile devices
    - Fixed in version: Latest
 
-2. **Admin Directory Structure** - #011
+4. **Admin Directory Structure** - #011
    - Description: Admin interface components were scattered across multiple directories
    - Fix: Reorganized admin interface under unified `/app/admin` directory
    - Impact: Improved code organization and maintainability
    - Fixed in version: Latest
 
-3. **Admin Real-time Updates** - #012
+5. **Admin Real-time Updates** - #012
    - Description: Admin interface required manual refresh to see new ratings
    - Fix: Implemented automatic 30-second refresh and event-driven updates
    - Impact: Admins now see new ratings in real-time
    - Fixed in version: Latest
 
-4. **Admin Rating Management** - #010
+6. **Admin Rating Management** - #010
    - Description: Delete and bulk confirm functionality was not working correctly
    - Fix: Implemented proper DELETE endpoint and bulk confirmation endpoint in the worker.js file
    - Impact: Admins can now efficiently manage ratings
    - Fixed in version: Latest
 
-5. **USA Location Validation** - #007
+7. **USA Location Validation** - #007
    - Description: Ratings could be submitted for locations outside the USA
    - Fix: Implemented bounding box check in the worker.js file
    - Impact: Only USA locations can be submitted
    - Fixed in version: Latest
 
-6. **List View Sorting** - #008
+8. **List View Sorting** - #008
    - Description: Sorting in list view was not working correctly
    - Fix: Updated the getSortedRatings function
    - Impact: Proper sorting functionality restored
    - Fixed in version: Latest
 
-7. **Zipcode Filter** - #003
+9. **Zipcode Filter** - #003
    - Description: Sorting by price/rating didn't work with zipcode filter
    - Fix: Modified sorting logic to handle zipcode filter
    - Impact: Proper filtering and sorting functionality
@@ -119,7 +110,7 @@ Submit bug reports through GitHub issues or contact the development team directl
 
 ## 📊 Bug Metrics
 
-- **Open Bugs**: 6
-- **Recently Fixed**: 6
-- **Critical Issues**: 2
+- **Open Bugs**: 3
+- **Recently Fixed**: 8
+- **Critical Issues**: 1
 - **Average Resolution Time**: 3 days 

@@ -4,31 +4,35 @@ This document tracks completed milestones and upcoming tasks for the internal de
 
 ## 🔥 Current Sprint Priorities
 
-1. **Implement Zero Trust Security** (DevOps Team)
+1. **Fix High Priority UI Issues** (Frontend Team)
+   - Implement viewport-based marker loading for map optimization
+   - Add loading states for markers
+   - Optimize marker rendering performance
+
+2. **Implement Zero Trust Security** (DevOps Team)
    - Set up Cloudflare Access for admin routes
    - Configure SSO with major identity providers
    - Implement audit logging
    - Set up geo-fencing rules
    - Test and validate security measures
 
-2. **Set up CI/CD Automation** (DevOps Team)
+3. **Set up CI/CD Automation** (DevOps Team)
    - Configure GitHub Actions workflow for automated builds
    - Set up automatic deployment to Cloudflare Pages on merge to main
    - Implement deployment previews for pull requests
    - Add automated testing before deployment
-
-3. **Create Backup Strategy** (Backend Team)
-   - Implement automated D1 database backups
-   - Document restore procedures
-   - Test backup and restore process
-   - Set up scheduled backup jobs
 
 ## 📋 Team-Specific Tasks
 
 ### Frontend Team
 
 #### High Priority
-- [ ] Implement map marker clustering for areas with many ratings (#006)
+- [ ] Optimize map performance with viewport-based loading
+  - [ ] Implement viewport-based marker loading
+  - [ ] Add marker clustering for dense areas
+  - [ ] Implement lazy loading for markers
+  - [ ] Add loading states for markers
+  - [ ] Optimize marker rendering performance
 - [ ] Improve rating form validation with clear error messages (#005)
 - [ ] Update admin interface for Zero Trust compatibility
   - [ ] Modify authentication flow
@@ -84,7 +88,9 @@ This document tracks completed milestones and upcoming tasks for the internal de
 
 ## ✅ Recently Completed Tasks
 
-- [x] Fix mobile responsiveness issues (#001)
+- [x] Fix UI responsiveness issues
+  - [x] Fix search bar overlap on mobile devices (#013)
+  - [x] Implement persistent navigation across views (#014)
   - [x] Fix layout issues on small screens
   - [x] Optimize touch interactions
   - [x] Improve form usability on mobile

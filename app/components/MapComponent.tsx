@@ -376,7 +376,7 @@ const MapComponent: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
             <input
               type="text"
               placeholder="Search for a restaurant"
-              className="absolute top-4 left-4 z-10"
+              className={`absolute top-4 left-4 z-10 transition-opacity duration-200 ${showRatingForm ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
               style={searchBoxStyle.input}
             />
           </StandaloneSearchBox>
@@ -532,14 +532,16 @@ const MapComponent: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
 
         {/* Rating Form Modal */}
         {showRatingForm && selectedLocation && (
-          <RatingForm
-            position={selectedLocation}
-            onSubmit={handleRatingSubmit}
-            onClose={() => {
-              setShowRatingForm(false);
-              setSelectedLocation(null);
-            }}
-          />
+          <div className="z-50">
+            <RatingForm
+              position={selectedLocation}
+              onSubmit={handleRatingSubmit}
+              onClose={() => {
+                setShowRatingForm(false);
+                setSelectedLocation(null);
+              }}
+            />
+          </div>
         )}
       </div>
     );
