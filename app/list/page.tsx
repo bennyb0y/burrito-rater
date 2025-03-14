@@ -39,8 +39,6 @@ export default function ListPage() {
   useEffect(() => {
     const fetchRatings = async () => {
       try {
-        console.log('Fetching ratings from API');
-        
         // Fetch all ratings from the API
         const response = await fetch(getApiUrl('ratings'));
         
@@ -51,23 +49,16 @@ export default function ListPage() {
         }
         
         const data = await response.json();
-        console.log('Fetched ratings:', data);
         
         // Filter ratings that have confirmed=1 or confirmed=true
         const confirmedRatings = data.filter((rating: Rating) => {
-          const isConfirmed = (typeof rating.confirmed === 'number' && rating.confirmed === 1) || 
-                             (typeof rating.confirmed === 'boolean' && rating.confirmed === true);
-          
-          // Log each rating's confirmation status for debugging
-          console.log(`Rating ${rating.id} (${rating.restaurantName}): confirmed=${rating.confirmed}, isConfirmed=${isConfirmed}`);
-          
-          return isConfirmed;
+          return (typeof rating.confirmed === 'number' && rating.confirmed === 1) || 
+                 (typeof rating.confirmed === 'boolean' && rating.confirmed === true);
         });
         
-        console.log(`Filtered ${data.length} ratings to ${confirmedRatings.length} confirmed ratings`);
         setRatings(confirmedRatings);
       } catch (error) {
-        console.error('Error fetching ratings:', error);
+        console.error('Error fetching ratings');
       }
     };
 

@@ -107,8 +107,6 @@ const MapComponent: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
   useEffect(() => {
     const fetchRatings = async () => {
       try {
-        console.log('Fetching ratings from API');
-        
         // Fetch all ratings from the API
         const response = await fetch(getApiUrl('ratings'));
         
@@ -119,20 +117,13 @@ const MapComponent: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
         }
         
         const data = await response.json();
-        console.log('Fetched ratings:', data);
         
         // Filter ratings that have confirmed=1 or confirmed=true
         const confirmedRatings = data.filter((rating: Rating) => {
-          const isConfirmed = (typeof rating.confirmed === 'number' && rating.confirmed === 1) || 
-                             (typeof rating.confirmed === 'boolean' && rating.confirmed === true);
-          
-          // Log each rating's confirmation status for debugging
-          console.log(`Rating ${rating.id} (${rating.restaurantName}): confirmed=${rating.confirmed}, isConfirmed=${isConfirmed}`);
-          
-          return isConfirmed;
+          return (typeof rating.confirmed === 'number' && rating.confirmed === 1) || 
+                 (typeof rating.confirmed === 'boolean' && rating.confirmed === true);
         });
         
-        console.log(`Filtered ${data.length} ratings to ${confirmedRatings.length} confirmed ratings`);
         setRatings(confirmedRatings);
         setError(null);
       } catch (error) {
@@ -202,10 +193,8 @@ const MapComponent: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
 
   const handleRatingSubmit = async (ratingData: RatingFormData) => {
     try {
-      console.log('Submitting rating to API with data:', {
-        ...ratingData,
-        turnstileToken: ratingData.turnstileToken ? `${ratingData.turnstileToken.substring(0, 20)}...` : 'none'
-      });
+      // Log only non-sensitive data
+      console.log('Submitting rating for:', ratingData.restaurantName);
       
       const response = await fetch(getApiUrl('ratings'), {
         method: 'POST',
@@ -228,14 +217,14 @@ const MapComponent: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
         
         // Check if this is a CAPTCHA validation error
         if (response.status === 400 && errorData.error && errorData.error.includes('CAPTCHA')) {
-          console.error('CAPTCHA validation failed:', errorData.error);
+          console.error('CAPTCHA validation failed');
           alert("CAPTCHA verification failed. Please try again.");
           setShowRatingForm(false);
           setSelectedLocation(null);
           return;
         }
         
-        console.error('API error:', response.status, errorData);
+        console.error('API error:', response.status);
         throw new Error(errorData.error || 'Failed to submit rating');
       }
 
@@ -247,15 +236,10 @@ const MapComponent: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
       
       // Filter out unconfirmed ratings
       const confirmedRatings = updatedRatings.filter((rating: Rating) => {
-        const isConfirmed = (typeof rating.confirmed === 'number' && rating.confirmed === 1) || 
-                           (typeof rating.confirmed === 'boolean' && rating.confirmed === true);
-        
-        console.log(`After submission - Rating ${rating.id} (${rating.restaurantName}): confirmed=${rating.confirmed}, isConfirmed=${isConfirmed}`);
-        
-        return isConfirmed;
+        return (typeof rating.confirmed === 'number' && rating.confirmed === 1) || 
+               (typeof rating.confirmed === 'boolean' && rating.confirmed === true);
       });
       
-      console.log(`After submission - Filtered ${updatedRatings.length} ratings to ${confirmedRatings.length} confirmed ratings`);
       setRatings(confirmedRatings);
       setShowRatingForm(false);
       setSelectedLocation(null);
@@ -264,7 +248,7 @@ const MapComponent: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
       alert("Your rating has been submitted and is awaiting admin confirmation. It will appear on the map once confirmed.");
       
     } catch (error) {
-      console.error('Error submitting rating:', error);
+      console.error('Error submitting rating');
       alert(`Error submitting rating: ${error instanceof Error ? error.message : 'Unknown error'}`);
       // Keep existing ratings on error
     }

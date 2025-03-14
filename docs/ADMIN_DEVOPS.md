@@ -14,6 +14,7 @@ This comprehensive guide covers all aspects of deploying, administering, and mai
   - [Full Stack Deployment](#full-stack-deployment)
   - [Deployment Process](#deployment-process)
   - [Bundle Optimization and Code Splitting](#bundle-optimization-and-code-splitting)
+  - [Choosing the Right Deployment Command](#choosing-the-right-deployment-command)
 - [Admin Interface](#admin-interface)
   - [Admin Setup](#admin-setup)
   - [Access and Authentication](#access-and-authentication)
@@ -375,6 +376,55 @@ If deployment fails:
    - Check build output for errors
    - Verify Cloudflare Pages project settings
    - Check environment variables in Cloudflare dashboard
+
+### Choosing the Right Deployment Command
+
+When deploying changes, it's important to choose the correct deployment command based on what you've modified. Here's a quick decision guide:
+
+#### 1. Frontend-Only Changes (`npm run deploy:app`)
+Use this when you've only modified:
+- Files in the `app/` directory
+- React components
+- Styles
+- Frontend utilities
+- Frontend configuration
+- Console logs or debugging statements
+
+Example:
+```bash
+npm run deploy:app
+```
+
+#### 2. API-Only Changes (`npm run deploy:worker`)
+Use this when you've only modified:
+- Files in the `api/` directory
+- Worker configuration
+- Database queries
+- API endpoints
+- API middleware
+
+Example:
+```bash
+npm run deploy:worker
+```
+
+#### 3. Full-Stack Changes (`npm run deploy`)
+Use this when you've modified both frontend and API:
+- Changes spanning both `app/` and `api/` directories
+- Database schema changes that require frontend updates
+- New features that touch both frontend and API
+- Configuration changes affecting both parts
+
+Example:
+```bash
+npm run deploy
+```
+
+### Why Separate Deployments Matter
+- **Faster Deployments**: Frontend-only or API-only deployments are faster
+- **Reduced Risk**: Smaller, focused deployments are less likely to cause issues
+- **Better Error Handling**: Easier to identify and fix deployment issues
+- **Avoid Edge Runtime Errors**: Prevents conflicts between Next.js and Worker deployments
 
 ## Admin Interface
 
@@ -1201,5 +1251,74 @@ Common image-related issues and solutions:
    - Check image URL construction
    - Validate CORS settings
    - Monitor R2 bucket access
+
+### NPM Scripts Reference
+
+The project includes several npm scripts for different purposes. Here's a detailed guide for each command:
+
+#### Development Commands
+```bash
+# Start Next.js development server for local frontend development
+npm run dev
+
+# Run ESLint to check code quality
+npm run lint
+
+# Analyze bundle sizes for optimization
+npm run analyze
+```
+
+#### Build Commands
+```bash
+# Build the Next.js application for production
+npm run build
+```
+
+#### Deployment Commands
+
+1. **Frontend-Only Deployment**
+   ```bash
+   npm run deploy:app
+   ```
+   - Use when you've only modified files in the `app/` directory
+   - Builds and deploys to Cloudflare Pages
+   - Includes: components, styles, frontend utilities, console logs
+   - Command sequence: `npm run build && npx wrangler pages deploy`
+
+2. **API-Only Deployment**
+   ```bash
+   npm run deploy:worker
+   ```
+   - Use when you've only modified files in the `api/` directory
+   - Deploys the Cloudflare Worker
+   - Includes: API endpoints, database queries, worker configuration
+   - Command: `wrangler deploy --config wrangler.worker.toml`
+
+3. **Full-Stack Deployment**
+   ```bash
+   npm run deploy
+   ```
+   - Use when you've modified both frontend and API code
+   - Deploys both the worker and frontend
+   - For changes that span the entire application
+   - Command sequence: `npm run deploy:worker && npm run deploy:app`
+
+#### Best Practices
+
+1. **Choose the Right Command**
+   - Use `deploy:app` for frontend-only changes
+   - Use `deploy:worker` for API-only changes
+   - Use `deploy` for full-stack changes
+
+2. **Development Flow**
+   - Start with `npm run dev` for local development
+   - Use `npm run lint` before committing changes
+   - Use `npm run analyze` when optimizing bundle sizes
+
+3. **Deployment Flow**
+   - Always run `npm run lint` before deployment
+   - Choose the appropriate deployment command
+   - Verify the deployment in the Cloudflare dashboard
+   - Test the deployed changes
 
 [Rest of the document remains unchanged...] 
