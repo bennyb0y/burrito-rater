@@ -24,7 +24,22 @@ This document tracks known bugs and issues in the Burrito Rater application. Ple
 
 ## 🔄 Recently Fixed Bugs
 
-1. **Console Logging of Unconfirmed Ratings** - #015
+1. **Map Preview Image Integration** - #016
+   - Description: Map preview lacked image support and had suboptimal layout for ratings with images
+   - Affected areas: MapComponent.tsx and Rating interface
+   - Fix: 
+     - Added image support to InfoWindow component
+     - Implemented proper image loading with CDN transformations
+     - Updated layout to show image thumbnail alongside rating details
+     - Added proper error handling for missing images
+   - Impact: Enhanced user experience with visual context for ratings
+   - Technical details: 
+     - Used Cloudflare Image Transformations for optimized loading
+     - Implemented responsive layout with proper image sizing
+     - Added proper alt text and lazy loading for better accessibility
+   - Fixed in version: Latest
+
+2. **Console Logging of Unconfirmed Ratings** - #015
    - Description: Console logs exposed unconfirmed rating information to end users
    - Affected areas: MapComponent.tsx and app/list/page.tsx
    - Steps to reproduce: Open browser console while viewing the map or list view
@@ -39,55 +54,55 @@ This document tracks known bugs and issues in the Burrito Rater application. Ple
      - Simplified error logging to avoid data exposure
    - Fixed in version: Latest
 
-2. **Search Bar Overlap** - #013
+3. **Search Bar Overlap** - #013
    - Description: Search bar overlapped with rating submission form on mobile devices
    - Fix: Implemented dynamic visibility control and proper z-index management
    - Impact: Improved mobile user experience with smooth transitions
    - Fixed in version: Latest
 
-3. **Navigation Persistence** - #014
+4. **Navigation Persistence** - #014
    - Description: Navigation bar disappeared in map and list views
    - Fix: Implemented fixed positioning and proper content padding
    - Impact: Consistent navigation experience across all views
    - Fixed in version: Latest
 
-4. **Mobile Responsiveness Issues** - #001
+5. **Mobile Responsiveness Issues** - #001
    - Description: Various UI elements didn't display correctly on mobile devices
    - Fix: Implemented responsive design fixes across all components
    - Impact: Improved usability on mobile devices
    - Fixed in version: Latest
 
-5. **Admin Directory Structure** - #011
+6. **Admin Directory Structure** - #011
    - Description: Admin interface components were scattered across multiple directories
    - Fix: Reorganized admin interface under unified `/app/admin` directory
    - Impact: Improved code organization and maintainability
    - Fixed in version: Latest
 
-6. **Admin Real-time Updates** - #012
+7. **Admin Real-time Updates** - #012
    - Description: Admin interface required manual refresh to see new ratings
    - Fix: Implemented automatic 30-second refresh and event-driven updates
    - Impact: Admins now see new ratings in real-time
    - Fixed in version: Latest
 
-7. **Admin Rating Management** - #010
+8. **Admin Rating Management** - #010
    - Description: Delete and bulk confirm functionality was not working correctly
    - Fix: Implemented proper DELETE endpoint and bulk confirmation endpoint in the worker.js file
    - Impact: Admins can now efficiently manage ratings
    - Fixed in version: Latest
 
-8. **USA Location Validation** - #007
+9. **USA Location Validation** - #007
    - Description: Ratings could be submitted for locations outside the USA
    - Fix: Implemented bounding box check in the worker.js file
    - Impact: Only USA locations can be submitted
    - Fixed in version: Latest
 
-9. **List View Sorting** - #008
-   - Description: Sorting in list view was not working correctly
-   - Fix: Updated the getSortedRatings function
-   - Impact: Proper sorting functionality restored
-   - Fixed in version: Latest
+10. **List View Sorting** - #008
+    - Description: Sorting in list view was not working correctly
+    - Fix: Updated the getSortedRatings function
+    - Impact: Proper sorting functionality restored
+    - Fixed in version: Latest
 
-10. **Zipcode Filter** - #003
+11. **Zipcode Filter** - #003
     - Description: Sorting by price/rating didn't work with zipcode filter
     - Fix: Modified sorting logic to handle zipcode filter
     - Impact: Proper filtering and sorting functionality
@@ -118,6 +133,6 @@ Submit bug reports through GitHub issues or contact the development team directl
 ## 📊 Bug Metrics
 
 - **Open Bugs**: 2
-- **Recently Fixed**: 9
+- **Recently Fixed**: 10
 - **Critical Issues**: 0
 - **Average Resolution Time**: 3 days 

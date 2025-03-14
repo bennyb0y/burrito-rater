@@ -26,6 +26,8 @@ Our Beta release focuses on core functionality and a stable user experience:
 - [x] Image uploads for burrito photos
 - [x] Enhanced admin dashboard with data export
 - [x] Advanced moderation tools with bulk operations
+- [x] Image thumbnails in map view with optimized loading
+- [x] Enhanced rating preview with image support in map markers
 
 ### Current Beta Focus
 - [ ] Zero Trust Security Implementation

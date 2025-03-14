@@ -41,7 +41,6 @@ This document tracks completed milestones and upcoming tasks for the internal de
   - [ ] Add security status indicators
 
 #### Medium Priority
-- [ ] Add image upload for burritos
 - [ ] Create restaurant profile UI components
 - [ ] Implement social sharing functionality
 - [ ] Add advanced filtering and search UI
@@ -95,6 +94,11 @@ This document tracks completed milestones and upcoming tasks for the internal de
   - [x] Optimize touch interactions
   - [x] Improve form usability on mobile
   - [x] Test on various device sizes
+- [x] Implement image thumbnails in map view
+  - [x] Add image support to rating preview
+  - [x] Optimize image loading with CDN transformations
+  - [x] Implement responsive image layout
+  - [x] Add proper error handling for missing images
 - [x] Reorganize admin interface under unified `/app/admin` directory
   - [x] Move monitoring to `/app/admin/monitoring`
   - [x] Move ratings management to `/app/admin/ratings`
