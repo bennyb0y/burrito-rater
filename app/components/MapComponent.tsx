@@ -428,54 +428,73 @@ const MapComponent: React.FC<MapProps> = ({ refreshTrigger = 0 }) => {
                 setCurrentRatingIndex(0);
               }}
               options={{
-                maxWidth: 300,
-                minWidth: 200
+                maxWidth: 500,
+                minWidth: 300
               }}
             >
-              <div className="p-1 pt-0 w-full max-w-[280px] relative">
-                <div className="flex flex-col gap-1">
-                  <div className="flex justify-between items-start gap-2">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-base text-gray-900 mt-0 truncate">{selectedRating.restaurantName}</h3>
-                      <p className="text-sm text-gray-600 truncate">{selectedRating.burritoTitle}</p>
-                      <div className="mt-1 flex items-center gap-1 flex-wrap">
-                        <span className="text-xs text-gray-500 italic">by</span>
-                        <span className="text-sm font-bold text-gray-700 truncate">
-                          {selectedRating.reviewerName || 'Anonymous'}
-                        </span>
-                        {selectedRating.reviewerEmoji && (
-                          <span className="text-lg">{selectedRating.reviewerEmoji}</span>
-                        )}
+              <div className="p-1 pt-0 w-full max-w-[480px] relative">
+                <div className="flex gap-3">
+                  {/* Image Thumbnail */}
+                  {selectedRating.image && (
+                    <div className="w-36 h-36 flex-shrink-0">
+                      <div className="relative w-full h-full rounded-lg shadow-sm overflow-hidden">
+                        <img 
+                          src={`https://images.benny.com/cdn-cgi/image/width=400,height=400,format=webp,quality=80/${selectedRating.image.replace('/images/', '')}`}
+                          alt={`${selectedRating.burritoTitle} at ${selectedRating.restaurantName}`}
+                          className="absolute inset-0 w-full h-full object-cover"
+                          loading="lazy"
+                        />
                       </div>
-                    </div>
-                    <div className="flex-shrink-0">
-                      <div className="bg-blue-100 px-3 py-1.5 rounded-full flex items-center gap-1">
-                        <span className="text-xl font-bold text-blue-800">{selectedRating.rating}</span>
-                        <span className="text-sm text-blue-600">/5</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-3 text-sm text-gray-600 flex-wrap">
-                    <div className="flex items-center gap-1">
-                      <span>😋</span>
-                      <span>{selectedRating.taste.toFixed(1)}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span>💰</span>
-                      <span>{selectedRating.value.toFixed(1)}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <span>💵</span>
-                      <span>${selectedRating.price.toFixed(2)}</span>
-                    </div>
-                  </div>
-
-                  {selectedRating.review && (
-                    <div className="mt-1 text-sm text-gray-700 break-words">
-                      &ldquo;{selectedRating.review}&rdquo;
                     </div>
                   )}
+
+                  {/* Rating Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex flex-col gap-1">
+                      <div className="flex justify-between items-start gap-2">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-base text-gray-900 mt-0 truncate">{selectedRating.restaurantName}</h3>
+                          <p className="text-sm text-gray-600 truncate">{selectedRating.burritoTitle}</p>
+                          <div className="mt-1 flex items-center gap-1 flex-wrap">
+                            <span className="text-xs text-gray-500 italic">by</span>
+                            <span className="text-sm font-bold text-gray-700 truncate">
+                              {selectedRating.reviewerName || 'Anonymous'}
+                            </span>
+                            {selectedRating.reviewerEmoji && (
+                              <span className="text-lg">{selectedRating.reviewerEmoji}</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex-shrink-0">
+                          <div className="bg-blue-100 px-3 py-1.5 rounded-full flex items-center gap-1">
+                            <span className="text-xl font-bold text-blue-800">{selectedRating.rating}</span>
+                            <span className="text-sm text-blue-600">/5</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-3 text-sm text-gray-600 flex-wrap">
+                        <div className="flex items-center gap-1">
+                          <span>😋</span>
+                          <span>{selectedRating.taste.toFixed(1)}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span>💰</span>
+                          <span>{selectedRating.value.toFixed(1)}</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <span>💵</span>
+                          <span>${selectedRating.price.toFixed(2)}</span>
+                        </div>
+                      </div>
+
+                      {selectedRating.review && (
+                        <div className="mt-1 text-sm text-gray-700 break-words">
+                          &ldquo;{selectedRating.review}&rdquo;
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
                 
                 {locationRatings.length > 1 && (

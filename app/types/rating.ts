@@ -18,4 +18,6 @@ export interface Rating {
   hasAvocado: boolean;
   hasVegetables: boolean;
   confirmed?: number;
+  image?: string;
+  date?: string;
 } 

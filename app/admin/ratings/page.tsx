@@ -337,6 +337,7 @@ export default function RatingsPage() {
                     />
                   </TableHeaderCell>
                   <TableHeaderCell className="text-black text-xs py-1">ID</TableHeaderCell>
+                  <TableHeaderCell className="text-black text-xs py-1">📷</TableHeaderCell>
                   <TableHeaderCell className="text-black text-xs py-1">Restaurant</TableHeaderCell>
                   <TableHeaderCell className="text-black text-xs py-1">Burrito</TableHeaderCell>
                   <TableHeaderCell className="text-black text-xs py-1">Rating</TableHeaderCell>
@@ -359,6 +360,16 @@ export default function RatingsPage() {
                       />
                     </TableCell>
                     <TableCell className="text-black text-xs py-1">{rating.id}</TableCell>
+                    <TableCell className="text-black text-xs py-1">
+                      {rating.image && (
+                        <button
+                          onClick={() => setSelectedRating(rating)}
+                          className="hover:opacity-70 transition-opacity"
+                        >
+                          📷
+                        </button>
+                      )}
+                    </TableCell>
                     <TableCell className="text-black text-xs py-1">{rating.restaurantName}</TableCell>
                     <TableCell className="text-black text-xs py-1">{rating.burritoTitle}</TableCell>
                     <TableCell className="text-black text-xs py-1">
@@ -489,7 +500,7 @@ export default function RatingsPage() {
                         <span className="font-semibold text-black block mb-1">Burrito Photo:</span>
                         <div className="relative w-full aspect-[4/3] rounded-lg shadow-md overflow-hidden">
                           <img 
-                            src={`${process.env.NEXT_PUBLIC_API_BASE_URL}${selectedRating.image}`}
+                            src={`https://images.benny.com/cdn-cgi/image/width=800,height=600,format=webp,quality=80/${selectedRating.image.replace('/images/', '')}`}
                             alt={`${selectedRating.burritoTitle} at ${selectedRating.restaurantName}`}
                             className="absolute inset-0 w-full h-full object-contain bg-gray-50"
                             loading="lazy"

@@ -32,7 +32,7 @@ interface Rating {
 
 export default function ListPage() {
   const [ratings, setRatings] = useState<Rating[]>([]);
-  const [sortBy, setSortBy] = useState<'rating' | 'price'>('rating');
+  const [sortBy, setSortBy] = useState<'rating' | 'price' | 'date'>('date');
   const [sortOrder, setSortOrder] = useState<'high' | 'low'>('high');
   const [zipcode, setZipcode] = useState<string>('');
   const mapError = false;
@@ -50,16 +50,22 @@ export default function ListPage() {
         }
         
         const data = await response.json();
+        console.log('Total ratings from API:', data.length);
         
         // Filter ratings that have confirmed=1 or confirmed=true
         const confirmedRatings = data.filter((rating: Rating) => {
-          return (typeof rating.confirmed === 'number' && rating.confirmed === 1) || 
-                 (typeof rating.confirmed === 'boolean' && rating.confirmed === true);
+          const isConfirmed = (typeof rating.confirmed === 'number' && rating.confirmed === 1) || 
+                            (typeof rating.confirmed === 'boolean' && rating.confirmed === true);
+          if (!isConfirmed) {
+            console.log('Filtered out rating:', rating.id, 'confirmed value:', rating.confirmed);
+          }
+          return isConfirmed;
         });
         
+        console.log('Confirmed ratings count:', confirmedRatings.length);
         setRatings(confirmedRatings);
       } catch (error) {
-        console.error('Error fetching ratings');
+        console.error('Error fetching ratings:', error);
       }
     };
 
@@ -68,20 +74,29 @@ export default function ListPage() {
 
   const getSortedRatings = () => {
     let filteredRatings = [...ratings];
+    console.log('Starting with ratings count:', filteredRatings.length);
     
     // Apply zipcode filter if one is entered
     if (zipcode) {
-      filteredRatings = filteredRatings.filter(rating => 
-        rating.zipcode?.toLowerCase() === zipcode.toLowerCase()
-      );
+      const beforeFilter = filteredRatings.length;
+      filteredRatings = filteredRatings.filter(rating => {
+        const matches = rating.zipcode?.toLowerCase() === zipcode.toLowerCase();
+        if (!matches) {
+          console.log('Filtered out by zipcode:', rating.id, 'zipcode:', rating.zipcode);
+        }
+        return matches;
+      });
+      console.log(`Zipcode filter (${zipcode}) reduced count from ${beforeFilter} to ${filteredRatings.length}`);
     }
 
     // Apply sorting
     return filteredRatings.sort((a, b) => {
-      // Handle undefined values
-      if (a[sortBy] === undefined && b[sortBy] === undefined) return 0;
-      if (a[sortBy] === undefined) return sortOrder === 'high' ? -1 : 1;
-      if (b[sortBy] === undefined) return sortOrder === 'high' ? 1 : -1;
+      // Sort by date
+      if (sortBy === 'date') {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return sortOrder === 'high' ? dateB - dateA : dateA - dateB;
+      }
 
       // Sort by rating or price
       if (sortBy === 'rating') {
@@ -143,9 +158,10 @@ export default function ListPage() {
             <div className="flex gap-2 w-full sm:w-auto">
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as 'rating' | 'price')}
+                onChange={(e) => setSortBy(e.target.value as 'rating' | 'price' | 'date')}
                 className="px-3 py-1 rounded-md border border-gray-300 text-sm text-gray-700 bg-white flex-1 sm:flex-none"
               >
+                <option value="date">Sort by Date</option>
                 <option value="rating">Sort by Rating</option>
                 <option value="price">Sort by Price</option>
               </select>
@@ -154,8 +170,8 @@ export default function ListPage() {
                 onChange={(e) => setSortOrder(e.target.value as 'high' | 'low')}
                 className="px-3 py-1 rounded-md border border-gray-300 text-sm text-gray-700 bg-white flex-1 sm:flex-none"
               >
-                <option value="high">High to Low</option>
-                <option value="low">Low to High</option>
+                <option value="high">{sortBy === 'date' ? 'Newest First' : 'High to Low'}</option>
+                <option value="low">{sortBy === 'date' ? 'Oldest First' : 'Low to High'}</option>
               </select>
             </div>
           </div>
@@ -173,42 +189,41 @@ export default function ListPage() {
               className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 hover:border-blue-500 transition-colors"
             >
               <div className="flex flex-col sm:flex-row gap-3">
-                {/* Mini Map and Image Container */}
-                <div className="flex flex-row gap-3 flex-shrink-0">
-                  {/* Mini Map */}
-                  <div className="w-36 h-36">
-                    {!mapError ? (
-                      <MiniMap
-                        latitude={rating.latitude}
-                        longitude={rating.longitude}
-                        rating={rating.rating}
-                        restaurantName={rating.restaurantName}
-                        burritoTitle={rating.burritoTitle}
-                      />
-                    ) : (
-                      <div className="flex items-center justify-center h-full bg-gray-100 rounded-lg">
-                        <div className="text-center">
-                          <p className="text-sm text-gray-500">Map unavailable</p>
-                        </div>
+                {/* Mini Map */}
+                <div className="w-full sm:w-36 h-36 flex-shrink-0">
+                  {!mapError ? (
+                    <MiniMap
+                      latitude={rating.latitude}
+                      longitude={rating.longitude}
+                      rating={rating.rating}
+                      restaurantName={rating.restaurantName}
+                      burritoTitle={rating.burritoTitle}
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full bg-gray-100 rounded-lg">
+                      <div className="text-center">
+                        <p className="text-sm text-gray-500">Map unavailable</p>
                       </div>
-                    )}
-                  </div>
-
-                  {/* Rating Image */}
-                  {rating.image && (
-                    <div className="w-36 h-36 relative rounded-lg overflow-hidden">
-                      <img
-                        src={`https://images.benny.com/cdn-cgi/image/width=800,height=600,format=webp,quality=80/${rating.image.replace('/images/', '')}`}
-                        alt={`${rating.burritoTitle} at ${rating.restaurantName}`}
-                        className="absolute inset-0 w-full h-full object-cover bg-gray-50"
-                        loading="lazy"
-                      />
                     </div>
                   )}
                 </div>
 
+                {/* Burrito Image */}
+                {rating.image && (
+                  <div className="w-full sm:w-36 h-36 flex-shrink-0">
+                    <div className="relative w-full h-full rounded-lg shadow-sm overflow-hidden">
+                      <img 
+                        src={`https://images.benny.com/cdn-cgi/image/width=400,height=400,format=webp,quality=80/${rating.image.replace('/images/', '')}`}
+                        alt={`${rating.burritoTitle} at ${rating.restaurantName}`}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                    </div>
+                  </div>
+                )}
+
                 {/* Rating Content */}
-                <div className="flex-1">
+                <div className="flex-1 flex flex-col">
                   <div className="flex justify-between items-start">
                     <div>
                       <h2 className="text-base font-bold text-gray-900">{rating.restaurantName}</h2>
