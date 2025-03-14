@@ -27,6 +27,7 @@ interface Rating {
   zipcode?: string;
   confirmed?: number;
   createdAt?: string;
+  image?: string;
 }
 
 export default function ListPage() {
@@ -172,27 +173,42 @@ export default function ListPage() {
               className="bg-white rounded-lg shadow-sm border border-gray-200 p-3 hover:border-blue-500 transition-colors"
             >
               <div className="flex flex-col sm:flex-row gap-3">
-                {/* Mini Map */}
-                <div className="w-full sm:w-36 h-36 flex-shrink-0">
-                  {!mapError ? (
-                    <MiniMap
-                      latitude={rating.latitude}
-                      longitude={rating.longitude}
-                      rating={rating.rating}
-                      restaurantName={rating.restaurantName}
-                      burritoTitle={rating.burritoTitle}
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-full bg-gray-100 rounded-lg">
-                      <div className="text-center">
-                        <p className="text-sm text-gray-500">Map unavailable</p>
+                {/* Mini Map and Image Container */}
+                <div className="flex flex-row gap-3 flex-shrink-0">
+                  {/* Mini Map */}
+                  <div className="w-36 h-36">
+                    {!mapError ? (
+                      <MiniMap
+                        latitude={rating.latitude}
+                        longitude={rating.longitude}
+                        rating={rating.rating}
+                        restaurantName={rating.restaurantName}
+                        burritoTitle={rating.burritoTitle}
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full bg-gray-100 rounded-lg">
+                        <div className="text-center">
+                          <p className="text-sm text-gray-500">Map unavailable</p>
+                        </div>
                       </div>
+                    )}
+                  </div>
+
+                  {/* Rating Image */}
+                  {rating.image && (
+                    <div className="w-36 h-36 relative rounded-lg overflow-hidden">
+                      <img
+                        src={`https://images.benny.com/cdn-cgi/image/width=800,height=600,format=webp,quality=80/${rating.image.replace('/images/', '')}`}
+                        alt={`${rating.burritoTitle} at ${rating.restaurantName}`}
+                        className="absolute inset-0 w-full h-full object-cover bg-gray-50"
+                        loading="lazy"
+                      />
                     </div>
                   )}
                 </div>
 
                 {/* Rating Content */}
-                <div className="flex-1 flex flex-col">
+                <div className="flex-1">
                   <div className="flex justify-between items-start">
                     <div>
                       <h2 className="text-base font-bold text-gray-900">{rating.restaurantName}</h2>

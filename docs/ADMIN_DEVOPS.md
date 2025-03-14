@@ -1191,6 +1191,71 @@ NEXT_PUBLIC_API_BASE_URL=https://your-worker-name.your-account.workers.dev
 
 The Burrito Rater application uses Cloudflare Workers and R2 storage for image handling. For detailed documentation on the image upload system, see [Image Upload Documentation](./IMAGE_UPLOAD.md).
 
+### Image URL Format
+
+Images in the application follow a specific URL format using Cloudflare's Image Resizing service:
+
+```
+https://images.benny.com/cdn-cgi/image/width=800,height=600,format=webp,quality=80/[IMAGE_FILENAME]
+```
+
+#### URL Components Breakdown:
+1. **Base URL**: `https://images.benny.com`
+2. **Cloudflare Path**: `/cdn-cgi/image`
+3. **Transformation Parameters**:
+   - `width=800`: Sets image width to 800px
+   - `height=600`: Sets image height to 600px
+   - `format=webp`: Converts image to WebP format
+   - `quality=80`: Sets compression quality to 80%
+4. **Image Filename**: The unique identifier for the image (e.g., `1741908086664-xatuw8nflv.jpeg`)
+
+#### Example URLs:
+```
+# Full-size burrito image
+https://images.benny.com/cdn-cgi/image/width=800,height=600,format=webp,quality=80/1741908086664-xatuw8nflv.jpeg
+
+# Thumbnail version
+https://images.benny.com/cdn-cgi/image/width=400,height=300,format=webp,quality=80/1741908086664-xatuw8nflv.jpeg
+```
+
+### Image Storage and Delivery
+
+1. **Storage Format**:
+   - Original images are stored with unique filenames
+   - Filenames are generated using timestamp and random string
+   - Example: `1741908086664-xatuw8nflv.jpeg`
+
+2. **URL Construction**:
+   ```typescript
+   const getImageUrl = (filename: string, options = {
+     width: 800,
+     height: 600,
+     format: 'webp',
+     quality: 80
+   }) => {
+     const params = Object.entries(options)
+       .map(([key, value]) => `${key}=${value}`)
+       .join(',');
+     
+     return `https://images.benny.com/cdn-cgi/image/${params}/${filename}`;
+   };
+   ```
+
+3. **Important Notes**:
+   - Do NOT include `/images/` in the URL path
+   - Always use HTTPS
+   - Include all transformation parameters
+   - Use WebP format for optimal compression
+   - Maintain aspect ratio in transformations
+
+### Common Image Sizes
+
+| Use Case | Width | Height | Quality | Example URL |
+|----------|--------|---------|----------|-------------|
+| Full Size | 800 | 600 | 80 | `/cdn-cgi/image/width=800,height=600,format=webp,quality=80/filename.jpeg` |
+| Thumbnail | 400 | 300 | 80 | `/cdn-cgi/image/width=400,height=300,format=webp,quality=80/filename.jpeg` |
+| Mini | 200 | 150 | 80 | `/cdn-cgi/image/width=200,height=150,format=webp,quality=80/filename.jpeg` |
+
 ### Upload System
 
 The image upload system is implemented with the following features:
@@ -1207,29 +1272,18 @@ The image upload system is implemented with the following features:
    - CORS configuration
    - Authentication checks
 
-### Storage and Delivery
-
-Images are stored and delivered through:
-
-1. **R2 Storage**:
-   - Original images preserved
-   - Unique filenames
-   - Access control via API tokens
-
-2. **Cloudflare CDN**:
-   - Global distribution
-   - Edge caching
-   - HTTPS delivery
-
 ### Admin Panel Integration
 
 The admin panel provides:
 
 1. **Image Preview**:
-   - Aspect ratio preservation
-   - Lazy loading
-   - Loading states
-   - Error handling
+   ```typescript
+   <img
+     src={`https://images.benny.com/cdn-cgi/image/width=800,height=600,format=webp,quality=80/${imageFilename}`}
+     alt="Burrito preview"
+     className="object-cover"
+   />
+   ```
 
 2. **Image Management**:
    - View full-size images
@@ -1240,13 +1294,19 @@ The admin panel provides:
 
 Common image-related issues and solutions:
 
-1. **Upload Failures**:
-   - Check CAPTCHA configuration
-   - Verify API token permissions
-   - Validate file size limits
-   - Check file type restrictions
+1. **Incorrect URL Format**:
+   ❌ Wrong: `https://images.benny.com/images/filename.jpeg`
+   ✅ Correct: `https://images.benny.com/cdn-cgi/image/width=800,height=600,format=webp,quality=80/filename.jpeg`
 
-2. **Display Issues**:
+2. **Missing Transformation Parameters**:
+   ❌ Wrong: `https://images.benny.com/cdn-cgi/image/filename.jpeg`
+   ✅ Correct: Include all required parameters (width, height, format, quality)
+
+3. **Extra Path Segments**:
+   ❌ Wrong: `https://images.benny.com/cdn-cgi/image/width=800,height=600,format=webp,quality=80/images/filename.jpeg`
+   ✅ Correct: Remove `/images/` from the path
+
+4. **Display Issues**:
    - Verify API base URL configuration
    - Check image URL construction
    - Validate CORS settings
