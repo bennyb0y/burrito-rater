@@ -1,48 +1,25 @@
 # Burrito Rater Public Roadmap
 
-## 🚀 Beta Release
+## 🚀 Beta Release (v0.1)
 
-Our Beta release focuses on core functionality and a stable user experience:
-
-### Completed Features
-- [x] Interactive map of burrito ratings across the USA
-- [x] Detailed burrito rating submission form
-- [x] Filtering and sorting of ratings by location and score
-- [x] Emoji-based user identification system
-- [x] USA-only submissions with location validation
-- [x] CAPTCHA protection to prevent spam submissions
-- [x] Custom domain with SSL for secure browsing
-- [x] Admin dashboard with authentication
-- [x] Session-based admin authentication
-- [x] Rating management with delete and bulk confirm
-- [x] Unified admin interface with streamlined workflow
-- [x] Real-time rating updates with periodic refresh
-- [x] Centralized admin interface under `/app/admin`
-- [x] Event-driven updates for immediate data reflection
-- [x] Optimized bundle size and code splitting
-- [x] Mobile-responsive design with optimized touch interactions
-- [x] Fixed search bar overlap on mobile devices
-- [x] Implemented persistent navigation across all views
-- [x] Image uploads for burrito photos
-- [x] Enhanced admin dashboard with data export
-- [x] Advanced moderation tools with bulk operations
-- [x] Image thumbnails in map view with optimized loading
-- [x] Enhanced rating preview with image support in map markers
+Our Beta release focuses on core functionality and gathering user feedback:
 
 ### Current Beta Focus
-- [ ] Zero Trust Security Implementation
-  - [ ] Cloudflare Access integration for admin routes
-  - [ ] SSO support with major identity providers
-  - [ ] Comprehensive audit logging
-  - [ ] Geo-fencing and device posture checking
-  - [ ] Role-based access control (RBAC)
-- [ ] Map Experience Improvements
-  - [ ] Implement viewport-based marker loading
-  - [ ] Implement marker clustering for dense areas
-  - [ ] Optimize performance for dense areas
-  - [ ] Enhanced location search
-  - [ ] Add loading states for markers
-  - [ ] Optimize marker rendering performance
+- [ ] Stability and Performance
+  - [ ] Monitor and optimize map performance
+  - [ ] Track and address user-reported issues
+  - [ ] Optimize image loading and delivery
+  - [ ] Improve form submission reliability
+- [ ] User Experience Refinement
+  - [ ] Gather and analyze user feedback
+  - [ ] Address mobile responsiveness issues
+  - [ ] Improve error messages and validation
+  - [ ] Enhance accessibility features
+- [ ] Security and Reliability
+  - [ ] Monitor and address security concerns
+  - [ ] Implement rate limiting
+  - [ ] Enhance spam prevention
+  - [ ] Improve error handling
 
 ## 🌮 Version 1.0
 
