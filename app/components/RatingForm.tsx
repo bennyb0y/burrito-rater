@@ -550,7 +550,7 @@ export default function RatingForm({ position, onSubmit, onClose }: Props) {
                 <div>
                   <label className="block text-xs font-bold text-black mb-0.5">
                     <span className="flex items-center gap-1">
-                      Ingredients <span className="text-lg">🧂</span>
+                      Extra Ingredients <span className="text-lg">🧂</span>
                     </span>
                   </label>
                   <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">

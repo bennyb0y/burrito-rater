@@ -257,18 +257,20 @@ export default function ListPage() {
                     </div>
                   </div>
 
-                  <div className="mt-2 flex flex-wrap items-center gap-3 text-xs text-gray-600">
-                    <div className="flex items-center gap-1">
-                      <span>😋</span>
-                      <span>Taste: {rating.taste.toFixed(1)}</span>
+                  <div className="mt-2 flex flex-col gap-2">
+                    <div className="flex items-center gap-3 text-xs text-gray-600">
+                      <div className="flex items-center gap-1">
+                        <span>😋</span>
+                        <span>Taste: {rating.taste.toFixed(1)}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span>💰</span>
+                        <span>Value: {rating.value.toFixed(1)}</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1">
-                      <span>💰</span>
-                      <span>Value: {rating.value.toFixed(1)}</span>
-                    </div>
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-1 text-xs text-gray-600">
                       <span>🧩</span>
-                      <span>Ingredients: {renderIngredients(rating)}</span>
+                      <span>Extra Ingredients: {renderIngredients(rating)}</span>
                     </div>
                   </div>
 
