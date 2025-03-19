@@ -22,12 +22,12 @@ The Burrito Rater application includes an automated backup system that exports t
 name = "burrito-backup-worker"
 main = "src/index.ts"
 compatibility_date = "2024-01-01"
-account_id = "4467ef47f4344bb87ee9fc681c6ca144"
+account_id = "your-account-id"
 
 [[d1_databases]]
 binding = "DB"
 database_name = "burrito-rater-db"
-database_id = "0e87da0b-9043-44f4-8782-3ee0c9fd6553"
+database_id = "your-database-id"
 
 [[r2_buckets]]
 binding = "BACKUP_BUCKET"
@@ -35,7 +35,11 @@ bucket_name = "burrito-backup"
 ```
 
 ### Environment Variables
+Required environment variables in `.env.local`:
 - `CF_API_TOKEN`: Cloudflare API token with appropriate permissions
+- `CF_ACCOUNT_ID`: Your Cloudflare account ID
+- `DATABASE_URL`: Your D1 database name
+- `BACKUP_BUCKET`: Your R2 bucket name
 
 ## Backup Process
 
@@ -69,15 +73,15 @@ npm install
 npm run deploy:backup
 ```
 
-The deployment uses the CF_API_TOKEN environment variable and requires:
-- Valid Cloudflare API token
+The deployment requires:
+- Valid Cloudflare API token in environment variables
 - Access to the D1 database
 - Access to the R2 bucket
 
 ## API Endpoint
 
 The backup worker exposes an HTTP endpoint:
-- URL: `https://burrito-backup-worker.bennyfischer.workers.dev`
+- URL: `https://your-worker-name.your-account.workers.dev`
 - Method: GET
 - Response: JSON with backup status and details
 
@@ -132,6 +136,7 @@ Common issues and solutions:
 1. **Database Access Issues**
    - Verify database ID in wrangler.backup.toml
    - Check D1 database permissions
+   - Ensure environment variables are set correctly
 
 2. **R2 Storage Issues**
    - Verify R2 bucket exists
@@ -141,7 +146,7 @@ Common issues and solutions:
 3. **Deployment Issues**
    - Verify Cloudflare API token permissions
    - Check wrangler.backup.toml configuration
-   - Ensure correct environment variables
+   - Ensure all required environment variables are set
 
 ## Best Practices
 
@@ -159,6 +164,7 @@ Common issues and solutions:
    - Use minimal-permission API tokens
    - Secure backup access
    - Monitor access logs
+   - Never commit sensitive information to version control
 
 ## Future Improvements
 
