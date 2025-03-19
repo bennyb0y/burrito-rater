@@ -1,5 +1,6 @@
 import DashboardLayout from '../../components/DashboardLayout';
 import BackupControl from '../components/BackupControl';
+import RecentBackups from '../components/RecentBackups';
 
 export default function AdminSettingsPage() {
   return (
@@ -9,6 +10,7 @@ export default function AdminSettingsPage() {
         
         <div className="grid gap-6">
           <BackupControl />
+          <RecentBackups />
           
           {/* Add more admin settings sections here */}
         </div>

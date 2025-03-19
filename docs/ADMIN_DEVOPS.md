@@ -460,6 +460,7 @@ app/admin/
 ├── page.tsx        # Admin entry point
 ├── dashboard/      # Admin dashboard interface
 ├── monitoring/     # System monitoring and health checks
+├── settings/       # System settings and backup management
 └── ratings/        # Rating management interface
 ```
 
@@ -467,9 +468,83 @@ app/admin/
 - `/admin`: Entry point and authentication
 - `/admin/dashboard`: Overview and key metrics
 - `/admin/monitoring`: System health and performance monitoring
+- `/admin/settings`: System settings and backup management
 - `/admin/ratings`: Rating management and moderation
 
 All admin routes are protected by the authentication wrapper in `layout.tsx`, ensuring consistent security across all admin functionality.
+
+### Backup Management
+
+The backup management interface is located in the admin settings page and provides comprehensive control over the database backup system:
+
+#### Features
+
+1. **Backup Control**
+   - Manual backup trigger button
+   - Real-time backup status display
+   - Detailed success/error messages
+   - Loading states and error handling
+
+2. **Recent Backups Display**
+   - List of recent backups with timestamps
+   - Backup type indicators (scheduled/manual)
+   - Table count and row statistics
+   - File size information
+   - Newest and oldest backup indicators
+   - Automatic refresh every 30 seconds
+
+3. **Statistics Display**
+   - Total number of tables
+   - Total row count across all tables
+   - Total backup size
+   - Per-table statistics
+   - Backup duration
+   - Human-readable formatting for sizes and durations
+
+#### Implementation Details
+
+The backup management interface is implemented using the following components:
+
+1. **BackupControl Component**
+   - Handles manual backup triggering
+   - Displays backup status and progress
+   - Shows detailed success/error messages
+   - Implements proper loading states
+
+2. **RecentBackups Component**
+   - Fetches and displays recent backups
+   - Shows backup metadata and statistics
+   - Implements automatic refresh
+   - Handles error states gracefully
+
+3. **Backup Statistics**
+   - Displays comprehensive backup information
+   - Shows per-table statistics
+   - Formats sizes and durations for readability
+   - Updates in real-time
+
+#### Usage
+
+1. **Triggering a Backup**
+   - Navigate to `/admin/settings`
+   - Click the "Backup Now" button
+   - Wait for the backup to complete
+   - Review the backup statistics
+
+2. **Viewing Recent Backups**
+   - The Recent Backups section shows the latest backups
+   - Each backup entry displays:
+     - Timestamp
+     - Backup type (scheduled/manual)
+     - Table count and row statistics
+     - File size
+   - The list automatically refreshes every 30 seconds
+
+3. **Monitoring Backup Status**
+   - Check the backup status indicator
+   - Review any error messages if they occur
+   - Monitor backup statistics
+   - Verify backup completion
 
 #### Features
 

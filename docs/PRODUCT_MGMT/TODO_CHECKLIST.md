@@ -71,6 +71,9 @@ This document tracks completed milestones and upcoming tasks for the internal de
   - [x] Detailed statistics
   - [x] R2 storage integration
   - [x] Admin UI integration
+  - [x] Real-time monitoring
+  - [x] Backup history display
+  - [x] Per-table statistics
 
 #### Medium Priority (Beta)
 - [x] Optimize deployment process
@@ -82,6 +85,12 @@ This document tracks completed milestones and upcoming tasks for the internal de
 
 - [x] Implement enhanced backup system with detailed statistics
 - [x] Add backup management UI to admin settings
+- [x] Implement real-time backup monitoring
+- [x] Add backup history display with statistics
+- [x] Implement per-table backup statistics
+- [x] Add human-readable formatting for backup sizes and durations
+- [x] Implement automatic refresh for backup list
+- [x] Add newest/oldest backup indicators
 - [x] Implement image thumbnails in map view
 - [x] Reorganize admin interface
 - [x] Implement real-time updates

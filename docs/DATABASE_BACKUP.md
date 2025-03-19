@@ -108,7 +108,26 @@ The backup worker exposes an HTTP endpoint:
   "message": "Backup completed successfully",
   "filename": "backup-2024-03-19T16-55-25-928Z.sql",
   "timestamp": "2024-03-19T16:55:25.928Z",
-  "tableCount": 2
+  "tableCount": 2,
+  "stats": {
+    "totalRows": 100,
+    "totalSize": 1024000,
+    "tables": [
+      {
+        "name": "ratings",
+        "rowCount": 80,
+        "schemaSize": 1024,
+        "dataSize": 819200
+      },
+      {
+        "name": "restaurants",
+        "rowCount": 20,
+        "schemaSize": 512,
+        "dataSize": 204800
+      }
+    ],
+    "duration": 1500
+  }
 }
 ```
 
@@ -136,6 +155,36 @@ Each backup in R2 includes the following metadata:
 - `timestamp`: ISO timestamp of backup creation
 - `tableCount`: Number of tables included in backup
 - `backupType`: "scheduled" or "manual"
+- `totalRows`: Total number of rows across all tables
+- `totalSize`: Total size of the backup in bytes
+- `duration`: Backup process duration in milliseconds
+- `tables`: Array of table-specific statistics
+
+### Admin Interface Integration
+
+The backup system is integrated into the admin interface with the following features:
+
+1. **Backup Control**
+   - Manual backup trigger button
+   - Real-time backup status display
+   - Detailed success/error messages
+   - Loading states and error handling
+
+2. **Recent Backups Display**
+   - List of recent backups with timestamps
+   - Backup type indicators (scheduled/manual)
+   - Table count and row statistics
+   - File size information
+   - Newest and oldest backup indicators
+   - Automatic refresh every 30 seconds
+
+3. **Statistics Display**
+   - Total number of tables
+   - Total row count across all tables
+   - Total backup size
+   - Per-table statistics
+   - Backup duration
+   - Human-readable formatting for sizes and durations
 
 ## Troubleshooting
 

@@ -12,6 +12,16 @@ interface TableStats {
   dataSize: number;
 }
 
+interface BackupMetadata {
+  filename: string;
+  timestamp: string;
+  tableCount: number;
+  totalRows: number;
+  totalSize: number;
+  duration: number;
+  backupType: 'manual' | 'scheduled';
+}
+
 async function performBackup(env: Env): Promise<{ 
   success: boolean; 
   message: string; 
@@ -177,6 +187,70 @@ async function performBackup(env: Env): Promise<{
 export default {
   // HTTP request handler
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    const url = new URL(request.url);
+    
+    // Handle list backups endpoint
+    if (url.pathname === '/list' && request.method === 'GET') {
+      try {
+        // List objects in R2 bucket
+        const objects = await env.BACKUP_BUCKET.list({
+          prefix: 'backup-',
+          limit: 20
+        });
+
+        // Sort objects by uploaded date (most recent first)
+        objects.objects.sort((a, b) => 
+          new Date(b.uploaded).getTime() - new Date(a.uploaded).getTime()
+        );
+
+        // Extract metadata from each object
+        const backups: BackupMetadata[] = await Promise.all(
+          objects.objects.map(async (obj) => {
+            const metadata = await env.BACKUP_BUCKET.head(obj.key);
+            if (!metadata) {
+              return {
+                filename: obj.key,
+                timestamp: '',
+                tableCount: 0,
+                totalRows: 0,
+                totalSize: 0,
+                duration: 0,
+                backupType: 'manual' as const
+              };
+            }
+            return {
+              filename: obj.key,
+              timestamp: metadata.customMetadata?.timestamp || '',
+              tableCount: parseInt(metadata.customMetadata?.tableCount || '0'),
+              totalRows: parseInt(metadata.customMetadata?.totalRows || '0'),
+              totalSize: parseInt(metadata.customMetadata?.totalSize || '0'),
+              duration: parseInt(metadata.customMetadata?.duration || '0'),
+              backupType: metadata.customMetadata?.backupType as 'manual' | 'scheduled' || 'manual'
+            };
+          })
+        );
+
+        return new Response(JSON.stringify({ backups }, null, 2), {
+          headers: { 
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          }
+        });
+      } catch (error) {
+        return new Response(JSON.stringify({ 
+          success: false, 
+          error: error instanceof Error ? error.message : 'Unknown error' 
+        }), {
+          status: 500,
+          headers: { 
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin': '*'
+          }
+        });
+      }
+    }
+
+    // Handle backup creation endpoint
     const result = await performBackup(env);
     return new Response(JSON.stringify(result, null, 2), {
       status: result.success ? 200 : 500,
