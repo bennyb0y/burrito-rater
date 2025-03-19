@@ -1,11 +1,35 @@
-import { ExecutionContext, D1Database, R2Bucket } from '@cloudflare/workers-types';
+import { ExecutionContext, D1Database, R2Bucket, ScheduledEvent } from '@cloudflare/workers-types';
 
 interface Env {
   DB: D1Database;
   BACKUP_BUCKET: R2Bucket;
 }
 
-async function performBackup(env: Env): Promise<{ success: boolean; message: string; filename?: string; timestamp?: string; tableCount?: number; error?: string }> {
+interface TableStats {
+  name: string;
+  rowCount: number;
+  schemaSize: number;
+  dataSize: number;
+}
+
+async function performBackup(env: Env): Promise<{ 
+  success: boolean; 
+  message: string; 
+  filename?: string; 
+  timestamp?: string; 
+  tableCount?: number; 
+  error?: string;
+  stats?: {
+    totalRows: number;
+    totalSize: number;
+    tables: TableStats[];
+    duration: number;
+  }
+}> {
+  const startTime = Date.now();
+  const stats: TableStats[] = [];
+  let totalRows = 0;
+
   try {
     // Generate timestamp for filename
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -16,7 +40,7 @@ async function performBackup(env: Env): Promise<{ success: boolean; message: str
     // Get all user tables from the database (excluding SQLite internal tables)
     const tables = await env.DB.prepare(
       "SELECT name FROM sqlite_schema WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%'"
-    ).all();
+    ).all<{ name: string }>();
 
     if (!tables.results || tables.results.length === 0) {
       throw new Error('No tables found to backup');
@@ -29,6 +53,12 @@ async function performBackup(env: Env): Promise<{ success: boolean; message: str
     for (const table of tables.results) {
       const tableName = table.name;
       console.log(`Processing table: ${tableName}`);
+      const tableStats: TableStats = {
+        name: tableName,
+        rowCount: 0,
+        schemaSize: 0,
+        dataSize: 0
+      };
 
       try {
         // Get table schema
@@ -37,18 +67,26 @@ async function performBackup(env: Env): Promise<{ success: boolean; message: str
         ).bind(tableName).first();
 
         if (schema?.sql) {
-          sqlDump += `DROP TABLE IF EXISTS ${tableName};\n`;
-          sqlDump += `${schema.sql};\n\n`;
+          const schemaSql = `DROP TABLE IF EXISTS ${tableName};\n${schema.sql};\n\n`;
+          sqlDump += schemaSql;
+          tableStats.schemaSize = schemaSql.length;
         } else {
           console.warn(`No schema found for table: ${tableName}`);
           continue;
         }
+
+        // Get row count
+        const countResult = await env.DB.prepare(`SELECT COUNT(*) as count FROM ${tableName}`).first<{ count: number }>();
+        tableStats.rowCount = countResult?.count ?? 0;
+        totalRows += tableStats.rowCount;
+        console.log(`Table ${tableName} has ${tableStats.rowCount} rows`);
 
         // Get table data
         const data = await env.DB.prepare(`SELECT * FROM ${tableName}`).all();
         
         if (data.results && data.results.length > 0) {
           // Generate INSERT statements
+          let tableData = '';
           for (const row of data.results) {
             const columns = Object.keys(row);
             const values = Object.values(row).map(value => {
@@ -57,16 +95,30 @@ async function performBackup(env: Env): Promise<{ success: boolean; message: str
               return value;
             });
 
-            sqlDump += `INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${values.join(', ')});\n`;
+            const insertStatement = `INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${values.join(', ')});\n`;
+            tableData += insertStatement;
           }
+          sqlDump += tableData;
+          tableStats.dataSize = tableData.length;
         }
         sqlDump += '\n';
+        stats.push(tableStats);
+        
+        console.log(`Completed processing ${tableName}:`, {
+          rows: tableStats.rowCount,
+          schemaSize: `${(tableStats.schemaSize / 1024).toFixed(2)} KB`,
+          dataSize: `${(tableStats.dataSize / 1024).toFixed(2)} KB`
+        });
+
       } catch (error: unknown) {
         const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
         console.error(`Error processing table ${tableName}:`, error);
         throw new Error(`Failed to process table ${tableName}: ${errorMessage}`);
       }
     }
+
+    const totalSize = sqlDump.length;
+    const duration = Date.now() - startTime;
 
     // Upload to R2
     await env.BACKUP_BUCKET.put(filename, sqlDump, {
@@ -76,26 +128,48 @@ async function performBackup(env: Env): Promise<{ success: boolean; message: str
       customMetadata: {
         timestamp: timestamp,
         tableCount: tables.results.length.toString(),
+        totalRows: totalRows.toString(),
+        totalSize: totalSize.toString(),
+        duration: duration.toString(),
         backupType: 'manual'
       }
     });
 
-    console.log(`Backup completed successfully: ${filename}`);
+    console.log(`Backup completed successfully:`, {
+      filename,
+      duration: `${(duration / 1000).toFixed(2)} seconds`,
+      totalTables: tables.results.length,
+      totalRows,
+      totalSize: `${(totalSize / 1024).toFixed(2)} KB`
+    });
 
     return {
       success: true,
       message: 'Backup completed successfully',
       filename,
       timestamp,
-      tableCount: tables.results.length
+      tableCount: tables.results.length,
+      stats: {
+        totalRows,
+        totalSize,
+        tables: stats,
+        duration
+      }
     };
 
   } catch (error) {
+    const duration = Date.now() - startTime;
     console.error('Backup failed:', error);
     return {
       success: false,
       message: 'Backup failed',
-      error: error instanceof Error ? error.message : 'Unknown error'
+      error: error instanceof Error ? error.message : 'Unknown error',
+      stats: {
+        totalRows,
+        totalSize: 0,
+        tables: stats,
+        duration
+      }
     };
   }
 }
@@ -104,7 +178,7 @@ export default {
   // HTTP request handler
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const result = await performBackup(env);
-    return new Response(JSON.stringify(result), {
+    return new Response(JSON.stringify(result, null, 2), {
       status: result.success ? 200 : 500,
       headers: { 
         'Content-Type': 'application/json',
@@ -121,5 +195,12 @@ export default {
       // Throw error to trigger retry mechanism
       throw new Error(`Scheduled backup failed: ${result.error}`);
     }
+    console.log('Scheduled backup completed:', {
+      filename: result.filename,
+      duration: `${(result.stats?.duration || 0 / 1000).toFixed(2)} seconds`,
+      totalTables: result.tableCount,
+      totalRows: result.stats?.totalRows,
+      totalSize: `${(result.stats?.totalSize || 0 / 1024).toFixed(2)} KB`
+    });
   }
 }; 

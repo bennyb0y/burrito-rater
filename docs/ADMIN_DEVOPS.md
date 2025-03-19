@@ -289,13 +289,52 @@ npm run analyze
 npm run dev:worker
 ```
 
-### Production Deployment
+### Deployment Commands
+
+⚠️ **IMPORTANT: Directory Requirement** ⚠️
+Before running ANY deployment command, ALWAYS ensure you are in the correct directory:
+```bash
+# Check current directory
+pwd
+# Expected output should be: /path/to/burrito-rater
+
+# If in wrong directory (e.g., /backup-worker), move to correct directory
+cd /path/to/burrito-rater
+```
 
 The application can be deployed in three ways depending on the changes made:
 
-#### 1. Full-Stack Deployment
+#### 1. Frontend-Only Deployment
+For changes only to the frontend (`app/` directory):
+```bash
+# FIRST, verify you're in the project root directory (NOT in backup-worker!)
+pwd  # Should show /path/to/burrito-rater
+
+# Then run the deployment command
+npm run deploy:app
+```
+This command:
+1. Builds the Next.js application
+2. Deploys to Cloudflare Pages
+
+#### 2. API-Only Deployment
+For changes only to the API worker:
+```bash
+# FIRST, verify you're in the project root directory (NOT in backup-worker!)
+pwd  # Should show /path/to/burrito-rater
+
+# Then run the deployment command
+npm run deploy:worker
+```
+This command deploys the worker to Cloudflare Workers.
+
+#### 3. Full-Stack Deployment
 For changes to both frontend and API:
 ```bash
+# FIRST, verify you're in the project root directory (NOT in backup-worker!)
+pwd  # Should show /path/to/burrito-rater
+
+# Then run the deployment command
 npm run deploy
 ```
 This command:
@@ -303,31 +342,15 @@ This command:
 2. Builds the Next.js application
 3. Deploys the frontend to Cloudflare Pages
 
-#### 2. Frontend-Only Deployment
-For changes only to the frontend (`app/` directory):
-```bash
-npm run deploy:app
-```
-This command:
-1. Builds the Next.js application
-2. Deploys to Cloudflare Pages
-
-#### 3. API-Only Deployment
-For changes only to the API worker:
-```bash
-npm run deploy:worker
-```
-This command deploys the worker to Cloudflare Workers.
-
 ### Deployment Commands Reference
 
-| Command | Description |
-|---------|-------------|
-| `npm run deploy` | Deploy both frontend and API |
-| `npm run deploy:app` | Deploy only frontend |
-| `npm run deploy:worker` | Deploy only API worker |
-| `npm run build` | Build Next.js application |
-| `npm run dev` | Start Next.js development server |
+| Command | Description | Required Directory |
+|---------|-------------|-------------------|
+| `npm run deploy` | Deploy both frontend and API | Project root (`/path/to/burrito-rater`) |
+| `npm run deploy:app` | Deploy only frontend | Project root (`/path/to/burrito-rater`) |
+| `npm run deploy:worker` | Deploy only API worker | Project root (`/path/to/burrito-rater`) |
+| `npm run build` | Build Next.js application | Project root (`/path/to/burrito-rater`) |
+| `npm run dev` | Start Next.js development server | Project root (`/path/to/burrito-rater`) |
 
 **Note**: Unlike traditional Next.js applications, we don't use `npm run start` because:
 - Development is handled by `npm run dev`
@@ -1158,7 +1181,7 @@ The admin panel is implemented as a unified interface within the main applicatio
 ```
 app/admin/
 ├── layout.tsx    # Admin authentication wrapper
-├── page.tsx      # Redirect to dashboard
+├── page.tsx      # Admin entry point
 ├── AdminAuth.tsx # Authentication component
 ├── dashboard/    # Dashboard implementation
 │   └── page.tsx  # Main admin interface

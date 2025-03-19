@@ -2,6 +2,13 @@
 
 import { useState } from 'react';
 
+interface TableStats {
+  name: string;
+  rowCount: number;
+  schemaSize: number;
+  dataSize: number;
+}
+
 interface BackupResult {
   success: boolean;
   message: string;
@@ -9,12 +16,36 @@ interface BackupResult {
   timestamp?: string;
   tableCount?: number;
   error?: string;
+  stats?: {
+    totalRows: number;
+    totalSize: number;
+    tables: TableStats[];
+    duration: number;
+  }
 }
 
 export default function BackupControl() {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<BackupResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const formatTimestamp = (timestamp: string): string => {
+    // Convert from format like "2025-03-19T18-23-14-692Z" to "2025-03-19T18:23:14.692Z"
+    return timestamp.replace(/-(\d{2})-(\d{2})-(\d{3})Z$/, ':$1:$2.$3Z');
+  };
+
+  const formatBytes = (bytes: number): string => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+  };
+
+  const formatDuration = (ms: number): string => {
+    if (ms < 1000) return `${ms}ms`;
+    return `${(ms / 1000).toFixed(2)}s`;
+  };
 
   const triggerBackup = async () => {
     try {
@@ -82,11 +113,53 @@ export default function BackupControl() {
         {result && result.success && (
           <div className="p-4 bg-green-50 text-green-700 rounded-md">
             <p className="font-medium">Backup created successfully!</p>
-            <div className="mt-2 space-y-1 text-sm">
+            
+            {/* General Information */}
+            <div className="mt-4 space-y-1 text-sm">
               <p><span className="font-medium">Filename:</span> {result.filename}</p>
-              <p><span className="font-medium">Timestamp:</span> {new Date(result.timestamp?.replace(/-/g, ':')||'').toLocaleString()}</p>
-              <p><span className="font-medium">Tables backed up:</span> {result.tableCount}</p>
+              <p><span className="font-medium">Timestamp:</span> {result.timestamp ? new Date(formatTimestamp(result.timestamp)).toLocaleString() : 'N/A'}</p>
+              <p><span className="font-medium">Duration:</span> {result.stats ? formatDuration(result.stats.duration) : 'N/A'}</p>
             </div>
+
+            {/* Overall Statistics */}
+            {result.stats && (
+              <div className="mt-4">
+                <h4 className="font-medium mb-2">Overall Statistics</h4>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-green-100 p-3 rounded-md">
+                    <p className="text-xs text-green-600 uppercase">Total Tables</p>
+                    <p className="text-lg font-semibold">{result.tableCount}</p>
+                  </div>
+                  <div className="bg-green-100 p-3 rounded-md">
+                    <p className="text-xs text-green-600 uppercase">Total Rows</p>
+                    <p className="text-lg font-semibold">{result.stats.totalRows}</p>
+                  </div>
+                  <div className="bg-green-100 p-3 rounded-md">
+                    <p className="text-xs text-green-600 uppercase">Total Size</p>
+                    <p className="text-lg font-semibold">{formatBytes(result.stats.totalSize)}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Table Details */}
+            {result.stats?.tables && result.stats.tables.length > 0 && (
+              <div className="mt-4">
+                <h4 className="font-medium mb-2">Table Details</h4>
+                <div className="space-y-2">
+                  {result.stats.tables.map((table) => (
+                    <div key={table.name} className="bg-green-100 p-3 rounded-md">
+                      <p className="font-medium text-green-800">{table.name}</p>
+                      <div className="mt-1 grid grid-cols-3 gap-2 text-sm">
+                        <p><span className="text-green-600">Rows:</span> {table.rowCount}</p>
+                        <p><span className="text-green-600">Schema:</span> {formatBytes(table.schemaSize)}</p>
+                        <p><span className="text-green-600">Data:</span> {formatBytes(table.dataSize)}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
