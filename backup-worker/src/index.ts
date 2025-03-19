@@ -13,10 +13,14 @@ async function performBackup(env: Env): Promise<{ success: boolean; message: str
 
     console.log(`Starting backup: ${filename}`);
 
-    // Get all tables from the database
+    // Get all user tables from the database (excluding SQLite internal tables)
     const tables = await env.DB.prepare(
-      "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
+      "SELECT name FROM sqlite_schema WHERE type='table' AND name NOT LIKE 'sqlite_%' AND name NOT LIKE '_cf_%'"
     ).all();
+
+    if (!tables.results || tables.results.length === 0) {
+      throw new Error('No tables found to backup');
+    }
 
     console.log(`Found ${tables.results.length} tables to backup`);
     let sqlDump = '';
@@ -26,30 +30,42 @@ async function performBackup(env: Env): Promise<{ success: boolean; message: str
       const tableName = table.name;
       console.log(`Processing table: ${tableName}`);
 
-      // Get table schema
-      const schema = await env.DB.prepare(
-        `SELECT sql FROM sqlite_master WHERE type='table' AND name=?`
-      ).bind(tableName).first();
+      try {
+        // Get table schema
+        const schema = await env.DB.prepare(
+          `SELECT sql FROM sqlite_schema WHERE type='table' AND name=?`
+        ).bind(tableName).first();
 
-      if (schema) {
-        sqlDump += `${schema.sql};\n\n`;
+        if (schema?.sql) {
+          sqlDump += `DROP TABLE IF EXISTS ${tableName};\n`;
+          sqlDump += `${schema.sql};\n\n`;
+        } else {
+          console.warn(`No schema found for table: ${tableName}`);
+          continue;
+        }
+
+        // Get table data
+        const data = await env.DB.prepare(`SELECT * FROM ${tableName}`).all();
+        
+        if (data.results && data.results.length > 0) {
+          // Generate INSERT statements
+          for (const row of data.results) {
+            const columns = Object.keys(row);
+            const values = Object.values(row).map(value => {
+              if (value === null) return 'NULL';
+              if (typeof value === 'string') return `'${value.replace(/'/g, "''")}'`;
+              return value;
+            });
+
+            sqlDump += `INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${values.join(', ')});\n`;
+          }
+        }
+        sqlDump += '\n';
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        console.error(`Error processing table ${tableName}:`, error);
+        throw new Error(`Failed to process table ${tableName}: ${errorMessage}`);
       }
-
-      // Get table data
-      const data = await env.DB.prepare(`SELECT * FROM ${tableName}`).all();
-      
-      // Generate INSERT statements
-      for (const row of data.results) {
-        const columns = Object.keys(row);
-        const values = Object.values(row).map(value => {
-          if (value === null) return 'NULL';
-          if (typeof value === 'string') return `'${value.replace(/'/g, "''")}'`;
-          return value;
-        });
-
-        sqlDump += `INSERT INTO ${tableName} (${columns.join(', ')}) VALUES (${values.join(', ')});\n`;
-      }
-      sqlDump += '\n';
     }
 
     // Upload to R2
@@ -60,7 +76,7 @@ async function performBackup(env: Env): Promise<{ success: boolean; message: str
       customMetadata: {
         timestamp: timestamp,
         tableCount: tables.results.length.toString(),
-        backupType: 'scheduled'
+        backupType: 'manual'
       }
     });
 
@@ -90,7 +106,10 @@ export default {
     const result = await performBackup(env);
     return new Response(JSON.stringify(result), {
       status: result.success ? 200 : 500,
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*'
+      }
     });
   },
 
