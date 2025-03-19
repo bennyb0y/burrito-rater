@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Burrito Rater application includes an automated backup system that exports the D1 database to R2 storage. The system is implemented as a Cloudflare Worker that creates SQL dumps of the entire database, including schema and data.
+The Burrito Rater application includes an automated backup system that exports the D1 database to R2 storage. The system is implemented as a Cloudflare Worker that creates SQL dumps of the entire database, including schema and data. Backups are performed both automatically on a daily schedule and manually via HTTP requests.
 
 ## Architecture
 
@@ -24,6 +24,10 @@ main = "src/index.ts"
 compatibility_date = "2024-01-01"
 account_id = "your-account-id"
 
+# Run backup every day at midnight UTC
+[triggers]
+crons = ["0 0 * * *"]
+
 [[d1_databases]]
 binding = "DB"
 database_name = "burrito-rater-db"
@@ -43,6 +47,18 @@ Required environment variables in `.env.local`:
 
 ## Backup Process
 
+### Scheduled Backups
+- Runs automatically every day at midnight UTC
+- Configured via cron trigger in wrangler.backup.toml
+- Includes logging for monitoring and debugging
+- Retries automatically on failure
+
+### Manual Backups
+- Triggered via HTTP GET request to the worker endpoint
+- Returns JSON response with backup status
+- Useful for on-demand backups or testing
+
+### Backup Steps
 1. **Database Schema Export**
    - Queries `sqlite_master` to get all table definitions
    - Excludes SQLite internal tables
@@ -105,29 +121,21 @@ The backup worker exposes an HTTP endpoint:
 }
 ```
 
-## Backup Contents
+## Monitoring
 
-Each backup file contains:
-1. Table creation statements
-2. Data INSERT statements
-3. Metadata about the backup
+### Logging
+The backup worker includes comprehensive logging:
+- Backup start and completion timestamps
+- Number of tables processed
+- Individual table processing status
+- Error details if backup fails
 
-### Example Backup File Structure
-```sql
-CREATE TABLE Rating (...);
-
-INSERT INTO Rating (id, createdAt, ...) VALUES (...);
-INSERT INTO Rating (id, createdAt, ...) VALUES (...);
-
--- Additional tables and data
-```
-
-## Metadata
-
+### Metadata
 Each backup in R2 includes the following metadata:
 - `contentType`: "application/sql"
 - `timestamp`: ISO timestamp of backup creation
 - `tableCount`: Number of tables included in backup
+- `backupType`: "scheduled" or "manual"
 
 ## Troubleshooting
 
@@ -148,10 +156,16 @@ Common issues and solutions:
    - Check wrangler.backup.toml configuration
    - Ensure all required environment variables are set
 
+4. **Scheduled Backup Issues**
+   - Check cron trigger configuration
+   - Verify worker logs for execution details
+   - Monitor for retry attempts on failure
+
 ## Best Practices
 
 1. **Regular Backups**
-   - Schedule regular backup runs
+   - Automatic daily backups at midnight UTC
+   - Manual backups as needed
    - Monitor backup success/failure
    - Verify backup contents periodically
 
@@ -169,8 +183,10 @@ Common issues and solutions:
 ## Future Improvements
 
 Potential enhancements to consider:
-1. Automated backup scheduling
+1. Multiple backup schedules (daily, weekly, monthly)
 2. Backup rotation and cleanup
 3. Backup verification and testing
 4. Compression of backup files
-5. Backup restoration automation 
+5. Backup restoration automation
+6. Backup success notifications
+7. Custom backup retention policies 
