@@ -20,8 +20,8 @@ This directory contains documentation for the Burrito Rater application.
 
 ### Product Management
 
-- [Project Roadmap](./PRODUCT_MGMT/ROADMAP.md) - Future plans and development roadmap
-- [Project Checklist](./PRODUCT_MGMT/TODO_CHECKLIST.md) - Completed milestones and upcoming tasks
+- [Project Roadmap](./PRODUCT_MGMT/ROADMAP.md) - Comprehensive long-term vision and feature planning document that outlines all planned features, improvements, and milestones for future versions. This document serves as the single source of truth for what we want to accomplish over time.
+- [Sprint Priorities](./PRODUCT_MGMT/SPRINT_PRIORITIES.md) - Focused, short-term planning document (2-4 weeks) that tracks immediate tasks, bugs, and features currently in development. This document is updated frequently and serves as the primary reference for what needs to be done next.
 - [Bug Tracking](./PRODUCT_MGMT/BUGS.md) - Known issues and their status
 
 ## Project Overview
