@@ -73,6 +73,17 @@ Our full release will expand on the Beta with richer features:
 - [ ] "Favorite burritos" collection
 - [ ] Advanced filtering and search capabilities
 - [ ] Offline support for frequent users
+- [ ] Enhanced Map Discovery
+  - [ ] Display unrated burrito locations on map
+  - [ ] Integrate with restaurant databases
+  - [ ] Add location verification system
+  - [ ] Implement location suggestions
+  - [ ] Add "Add to Try List" feature
+  - [ ] Show location popularity indicators
+  - [ ] Add location details preview
+  - [ ] Implement location filtering options
+  - [ ] Add location contribution guidelines
+  - [ ] Create location verification workflow
 
 ### Administration
 - [ ] Enhanced analytics

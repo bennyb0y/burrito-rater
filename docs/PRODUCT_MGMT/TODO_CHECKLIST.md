@@ -37,6 +37,42 @@ This document tracks completed milestones and upcoming tasks for the internal de
   - [ ] Optimize touch interactions
   - [ ] Improve form usability
   - [ ] Test on various devices
+- [ ] Redesign Admin Dashboard Summary View
+  - [ ] Define key admin metrics and KPIs
+  - [ ] Create summary cards for critical information
+  - [ ] Add quick action buttons for common tasks
+  - [ ] Implement status indicators for system health
+  - [ ] Display recent activity feed
+  - [ ] Add pending moderation count
+  - [ ] Show storage usage summary
+  - [ ] Display backup status
+  - [ ] Add user submission trends
+  - [ ] Implement real-time updates
+  - [ ] Create responsive layout for all screen sizes
+  - [ ] Add export functionality for key metrics
+  - [ ] Implement proper loading states
+  - [ ] Add error handling for failed data fetches
+- [ ] Enhance Mobile Map Experience
+  - [ ] Evaluate alternative map libraries for better mobile support
+  - [ ] Implement touch-optimized map controls
+  - [ ] Add gesture-based navigation
+  - [ ] Improve marker interaction on mobile
+  - [ ] Optimize map performance for mobile devices
+  - [ ] Add mobile-specific map features
+    - [ ] Swipe to navigate between markers
+    - [ ] Pinch-to-zoom with better touch response
+    - [ ] Double-tap to zoom
+    - [ ] Long-press for context menu
+  - [ ] Implement mobile-friendly info windows
+  - [ ] Add mobile-optimized search interface
+  - [ ] Improve map loading states for mobile
+  - [ ] Add offline map tile caching
+  - [ ] Implement better mobile marker clustering
+  - [ ] Add mobile-specific map settings
+  - [ ] Optimize map bundle size for mobile
+  - [ ] Add mobile-specific performance monitoring
+  - [ ] Implement A/B testing for different map libraries
+  - [ ] Create mobile-specific map documentation
 
 #### Medium Priority (Beta)
 - [ ] Enhance error messages
@@ -74,6 +110,17 @@ This document tracks completed milestones and upcoming tasks for the internal de
   - [x] Real-time monitoring
   - [x] Backup history display
   - [x] Per-table statistics
+- [ ] Enhance Admin Monitoring Panel
+  - [ ] Implement real-time system metrics
+  - [ ] Add database performance monitoring
+  - [ ] Display API request statistics
+  - [ ] Show error rate trends
+  - [ ] Monitor storage usage
+  - [ ] Track backup success rates
+  - [ ] Display user activity metrics
+  - [ ] Add performance graphs
+  - [ ] Implement alert thresholds
+  - [ ] Add export functionality for reports
 
 #### Medium Priority (Beta)
 - [x] Optimize deployment process

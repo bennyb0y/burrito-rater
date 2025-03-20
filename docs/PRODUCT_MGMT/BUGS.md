@@ -6,6 +6,50 @@ This document tracks known bugs and issues in the Burrito Rater application. Ple
 
 ### High Priority
 
+1. **Image Upload Path Issue** - #018
+   - Description: Image paths in database and URLs are inconsistent with the required format
+   - Affected areas: 
+     - Database storage (storing full path instead of filename)
+     - Image URL construction in web app
+     - Download URL generation
+   - Current behavior:
+     - Database stores: "/images/1741908086664-xatuw8nflv.jpeg"
+     - Should store: "1741908086664-xatuw8nflv.jpeg"
+     - Web app URL prefix needs to include full path
+     - Download URL needs to include full path
+   - Impact: Images may not load correctly due to incorrect path construction
+   - Priority: High
+   - Technical details:
+     - Database schema stores full path instead of just filename
+     - URL construction in web app needs to be updated to handle full paths
+     - Download URL generation needs to be updated to include full path
+     - Affects both display and download functionality
+
+2. **Cloudflare Turnstile CAPTCHA Styling** - #019
+   - Description: CAPTCHA implementation is not using Cloudflare's default styling and images
+   - Affected areas: 
+     - Rating submission form
+     - CAPTCHA component styling
+     - CAPTCHA image assets
+   - Current behavior:
+     - Custom styling is being applied to the CAPTCHA
+     - Not using Cloudflare's default look and feel
+     - Missing default Cloudflare images and assets
+   - Expected behavior:
+     - Should use Cloudflare's default Turnstile styling
+     - Should display default Cloudflare images
+     - Should match Cloudflare's standard appearance
+   - Impact: 
+     - Inconsistent user experience
+     - May cause confusion for users familiar with Cloudflare's standard CAPTCHA
+     - Could affect user trust in the security measure
+   - Priority: High
+   - Technical details:
+     - Need to remove custom styling from CAPTCHA component
+     - Need to ensure proper integration with Cloudflare's default assets
+     - May require updates to Turnstile configuration
+     - Affects both visual appearance and user experience
+
 ### Medium Priority
 
 1. **Rating Form Validation** - #005
