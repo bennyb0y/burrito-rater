@@ -144,7 +144,7 @@ For detailed documentation, please refer to:
 - [Administration and DevOps Guide](./docs/ADMIN_DEVOPS.md)
 - [API Documentation](./docs/API_WORKER.md)
 - [Project Roadmap](./docs/PRODUCT_MGMT/ROADMAP.md)
-- [Development Tasks](./docs/PRODUCT_MGMT/TODO_CHECKLIST.md)
+- [Sprint Priorities](./docs/PRODUCT_MGMT/SPRINT_PRIORITIES.md)
 - [Bug Tracking](./docs/PRODUCT_MGMT/BUGS.md)
 
 ## 🤝 Contributing
